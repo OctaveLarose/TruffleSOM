@@ -272,7 +272,7 @@ public final class MessageSendNode {
         } else if (method != null) {
           node = new CachedDispatchNode(guard, callTarget);
         } else {
-          node = new CachedDnuNode(rcvrClass, guard, selector, universe);
+          node = new CachedDnuNode(rcvrClass, guard, selector);
         }
 
         if (first != null) {

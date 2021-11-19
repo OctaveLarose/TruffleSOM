@@ -25,12 +25,13 @@ public final class CachedDnuNode extends GuardedDispatchNode {
   @Child protected DirectCallNode cachedMethod;
 
   public CachedDnuNode(final SClass rcvrClass, final DispatchGuard guard,
-      final SSymbol selector, final Universe universe) {
+      final SSymbol selector) {
     super(guard);
     this.selector = selector;
 
-    cachedMethod = insert(Truffle.getRuntime().createDirectCallNode(
-        getDnuCallTarget(rcvrClass, universe)));
+    cachedMethod =
+        insert(Truffle.getRuntime().createDirectCallNode(
+            getDnuCallTarget(rcvrClass)));
   }
 
   @Override
@@ -49,8 +50,8 @@ public final class CachedDnuNode extends GuardedDispatchNode {
     return cachedMethod.call(argsArr);
   }
 
-  public static CallTarget getDnuCallTarget(final SClass rcvrClass, final Universe universe) {
+  public static CallTarget getDnuCallTarget(final SClass rcvrClass) {
     return rcvrClass.lookupInvokable(
-        universe.symbolFor("doesNotUnderstand:arguments:")).getCallTarget();
+        symbolFor("doesNotUnderstand:arguments:")).getCallTarget();
   }
 }

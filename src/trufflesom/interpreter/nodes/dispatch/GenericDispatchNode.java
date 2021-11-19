@@ -23,13 +23,10 @@ public final class GenericDispatchNode extends GuardedDispatchNode {
   @Child private ClassPrim        classNode;
 
   protected final SSymbol selector;
-  private final Universe  universe;
 
-  public GenericDispatchNode(final SSymbol selector,
-      final Universe universe) {
+  public GenericDispatchNode(final SSymbol selector, final Universe universe) {
     super(null);
     this.selector = selector;
-    this.universe = universe;
     call = insert(Truffle.getRuntime().createIndirectCallNode());
     classNode = insert(ClassPrimFactory.create(null));
     classNode.initialize(universe);
@@ -40,7 +37,7 @@ public final class GenericDispatchNode extends GuardedDispatchNode {
     // Won't use DNU caching here, because it is already a megamorphic node
     SArray argumentsArray = SArguments.getArgumentsWithoutReceiver(arguments);
     Object[] args = new Object[] {arguments[0], selector, argumentsArray};
-    CallTarget target = CachedDnuNode.getDnuCallTarget(rcvrClass, universe);
+    CallTarget target = CachedDnuNode.getDnuCallTarget(rcvrClass);
 
     return call.call(target, args);
   }
