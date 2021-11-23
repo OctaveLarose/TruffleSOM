@@ -12,3 +12,8 @@ user-dict.txt
 /*.launch
 /rebench.data
 /payload.json
+
+libs/
+.idea
+node-stats.yml
+TruffleSOM.iml
