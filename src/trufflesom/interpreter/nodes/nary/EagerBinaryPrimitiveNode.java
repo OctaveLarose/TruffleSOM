@@ -67,7 +67,15 @@ public final class EagerBinaryPrimitiveNode extends EagerPrimitive {
     return selector;
   }
 
+  public ExpressionNode getReceiver() {
+    return receiver;
+  }
+
   public ExpressionNode getArgument() {
     return argument;
+  }
+
+  public BinaryExpressionNode getPrimitive() {
+    return primitive;
   }
 }

@@ -10,6 +10,7 @@ import trufflesom.interpreter.nodes.ExpressionNode;
 import trufflesom.interpreter.nodes.LocalVariableNode;
 import trufflesom.interpreter.nodes.literals.IntegerLiteralNode;
 import trufflesom.interpreter.nodes.nary.EagerBinaryPrimitiveNode;
+import trufflesom.primitives.arithmetic.AdditionPrim;
 
 public abstract class IncrementOperationNode extends LocalVariableNode {
     private final long              increment;
@@ -97,19 +98,16 @@ public abstract class IncrementOperationNode extends LocalVariableNode {
      * Check if the AST subtree has the shape of an increment operation.
      */
     public static boolean isIncrementOperation(ExpressionNode exp, final Variable.Local var) {
-        return true;
-//        exp = SOMNode.unwrapIfNecessary(exp);
-//        if (exp instanceof EagerBinaryPrimitiveNode) {
-//            EagerBinaryPrimitiveNode eagerNode = (EagerBinaryPrimitiveNode) exp;
-//            if (SOMNode.unwrapIfNecessary(eagerNode.getReceiver()) instanceof LocalVariableReadNode
-//                    && SOMNode.unwrapIfNecessary(eagerNode.getArgument()) instanceof IntegerLiteralNode
-//                    && SOMNode.unwrapIfNecessary(eagerNode.getPrimitive()) instanceof AdditionPrim) {
-//                LocalVariableReadNode read =
-//                        (LocalVariableReadNode) SOMNode.unwrapIfNecessary(eagerNode.getReceiver());
-//                return read.getVar().equals(var);
-//            }
-//        }
-//        return false;
+        if (exp instanceof EagerBinaryPrimitiveNode) {
+            EagerBinaryPrimitiveNode eagerNode = (EagerBinaryPrimitiveNode) exp;
+            if (eagerNode.getReceiver() instanceof LocalVariableReadNode
+                    && eagerNode.getArgument() instanceof IntegerLiteralNode
+                    && eagerNode.getPrimitive() instanceof AdditionPrim) {
+                LocalVariableReadNode read = (LocalVariableReadNode) eagerNode.getReceiver();
+                return read.getLocal().equals(var);
+            }
+        }
+        return false;
     }
 
     /**
