@@ -66,4 +66,8 @@ public final class EagerBinaryPrimitiveNode extends EagerPrimitive {
   public SSymbol getInvocationIdentifier() {
     return selector;
   }
+
+  public ExpressionNode getArgument() {
+    return argument;
+  }
 }

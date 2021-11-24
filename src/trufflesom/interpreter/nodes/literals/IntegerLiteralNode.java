@@ -44,4 +44,8 @@ public final class IntegerLiteralNode extends LiteralNode {
       }
     }
   }
+
+  public long getValue() {
+    return value;
+  }
 }

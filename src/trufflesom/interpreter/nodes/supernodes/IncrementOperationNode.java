@@ -1,21 +1,15 @@
 package trufflesom.interpreter.nodes.supernodes;
 
-import com.oracle.truffle.api.ExactMath;
 import com.oracle.truffle.api.dsl.Specialization;
 import com.oracle.truffle.api.frame.FrameSlotKind;
 import com.oracle.truffle.api.frame.FrameSlotTypeException;
 import com.oracle.truffle.api.frame.VirtualFrame;
 
-import trufflesom.VM;
 import trufflesom.compiler.Variable;
-import trufflesom.interpreter.InliningVisitor;
 import trufflesom.interpreter.nodes.ExpressionNode;
 import trufflesom.interpreter.nodes.LocalVariableNode;
-import trufflesom.interpreter.nodes.SOMNode;
 import trufflesom.interpreter.nodes.literals.IntegerLiteralNode;
 import trufflesom.interpreter.nodes.nary.EagerBinaryPrimitiveNode;
-import trufflesom.primitives.arithmetic.AdditionPrim;
-import tools.dym.Tags;
 
 public abstract class IncrementOperationNode extends LocalVariableNode {
     private final long              increment;
@@ -30,7 +24,7 @@ public abstract class IncrementOperationNode extends LocalVariableNode {
     }
 
     public IncrementOperationNode(final IncrementOperationNode node) {
-        super(node.var);
+        super(node.local);
         this.increment = node.getIncrement();
         this.originalSubtree = node.getOriginalSubtree();
     }
@@ -82,7 +76,7 @@ public abstract class IncrementOperationNode extends LocalVariableNode {
 
     @Override
     public String toString() {
-        return this.getClass().getSimpleName() + "[" + var.name + "]";
+        return this.getClass().getSimpleName() + "[" + /*var.name*/ "todo" + "]";
     }
 
 //    @Override
@@ -123,14 +117,11 @@ public abstract class IncrementOperationNode extends LocalVariableNode {
      * shape.
      */
     public static void replaceNode(final LocalVariableWriteNode node) {
-        EagerBinaryPrimitiveNode eagerNode =
-                (EagerBinaryPrimitiveNode) SOMNode.unwrapIfNecessary(node.getExp());
-        long increment =
-                ((IntegerLiteralNode) SOMNode.unwrapIfNecessary(eagerNode.getArgument())).getValue();
-        IncrementOperationNode newNode = IncrementOperationNodeGen.create(node.getVar(),
-                increment,
-                node).initialize(node.getSourceSection());
+        EagerBinaryPrimitiveNode eagerNode = (EagerBinaryPrimitiveNode) node.getExp();
+        long increment = ((IntegerLiteralNode) eagerNode.getArgument()).getValue();
+        IncrementOperationNode newNode = IncrementOperationNodeGen.create(node.getLocal(), increment, node)
+                .initialize(node.getSourceSection());
         node.replace(newNode);
-        VM.insertInstrumentationWrapper(newNode);
+//        VM.insertInstrumentationWrapper(newNode);
     }
 }
