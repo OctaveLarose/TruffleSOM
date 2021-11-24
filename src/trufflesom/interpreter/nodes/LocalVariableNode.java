@@ -1,5 +1,7 @@
 package trufflesom.interpreter.nodes;
 
+import com.oracle.truffle.api.dsl.Cached;
+import com.oracle.truffle.api.dsl.ImportStatic;
 import com.oracle.truffle.api.dsl.NodeChild;
 import com.oracle.truffle.api.dsl.Specialization;
 import com.oracle.truffle.api.frame.FrameDescriptor;
@@ -11,6 +13,7 @@ import com.oracle.truffle.api.frame.VirtualFrame;
 import bd.inlining.ScopeAdaptationVisitor;
 import bd.tools.nodes.Invocation;
 import trufflesom.compiler.Variable.Local;
+import trufflesom.interpreter.nodes.supernodes.IncrementOperationNode;
 import trufflesom.vm.constants.Nil;
 import trufflesom.vmobjects.SObject;
 import trufflesom.vmobjects.SSymbol;
@@ -106,6 +109,7 @@ public abstract class LocalVariableNode extends ExpressionNode implements Invoca
     }
   }
 
+  @ImportStatic({IncrementOperationNode.class})
   @NodeChild(value = "exp", type = ExpressionNode.class)
   public abstract static class LocalVariableWriteNode extends LocalVariableNode {
 
@@ -122,6 +126,18 @@ public abstract class LocalVariableNode extends ExpressionNode implements Invoca
     @Specialization(guards = "isBoolKind(expValue)")
     public final boolean writeBoolean(final VirtualFrame frame, final boolean expValue) {
       frame.setBoolean(slot, expValue);
+      return expValue;
+    }
+
+    /**
+     * Check for {@link IncrementOperationNode} superinstruction and replace where applicable.
+     */
+    @Specialization(guards = {"isIncrement", "isLongKind(expValue)"})
+    public final long writeLongAndReplaceWithIncrement(final VirtualFrame frame,
+                                                       final long expValue,
+                                                       final @Cached("isIncrementOperation(getExp(), local)") boolean isIncrement) {
+      frame.setLong(slot, expValue);
+      IncrementOperationNode.replaceNode(this);
       return expValue;
     }
 
