@@ -117,11 +117,13 @@ public abstract class IncrementOperationNode extends LocalVariableNode {
      * shape.
      */
     public static void replaceNode(final LocalVariableWriteNode node) {
-        EagerBinaryPrimitiveNode eagerNode = (EagerBinaryPrimitiveNode) node.getExp();
-        long increment = ((IntegerLiteralNode) eagerNode.getArgument()).getValue();
-        IncrementOperationNode newNode = IncrementOperationNodeGen.create(node.getLocal(), increment, node)
-                .initialize(node.getSourceSection());
-        node.replace(newNode);
+//        EagerBinaryPrimitiveNode eagerNode = (EagerBinaryPrimitiveNode) node.getExp();
+        if (node.getExp() instanceof IntegerLiteralNode) {
+            long increment = ((IntegerLiteralNode) node.getExp()).getValue();
+            IncrementOperationNode newNode = IncrementOperationNodeGen.create(node.getLocal(), increment, node)
+                    .initialize(node.getSourceSection());
+            node.replace(newNode);
+        }
 //        VM.insertInstrumentationWrapper(newNode);
     }
 }

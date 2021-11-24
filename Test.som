@@ -28,7 +28,7 @@ Test = (
     run = (
         | x |
         x := 0.
-        1 to: 50 do: [:a | x := x + 1]. "+ a]."
+        1 to: 100000 do: [:a | x := x + a]. "+ a]."
         x print.
     )
 )
