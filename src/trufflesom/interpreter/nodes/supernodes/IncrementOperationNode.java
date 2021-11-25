@@ -11,6 +11,7 @@ import trufflesom.interpreter.nodes.LocalVariableNode;
 import trufflesom.interpreter.nodes.literals.IntegerLiteralNode;
 import trufflesom.interpreter.nodes.nary.EagerBinaryPrimitiveNode;
 import trufflesom.primitives.arithmetic.AdditionPrim;
+import trufflesom.primitives.arithmetic.AdditionPrimFactory;
 
 public abstract class IncrementOperationNode extends LocalVariableNode {
     private final long              increment;
@@ -102,7 +103,7 @@ public abstract class IncrementOperationNode extends LocalVariableNode {
             EagerBinaryPrimitiveNode eagerNode = (EagerBinaryPrimitiveNode) exp;
             if (eagerNode.getReceiver() instanceof LocalVariableReadNode
                     && eagerNode.getArgument() instanceof IntegerLiteralNode
-                    && eagerNode.getPrimitive() instanceof AdditionPrim) {
+                    && eagerNode.getPrimitive() instanceof AdditionPrimFactory.AdditionPrimNodeGen) {
                 LocalVariableReadNode read = (LocalVariableReadNode) eagerNode.getReceiver();
                 return read.getLocal().equals(var);
             }
@@ -115,9 +116,9 @@ public abstract class IncrementOperationNode extends LocalVariableNode {
      * shape.
      */
     public static void replaceNode(final LocalVariableWriteNode node) {
-//        EagerBinaryPrimitiveNode eagerNode = (EagerBinaryPrimitiveNode) node.getExp();
-        if (node.getExp() instanceof IntegerLiteralNode) {
-            long increment = ((IntegerLiteralNode) node.getExp()).getValue();
+        EagerBinaryPrimitiveNode eagerNode = (EagerBinaryPrimitiveNode) node.getExp();
+        if (eagerNode.getArgument() instanceof IntegerLiteralNode) {
+            long increment = ((IntegerLiteralNode) eagerNode.getArgument()).getValue();
             IncrementOperationNode newNode = IncrementOperationNodeGen.create(node.getLocal(), increment, node)
                     .initialize(node.getSourceSection());
             node.replace(newNode);
