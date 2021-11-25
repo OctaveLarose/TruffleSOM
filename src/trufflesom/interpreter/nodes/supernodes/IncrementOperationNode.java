@@ -1,5 +1,6 @@
 package trufflesom.interpreter.nodes.supernodes;
 
+import bd.inlining.ScopeAdaptationVisitor;
 import com.oracle.truffle.api.dsl.Specialization;
 import com.oracle.truffle.api.frame.FrameSlotKind;
 import com.oracle.truffle.api.frame.FrameSlotTypeException;
@@ -67,29 +68,21 @@ public abstract class IncrementOperationNode extends LocalVariableNode {
         return false;
     }
 
-//    @Override
-//    protected final boolean isTaggedWith(final Class<?> tag) {
-//        if (tag == Tags.LocalVarWrite.class) {
-//            return true;
-//        } else {
-//            return super.isTaggedWith(tag);
-//        }
-//    }
-
     @Override
     public String toString() {
-        return this.getClass().getSimpleName() + "[" + /*var.name*/ "todo" + "]";
+        return this.getClass().getSimpleName() + "[" + local.name + "]";
     }
 
-//    @Override
-//    public void replaceAfterScopeChange(final InliningVisitor inliner) {
-//        /*
-//         * This should never happen because ``replaceAfterScopeChange`` is only called in the
-//         * parsing stage, whereas the ``IncrementOperationNode`` superinstruction is only inserted
-//         * into the AST *after* parsing.
-//         */
-//        throw new RuntimeException("replaceAfterScopeChange: This should never happen!");
-//    }
+    @Override
+    public void replaceAfterScopeChange(final ScopeAdaptationVisitor inliner) {
+        // Note: not sure ScopeAdaptationVisitor is the right one here (original used InliningVisitor)
+        /*
+         * This should never happen because ``replaceAfterScopeChange`` is only called in the
+         * parsing stage, whereas the ``IncrementOperationNode`` superinstruction is only inserted
+         * into the AST *after* parsing.
+         */
+        throw new RuntimeException("replaceAfterScopeChange: This should never happen!");
+    }
 
     public LocalVariableNode getOriginalSubtree() {
         return originalSubtree;
@@ -112,8 +105,7 @@ public abstract class IncrementOperationNode extends LocalVariableNode {
     }
 
     /**
-     * Replace ``node`` with a superinstruction. Assumes that the AST subtree has the correct
-     * shape.
+     * Replace ``node`` with a superinstruction. Assumes that the AST subtree has the correct shape.
      */
     public static void replaceNode(final LocalVariableWriteNode node) {
         EagerBinaryPrimitiveNode eagerNode = (EagerBinaryPrimitiveNode) node.getExp();
@@ -123,6 +115,5 @@ public abstract class IncrementOperationNode extends LocalVariableNode {
                     .initialize(node.getSourceSection());
             node.replace(newNode);
         }
-//        VM.insertInstrumentationWrapper(newNode);
     }
 }
