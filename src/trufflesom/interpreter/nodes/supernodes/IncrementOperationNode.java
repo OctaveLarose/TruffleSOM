@@ -10,9 +10,7 @@ import trufflesom.compiler.Variable;
 import trufflesom.interpreter.nodes.ExpressionNode;
 import trufflesom.interpreter.nodes.LocalVariableNode;
 import trufflesom.interpreter.nodes.literals.IntegerLiteralNode;
-import trufflesom.interpreter.nodes.nary.EagerBinaryPrimitiveNode;
 import trufflesom.primitives.arithmetic.AdditionPrim;
-import trufflesom.primitives.arithmetic.AdditionPrimFactory;
 
 public abstract class IncrementOperationNode extends LocalVariableNode {
     private final long              increment;
@@ -92,11 +90,10 @@ public abstract class IncrementOperationNode extends LocalVariableNode {
      * Check if the AST subtree has the shape of an increment operation.
      */
     public static boolean isIncrementOperation(ExpressionNode exp, final Variable.Local var) {
-        if (exp instanceof EagerBinaryPrimitiveNode) {
-            EagerBinaryPrimitiveNode eagerNode = (EagerBinaryPrimitiveNode) exp;
+        if (exp instanceof AdditionPrim) {
+            AdditionPrim eagerNode = (AdditionPrim) exp;
             if (eagerNode.getReceiver() instanceof LocalVariableReadNode
-                    && eagerNode.getArgument() instanceof IntegerLiteralNode
-                    && eagerNode.getPrimitive() instanceof AdditionPrimFactory.AdditionPrimNodeGen) {
+                    && eagerNode.getArgument() instanceof IntegerLiteralNode) {
                 LocalVariableReadNode read = (LocalVariableReadNode) eagerNode.getReceiver();
                 return read.getLocal().equals(var);
             }
@@ -108,7 +105,7 @@ public abstract class IncrementOperationNode extends LocalVariableNode {
      * Replace ``node`` with a superinstruction. Assumes that the AST subtree has the correct shape.
      */
     public static void replaceNode(final LocalVariableWriteNode node) {
-        EagerBinaryPrimitiveNode eagerNode = (EagerBinaryPrimitiveNode) node.getExp();
+        AdditionPrim eagerNode = (AdditionPrim) node.getExp();
         if (eagerNode.getArgument() instanceof IntegerLiteralNode) {
             long increment = ((IntegerLiteralNode) eagerNode.getArgument()).getValue();
             IncrementOperationNode newNode = IncrementOperationNodeGen.create(node.getLocal(), increment, node)
