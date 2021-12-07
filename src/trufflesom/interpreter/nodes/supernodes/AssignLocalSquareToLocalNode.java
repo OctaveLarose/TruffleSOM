@@ -5,33 +5,33 @@ import com.oracle.truffle.api.dsl.Specialization;
 import com.oracle.truffle.api.frame.FrameSlotKind;
 import com.oracle.truffle.api.frame.FrameSlotTypeException;
 import com.oracle.truffle.api.frame.VirtualFrame;
-
 import trufflesom.compiler.Variable;
 import trufflesom.interpreter.nodes.ExpressionNode;
 import trufflesom.interpreter.nodes.LocalVariableNode;
 import trufflesom.interpreter.nodes.literals.IntegerLiteralNode;
 import trufflesom.primitives.arithmetic.AdditionPrim;
+import trufflesom.primitives.arithmetic.MultiplicationPrim;
 
-public abstract class IncrementOperationNode extends LocalVariableNode {
-    private final long              increment;
+public abstract class AssignLocalSquareToLocalNode extends LocalVariableNode {
+    private final Variable.Local squaredVar;
     private final LocalVariableNode originalSubtree;
 
-    public IncrementOperationNode(final Variable.Local variable,
-                                  final long increment,
-                                  final LocalVariableNode originalSubtree) {
+    public AssignLocalSquareToLocalNode(final Variable.Local variable,
+                                        final Variable.Local squaredVar,
+                                        final LocalVariableNode originalSubtree) {
         super(variable);
-        this.increment = increment;
+        this.squaredVar = squaredVar;
         this.originalSubtree = originalSubtree;
     }
 
-    public IncrementOperationNode(final IncrementOperationNode node) {
+    public AssignLocalSquareToLocalNode(final AssignLocalSquareToLocalNode node) {
         super(node.local);
-        this.increment = node.getIncrement();
+        this.squaredVar = node.getSquaredVar();
         this.originalSubtree = node.getOriginalSubtree();
     }
 
-    public long getIncrement() {
-        return increment;
+    public Variable.Local getSquaredVar() {
+        return squaredVar;
     }
 
     @Specialization(guards = "isLongKind(frame)", rewriteOn = {
@@ -39,7 +39,7 @@ public abstract class IncrementOperationNode extends LocalVariableNode {
             ArithmeticException.class
     })
     public final long writeLong(final VirtualFrame frame) throws FrameSlotTypeException {
-        long newValue = Math.addExact(frame.getLong(slot), increment);
+        long newValue = Math.multiplyExact(frame.getLong(slot), frame.getLong(slot)); // TODO check
         frame.setLong(slot, newValue);
         return newValue;
     }
@@ -89,13 +89,12 @@ public abstract class IncrementOperationNode extends LocalVariableNode {
     /**
      * Check if the AST subtree has the shape of an increment operation.
      */
-    public static boolean isIncrementOperation(ExpressionNode exp, final Variable.Local var) {
-        if (exp instanceof AdditionPrim) {
-            AdditionPrim addPrim = (AdditionPrim) exp;
+    public static boolean isSquareAssignmentOperation(ExpressionNode exp) {
+        if (exp instanceof MultiplicationPrim) {
+            MultiplicationPrim addPrim = (MultiplicationPrim) exp;
             if (addPrim.getReceiver() instanceof LocalVariableReadNode
-                    && addPrim.getArgument() instanceof IntegerLiteralNode) {
-                LocalVariableReadNode read = (LocalVariableReadNode) addPrim.getReceiver();
-                return read.getLocal().equals(var);
+                    && addPrim.getArgument() instanceof LocalVariableReadNode) {
+                return addPrim.getReceiver().equals(addPrim.getArgument());
             }
         }
         return false;
@@ -105,10 +104,10 @@ public abstract class IncrementOperationNode extends LocalVariableNode {
      * Replace ``node`` with a superinstruction. Assumes that the AST subtree has the correct shape.
      */
     public static void replaceNode(final LocalVariableWriteNode node) {
-        AdditionPrim addPrim = (AdditionPrim) node.getExp();
-        if (addPrim.getArgument() instanceof IntegerLiteralNode) {
-            long increment = ((IntegerLiteralNode) addPrim.getArgument()).getValue();
-            IncrementOperationNode newNode = IncrementOperationNodeGen.create(node.getLocal(), increment, node)
+        MultiplicationPrim mulPrim = (MultiplicationPrim) node.getExp();
+        if (mulPrim.getArgument() instanceof LocalVariableReadNode) {
+            LocalVariableReadNode localVarNode = (LocalVariableReadNode) mulPrim.getArgument();
+            AssignLocalSquareToLocalNode newNode = AssignLocalSquareToLocalNodeGen.create(node.getLocal(), localVarNode.getLocal(), node)
                     .initialize(node.getSourceSection());
             node.replace(newNode);
         }

@@ -13,6 +13,7 @@ import com.oracle.truffle.api.frame.VirtualFrame;
 import bd.inlining.ScopeAdaptationVisitor;
 import bd.tools.nodes.Invocation;
 import trufflesom.compiler.Variable.Local;
+import trufflesom.interpreter.nodes.supernodes.AssignLocalSquareToLocalNode;
 import trufflesom.interpreter.nodes.supernodes.IncrementOperationNode;
 import trufflesom.vm.constants.Nil;
 import trufflesom.vmobjects.SObject;
@@ -109,7 +110,7 @@ public abstract class LocalVariableNode extends ExpressionNode implements Invoca
     }
   }
 
-  @ImportStatic({IncrementOperationNode.class})
+  @ImportStatic({IncrementOperationNode.class, AssignLocalSquareToLocalNode.class})
   @NodeChild(value = "exp", type = ExpressionNode.class)
   public abstract static class LocalVariableWriteNode extends LocalVariableNode {
 
@@ -138,6 +139,18 @@ public abstract class LocalVariableNode extends ExpressionNode implements Invoca
                                                        final @Cached("isIncrementOperation(getExp(), local)") boolean isIncrement) {
       frame.setLong(slot, expValue);
       IncrementOperationNode.replaceNode(this);
+      return expValue;
+    }
+
+    /**
+     * Check for {@link IncrementOperationNode} superinstruction and replace where applicable.
+     */
+    @Specialization(guards = {"isSquareAssignment", "isLongKind(expValue)"})
+    public final long writeLongAndSetSquareToLocal(final VirtualFrame frame,
+                                                       final long expValue,
+                                                       final @Cached("isSquareAssignmentOperation(getExp())") boolean isSquareAssignment) {
+      frame.setLong(slot, expValue);
+      AssignLocalSquareToLocalNode.replaceNode(this);
       return expValue;
     }
 
