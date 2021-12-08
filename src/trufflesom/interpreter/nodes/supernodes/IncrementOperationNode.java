@@ -34,7 +34,7 @@ public abstract class IncrementOperationNode extends LocalVariableNode {
         return increment;
     }
 
-    @Specialization(guards = "isLongKind(frame)", rewriteOn = {FrameSlotTypeException.class, ArithmeticException.class})
+    @Specialization(rewriteOn = {FrameSlotTypeException.class, ArithmeticException.class})
     public final long writeLong(final VirtualFrame frame) throws FrameSlotTypeException {
         long newValue = Math.addExact(frame.getLong(slot), increment);
         frame.setLong(slot, newValue);
@@ -46,19 +46,6 @@ public abstract class IncrementOperationNode extends LocalVariableNode {
         Object result = originalSubtree.executeGeneric(frame);
         replace(originalSubtree);
         return result;
-    }
-
-    protected final boolean isLongKind(final VirtualFrame frame) { // uses frame to make sure
-        // guard is not converted to
-        // assertion
-        if (slot.getKind() == FrameSlotKind.Long) {
-            return true;
-        }
-        if (slot.getKind() == FrameSlotKind.Illegal) {
-            slot.setKind(FrameSlotKind.Long);
-            return true;
-        }
-        return false;
     }
 
     @Override
