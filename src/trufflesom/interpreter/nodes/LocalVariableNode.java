@@ -145,7 +145,7 @@ public abstract class LocalVariableNode extends ExpressionNode implements Invoca
     /**
      * Check for {@link AssignLocalSquareToLocalNode} superinstruction and replace where applicable.
      */
-    @Specialization(guards = {"isSquareAssignment"})
+    @Specialization(guards = {"isLongKind(expValue)", "isSquareAssignment"})
     public final long writeLongAndSetSquareToLocal(final VirtualFrame frame,
                                                        final long expValue,
                                                        final @Cached("isSquareAssignmentOperation(getExp())") boolean isSquareAssignment) {
@@ -157,6 +157,18 @@ public abstract class LocalVariableNode extends ExpressionNode implements Invoca
     @Specialization(guards = "isLongKind(expValue)")
     public final long writeLong(final VirtualFrame frame, final long expValue) {
       frame.setLong(slot, expValue);
+      return expValue;
+    }
+
+    /**
+     * Check for {@link AssignLocalSquareToLocalNode} superinstruction and replace where applicable.
+     */
+    @Specialization(guards = {"isDoubleKind(expValue)", "isSquareAssignment"})
+    public final double writeDoubleAndSetSquareToLocal(final VirtualFrame frame,
+                                                   final double expValue,
+                                                   final @Cached("isSquareAssignmentOperation(getExp())") boolean isSquareAssignment) {
+      frame.setDouble(slot, expValue);
+      AssignLocalSquareToLocalNode.replaceNode(this);
       return expValue;
     }
 

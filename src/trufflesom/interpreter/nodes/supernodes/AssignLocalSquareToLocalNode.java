@@ -32,20 +32,22 @@ public abstract class AssignLocalSquareToLocalNode extends LocalVariableNode {
         return squaredVar;
     }
 
-    @Specialization(guards = "isLongKind(frame)", rewriteOn = {
-            FrameSlotTypeException.class,
-            ArithmeticException.class
-    })
+    @Specialization(guards = {"isLongKind(frame)"}, rewriteOn = {FrameSlotTypeException.class, ArithmeticException.class})
     public final long writeLong(final VirtualFrame frame) throws FrameSlotTypeException {
         long newValue = Math.multiplyExact(frame.getLong(this.squaredVar.getSlot()), frame.getLong(this.squaredVar.getSlot()));
         frame.setLong(slot, newValue);
         return newValue;
     }
 
-    @Specialization(replaces = {"writeLong"})
+    @Specialization(rewriteOn = {FrameSlotTypeException.class, ArithmeticException.class})
+    public final double writeDouble(final VirtualFrame frame) throws FrameSlotTypeException {
+        double newValue = frame.getDouble(this.squaredVar.getSlot()) * frame.getDouble(this.squaredVar.getSlot());
+        frame.setDouble(slot, newValue);
+        return newValue;
+    }
+
+    @Specialization(replaces = {"writeLong", "writeDouble"})
     public final Object writeGeneric(final VirtualFrame frame) {
-        // Replace myself with the stored original subtree.
-        // This could happen because the frame slot type has changed or because of an overflow.
         Object result = originalSubtree.executeGeneric(frame);
         replace(originalSubtree);
         return result;
@@ -92,7 +94,8 @@ public abstract class AssignLocalSquareToLocalNode extends LocalVariableNode {
             MultiplicationPrim mulPrim = (MultiplicationPrim) exp;
             if (mulPrim.getReceiver() instanceof LocalVariableReadNode
                     && mulPrim.getArgument() instanceof LocalVariableReadNode) {
-                return ((LocalVariableReadNode) mulPrim.getReceiver()).getLocal() == ((LocalVariableReadNode) mulPrim.getArgument()).getLocal();
+                return ((LocalVariableReadNode) mulPrim.getReceiver()).getLocal()
+                        .equals(((LocalVariableReadNode) mulPrim.getArgument()).getLocal());
             }
         }
         return false;
