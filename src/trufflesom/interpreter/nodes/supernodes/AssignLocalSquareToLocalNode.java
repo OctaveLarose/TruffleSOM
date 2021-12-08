@@ -8,8 +8,6 @@ import com.oracle.truffle.api.frame.VirtualFrame;
 import trufflesom.compiler.Variable;
 import trufflesom.interpreter.nodes.ExpressionNode;
 import trufflesom.interpreter.nodes.LocalVariableNode;
-import trufflesom.interpreter.nodes.literals.IntegerLiteralNode;
-import trufflesom.primitives.arithmetic.AdditionPrim;
 import trufflesom.primitives.arithmetic.MultiplicationPrim;
 
 public abstract class AssignLocalSquareToLocalNode extends LocalVariableNode {
@@ -39,7 +37,7 @@ public abstract class AssignLocalSquareToLocalNode extends LocalVariableNode {
             ArithmeticException.class
     })
     public final long writeLong(final VirtualFrame frame) throws FrameSlotTypeException {
-        long newValue = Math.multiplyExact(frame.getLong(slot), frame.getLong(slot)); // TODO check
+        long newValue = Math.multiplyExact(frame.getLong(this.squaredVar.getSlot()), frame.getLong(this.squaredVar.getSlot()));
         frame.setLong(slot, newValue);
         return newValue;
     }
@@ -91,10 +89,10 @@ public abstract class AssignLocalSquareToLocalNode extends LocalVariableNode {
      */
     public static boolean isSquareAssignmentOperation(ExpressionNode exp) {
         if (exp instanceof MultiplicationPrim) {
-            MultiplicationPrim addPrim = (MultiplicationPrim) exp;
-            if (addPrim.getReceiver() instanceof LocalVariableReadNode
-                    && addPrim.getArgument() instanceof LocalVariableReadNode) {
-                return addPrim.getReceiver().equals(addPrim.getArgument());
+            MultiplicationPrim mulPrim = (MultiplicationPrim) exp;
+            if (mulPrim.getReceiver() instanceof LocalVariableReadNode
+                    && mulPrim.getArgument() instanceof LocalVariableReadNode) {
+                return ((LocalVariableReadNode) mulPrim.getReceiver()).getLocal() == ((LocalVariableReadNode) mulPrim.getArgument()).getLocal();
             }
         }
         return false;

@@ -143,9 +143,9 @@ public abstract class LocalVariableNode extends ExpressionNode implements Invoca
     }
 
     /**
-     * Check for {@link IncrementOperationNode} superinstruction and replace where applicable.
+     * Check for {@link AssignLocalSquareToLocalNode} superinstruction and replace where applicable.
      */
-    @Specialization(guards = {"isSquareAssignment", "isLongKind(expValue)"})
+    @Specialization(guards = {"isSquareAssignment"})
     public final long writeLongAndSetSquareToLocal(final VirtualFrame frame,
                                                        final long expValue,
                                                        final @Cached("isSquareAssignmentOperation(getExp())") boolean isSquareAssignment) {
