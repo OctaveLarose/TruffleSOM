@@ -94,8 +94,9 @@ public abstract class AssignLocalSquareToLocalNode extends LocalVariableNode {
             MultiplicationPrim mulPrim = (MultiplicationPrim) exp;
             if (mulPrim.getReceiver() instanceof LocalVariableReadNode
                     && mulPrim.getArgument() instanceof LocalVariableReadNode) {
-                return ((LocalVariableReadNode) mulPrim.getReceiver()).getLocal()
-                        .equals(((LocalVariableReadNode) mulPrim.getArgument()).getLocal());
+                LocalVariableReadNode var1 = (LocalVariableReadNode) mulPrim.getReceiver();
+                LocalVariableReadNode var2 = (LocalVariableReadNode) mulPrim.getArgument();
+                return var1.getLocal().equals(var2.getLocal());
             }
         }
         return false;
@@ -108,7 +109,8 @@ public abstract class AssignLocalSquareToLocalNode extends LocalVariableNode {
         MultiplicationPrim mulPrim = (MultiplicationPrim) node.getExp();
         if (mulPrim.getArgument() instanceof LocalVariableReadNode) {
             LocalVariableReadNode localVarNode = (LocalVariableReadNode) mulPrim.getArgument();
-            AssignLocalSquareToLocalNode newNode = AssignLocalSquareToLocalNodeGen.create(node.getLocal(), localVarNode.getLocal(), node)
+            AssignLocalSquareToLocalNode newNode = AssignLocalSquareToLocalNodeGen
+                    .create(node.getLocal(), localVarNode.getLocal(), node)
                     .initialize(node.getSourceSection());
             node.replace(newNode);
         }

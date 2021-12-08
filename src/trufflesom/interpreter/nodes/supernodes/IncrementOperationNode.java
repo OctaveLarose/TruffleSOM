@@ -13,7 +13,7 @@ import trufflesom.interpreter.nodes.literals.IntegerLiteralNode;
 import trufflesom.primitives.arithmetic.AdditionPrim;
 
 public abstract class IncrementOperationNode extends LocalVariableNode {
-    private final long              increment;
+    private final long increment;
     private final LocalVariableNode originalSubtree;
 
     public IncrementOperationNode(final Variable.Local variable,
@@ -34,10 +34,7 @@ public abstract class IncrementOperationNode extends LocalVariableNode {
         return increment;
     }
 
-    @Specialization(guards = "isLongKind(frame)", rewriteOn = {
-            FrameSlotTypeException.class,
-            ArithmeticException.class
-    })
+    @Specialization(guards = "isLongKind(frame)", rewriteOn = {FrameSlotTypeException.class, ArithmeticException.class})
     public final long writeLong(final VirtualFrame frame) throws FrameSlotTypeException {
         long newValue = Math.addExact(frame.getLong(slot), increment);
         frame.setLong(slot, newValue);
@@ -46,8 +43,6 @@ public abstract class IncrementOperationNode extends LocalVariableNode {
 
     @Specialization(replaces = {"writeLong"})
     public final Object writeGeneric(final VirtualFrame frame) {
-        // Replace myself with the stored original subtree.
-        // This could happen because the frame slot type has changed or because of an overflow.
         Object result = originalSubtree.executeGeneric(frame);
         replace(originalSubtree);
         return result;
@@ -94,8 +89,8 @@ public abstract class IncrementOperationNode extends LocalVariableNode {
             AdditionPrim addPrim = (AdditionPrim) exp;
             if (addPrim.getReceiver() instanceof LocalVariableReadNode
                     && addPrim.getArgument() instanceof IntegerLiteralNode) {
-                LocalVariableReadNode read = (LocalVariableReadNode) addPrim.getReceiver();
-                return read.getLocal().equals(var);
+                LocalVariableReadNode readNode = (LocalVariableReadNode) addPrim.getReceiver();
+                return readNode.getLocal().equals(var);
             }
         }
         return false;
@@ -108,7 +103,8 @@ public abstract class IncrementOperationNode extends LocalVariableNode {
         AdditionPrim addPrim = (AdditionPrim) node.getExp();
         if (addPrim.getArgument() instanceof IntegerLiteralNode) {
             long increment = ((IntegerLiteralNode) addPrim.getArgument()).getValue();
-            IncrementOperationNode newNode = IncrementOperationNodeGen.create(node.getLocal(), increment, node)
+            IncrementOperationNode newNode = IncrementOperationNodeGen
+                    .create(node.getLocal(), increment, node)
                     .initialize(node.getSourceSection());
             node.replace(newNode);
         }
