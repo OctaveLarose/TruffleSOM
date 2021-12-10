@@ -12,6 +12,20 @@ import trufflesom.interpreter.nodes.LocalVariableNode;
 import trufflesom.interpreter.nodes.literals.IntegerLiteralNode;
 import trufflesom.primitives.arithmetic.AdditionPrim;
 
+/**
+ * Matches the following AST:
+ * <pre>
+ * LocalVariableWriteNode
+ *     LocalVariableReadNode (with the same variable as LocalVariableWriteNode above)
+ *     IntegerLiteralNode
+ *     AdditionPrim
+ * </pre>
+ *
+ * ...and replaces it with:
+ * <pre>
+ * IncrementOperationNode
+ * </pre>
+ */
 public abstract class IncrementOperationNode extends LocalVariableNode {
     private final long increment;
     private final LocalVariableNode originalSubtree;

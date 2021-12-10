@@ -2,7 +2,6 @@ package trufflesom.interpreter.nodes.supernodes;
 
 import bd.inlining.ScopeAdaptationVisitor;
 import com.oracle.truffle.api.dsl.Specialization;
-import com.oracle.truffle.api.frame.FrameSlotKind;
 import com.oracle.truffle.api.frame.FrameSlotTypeException;
 import com.oracle.truffle.api.frame.VirtualFrame;
 import trufflesom.compiler.Variable;
@@ -10,6 +9,20 @@ import trufflesom.interpreter.nodes.ExpressionNode;
 import trufflesom.interpreter.nodes.LocalVariableNode;
 import trufflesom.primitives.arithmetic.MultiplicationPrim;
 
+/**
+ * Matches the following AST:
+ * <pre>
+ * LocalVariableWriteNode
+ *     LocalVariableReadNode
+ *     LocalVariableReadNode (same as the previous read)
+ *     MultiplicationPrim
+ * </pre>
+ *
+ * ...and replaces it with:
+ * <pre>
+ * AssignLocalSquareToLocalNode
+ * </pre>
+ */
 public abstract class AssignLocalSquareToLocalNode extends LocalVariableNode {
     private final Variable.Local squaredVar;
     private final LocalVariableNode originalSubtree;
