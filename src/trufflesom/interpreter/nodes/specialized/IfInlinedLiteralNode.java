@@ -1,5 +1,8 @@
 package trufflesom.interpreter.nodes.specialized;
 
+import com.oracle.truffle.api.dsl.Cached;
+import com.oracle.truffle.api.dsl.ImportStatic;
+import com.oracle.truffle.api.dsl.Specialization;
 import com.oracle.truffle.api.dsl.UnsupportedSpecializationException;
 import com.oracle.truffle.api.frame.VirtualFrame;
 import com.oracle.truffle.api.nodes.Node;
@@ -10,12 +13,14 @@ import bd.inlining.Inline;
 import bd.inlining.Inline.False;
 import bd.inlining.Inline.True;
 import trufflesom.interpreter.nodes.ExpressionNode;
+import trufflesom.interpreter.nodes.supernodes.IfInlinedLiteralMessageWIPNode;
 import trufflesom.vm.constants.Nil;
 
 
 @Inline(selector = "ifTrue:", inlineableArgIdx = 1, additionalArgs = True.class)
 @Inline(selector = "ifFalse:", inlineableArgIdx = 1, additionalArgs = False.class)
-public final class IfInlinedLiteralNode extends ExpressionNode {
+@ImportStatic({IfInlinedLiteralMessageWIPNode.class})
+public class IfInlinedLiteralNode extends ExpressionNode {
   private final ConditionProfile condProf = ConditionProfile.createCountingProfile();
 
   @Child private ExpressionNode conditionNode;
@@ -36,6 +41,12 @@ public final class IfInlinedLiteralNode extends ExpressionNode {
     this.bodyActualNode = originalBodyNode;
   }
 
+  @Specialization(guards = {"isApplicable"})
+  public Object executeAndReplace(final VirtualFrame frame,
+                                  @Cached("isIfInlinedLiteralMessageNode(getConditionNode())") final boolean isApplicable) {
+    return IfInlinedLiteralMessageWIPNode.replaceNode(this).evaluateCondition(frame);
+  }
+
   private boolean evaluateCondition(final VirtualFrame frame) {
     try {
       return condProf.profile(conditionNode.executeBoolean(frame));
@@ -54,4 +65,9 @@ public final class IfInlinedLiteralNode extends ExpressionNode {
       return Nil.nilObject;
     }
   }
+
+  public ExpressionNode getConditionNode() {
+    return conditionNode;
+  }
+
 }
