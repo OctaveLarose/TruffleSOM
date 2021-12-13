@@ -106,7 +106,7 @@ public abstract class IncrementOperationNode extends LocalVariableNode {
             long increment = ((IntegerLiteralNode) addPrim.getArgument()).getValue();
             IncrementOperationNode newNode = IncrementOperationNodeGen
                     .create(node.getLocal(), increment, node)
-                    .initialize(node.getSourceSection());
+                    .initialize(node.getSourceCoordinate());
             node.replace(newNode);
         }
     }

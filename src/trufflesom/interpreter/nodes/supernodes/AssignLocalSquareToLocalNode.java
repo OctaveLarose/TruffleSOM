@@ -111,7 +111,7 @@ public abstract class AssignLocalSquareToLocalNode extends LocalVariableNode {
             LocalVariableReadNode localVarNode = (LocalVariableReadNode) mulPrim.getArgument();
             AssignLocalSquareToLocalNode newNode = AssignLocalSquareToLocalNodeGen
                     .create(node.getLocal(), localVarNode.getLocal(), node)
-                    .initialize(node.getSourceSection());
+                    .initialize(node.getSourceCoordinate());
             node.replace(newNode);
         }
     }

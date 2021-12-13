@@ -1,5 +1,6 @@
 package trufflesom.interpreter.nodes;
 
+import com.oracle.truffle.api.CompilerDirectives;
 import com.oracle.truffle.api.dsl.Cached;
 import com.oracle.truffle.api.dsl.ImportStatic;
 import com.oracle.truffle.api.dsl.NodeChild;
@@ -137,6 +138,7 @@ public abstract class LocalVariableNode extends ExpressionNode implements Invoca
     public final long writeLongAndReplaceWithIncrement(final VirtualFrame frame,
                                                        final long expValue,
                                                        final @Cached("isIncrementOperation(getExp(), local)") boolean isIncrement) {
+      CompilerDirectives.transferToInterpreterAndInvalidate();
       frame.setLong(slot, expValue);
       IncrementOperationNode.replaceNode(this);
       return expValue;
@@ -149,6 +151,7 @@ public abstract class LocalVariableNode extends ExpressionNode implements Invoca
     public final long writeLongAndSetSquareToLocal(final VirtualFrame frame,
                                                        final long expValue,
                                                        final @Cached("isSquareAssignmentOperation(getExp())") boolean isSquareAssignment) {
+      CompilerDirectives.transferToInterpreterAndInvalidate();
       frame.setLong(slot, expValue);
       AssignLocalSquareToLocalNode.replaceNode(this);
       return expValue;
@@ -167,6 +170,7 @@ public abstract class LocalVariableNode extends ExpressionNode implements Invoca
     public final double writeDoubleAndSetSquareToLocal(final VirtualFrame frame,
                                                    final double expValue,
                                                    final @Cached("isSquareAssignmentOperation(getExp())") boolean isSquareAssignment) {
+      CompilerDirectives.transferToInterpreterAndInvalidate();
       frame.setDouble(slot, expValue);
       AssignLocalSquareToLocalNode.replaceNode(this);
       return expValue;
