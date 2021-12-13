@@ -6,22 +6,21 @@ import com.oracle.truffle.api.frame.VirtualFrame;
 import com.oracle.truffle.api.nodes.NodeCost;
 
 import bd.primitives.Primitive;
-import trufflesom.interpreter.nodes.nary.TernarySystemOperation;
-import trufflesom.vm.Universe;
+import trufflesom.interpreter.nodes.nary.TernaryExpressionNode;
 import trufflesom.vmobjects.SArray;
 import trufflesom.vmobjects.SSymbol;
 
 
 @GenerateNodeFactory
 @Primitive(className = "Object", primitive = "perform:withArguments:")
-public abstract class PerformWithArgumentsPrim extends TernarySystemOperation {
+public abstract class PerformWithArgumentsPrim extends TernaryExpressionNode {
 
   @Child protected AbstractSymbolDispatch dispatch;
 
   @Override
-  public PerformWithArgumentsPrim initialize(final Universe universe) {
-    super.initialize(universe);
-    dispatch = AbstractSymbolDispatchNodeGen.create(sourceSection, universe);
+  public PerformWithArgumentsPrim initialize(final long coord) {
+    super.initialize(coord);
+    dispatch = AbstractSymbolDispatchNodeGen.create(coord);
     return this;
   }
 

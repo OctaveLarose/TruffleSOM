@@ -10,7 +10,6 @@ import bd.inlining.Scope;
 import trufflesom.compiler.Variable;
 
 
-@SuppressWarnings("unchecked")
 public final class LexicalScope implements Scope<LexicalScope, Method> {
   private final FrameDescriptor frameDescriptor;
   private final LexicalScope    outerScope;
@@ -105,7 +104,7 @@ public final class LexicalScope implements Scope<LexicalScope, Method> {
     // might be reset when doing inlining/embedded, but should always
     // refer to the same method
     assert this.method == null ||
-        this.method.getSourceSection() == method.getSourceSection();
+        this.method.getSourceSection().equals(method.getSourceSection());
     this.method = method;
   }
 

@@ -40,7 +40,7 @@ import java.util.List;
 
 import com.oracle.truffle.api.frame.FrameDescriptor;
 import com.oracle.truffle.api.frame.FrameSlotKind;
-import com.oracle.truffle.api.source.SourceSection;
+import com.oracle.truffle.api.source.Source;
 
 import bd.basic.ProgramDefinitionError;
 import bd.inlining.Scope;
@@ -59,7 +59,6 @@ import trufflesom.interpreter.nodes.FieldNode.FieldReadNode;
 import trufflesom.interpreter.nodes.ReturnNonLocalNode;
 import trufflesom.interpreter.nodes.literals.BlockNode;
 import trufflesom.primitives.Primitives;
-import trufflesom.vm.Universe;
 import trufflesom.vm.constants.Nil;
 import trufflesom.vmobjects.SClass;
 import trufflesom.vmobjects.SInvokable;
@@ -94,26 +93,23 @@ public class MethodGenerationContext
 
   public final StructuralProbe<SSymbol, SClass, SInvokable, Field, Variable> structuralProbe;
 
-  protected final Universe universe;
-
   public MethodGenerationContext(final ClassGenerationContext holderGenc,
       final StructuralProbe<SSymbol, SClass, SInvokable, Field, Variable> structuralProbe) {
-    this(holderGenc, null, holderGenc.getUniverse(), false, structuralProbe);
+    this(holderGenc, null, false, structuralProbe);
   }
 
-  public MethodGenerationContext(final Universe universe,
+  public MethodGenerationContext(
       final StructuralProbe<SSymbol, SClass, SInvokable, Field, Variable> structuralProbe) {
-    this(null, null, universe, false, structuralProbe);
+    this(null, null, false, structuralProbe);
   }
 
   public MethodGenerationContext(final ClassGenerationContext holderGenc,
       final MethodGenerationContext outerGenc) {
-    this(holderGenc, outerGenc, holderGenc.getUniverse(), true, outerGenc.structuralProbe);
+    this(holderGenc, outerGenc, true, outerGenc.structuralProbe);
   }
 
   protected MethodGenerationContext(final ClassGenerationContext holderGenc,
-      final MethodGenerationContext outerGenc, final Universe universe,
-      final boolean isBlockMethod,
+      final MethodGenerationContext outerGenc, final boolean isBlockMethod,
       final StructuralProbe<SSymbol, SClass, SInvokable, Field, Variable> structuralProbe) {
     this.holderGenc = holderGenc;
     this.outerGenc = outerGenc;
@@ -130,8 +126,11 @@ public class MethodGenerationContext
 
     arguments = new LinkedHashMap<SSymbol, Argument>();
     locals = new LinkedHashMap<SSymbol, Local>();
+  }
 
-    this.universe = universe;
+  @Override
+  public Source getSource() {
+    return holderGenc.getSource();
   }
 
   public void markAccessingOuterScopes() {
@@ -151,16 +150,16 @@ public class MethodGenerationContext
     return currentScope;
   }
 
-  public Internal getFrameOnStackMarker(final SourceSection source) {
+  public Internal getFrameOnStackMarker(final long coord) {
     if (outerGenc != null) {
-      return outerGenc.getFrameOnStackMarker(source);
+      return outerGenc.getFrameOnStackMarker(coord);
     }
 
     if (frameOnStack == null) {
       assert needsToCatchNonLocalReturn;
       assert !locals.containsKey(symFrameOnStack);
 
-      frameOnStack = new Internal(symFrameOnStack, source);
+      frameOnStack = new Internal(symFrameOnStack, coord);
       frameOnStack.init(
           currentScope.getFrameDescriptor().addFrameSlot(frameOnStack, FrameSlotKind.Object),
           currentScope.getFrameDescriptor());
@@ -203,28 +202,26 @@ public class MethodGenerationContext
     return cls + ">>" + signature.toString();
   }
 
-  public final SInvokable assemble(final ExpressionNode body,
-      final SourceSection sourceSection, final SourceSection fullSourceSection) {
+  public final SInvokable assemble(final ExpressionNode body, final long coord) {
     if (primitive) {
-      return Primitives.constructEmptyPrimitive(signature, holderGenc.getLanguage(),
-          sourceSection, structuralProbe);
+      return Primitives.constructEmptyPrimitive(
+          signature, holderGenc.getSource(), coord, structuralProbe);
     }
 
-    return assembleMethod(body, sourceSection, fullSourceSection);
+    return assembleMethod(body, coord);
   }
 
-  protected SMethod assembleMethod(ExpressionNode body, final SourceSection sourceSection,
-      final SourceSection fullSourceSection) {
+  protected SMethod assembleMethod(ExpressionNode body, final long coord) {
     if (needsToCatchNonLocalReturn()) {
-      body = createCatchNonLocalReturn(body, getFrameOnStackMarker(sourceSection));
+      body = createCatchNonLocalReturn(body, getFrameOnStackMarker(coord));
     }
 
     Method truffleMethod =
-        new Method(getMethodIdentifier(), getSourceSectionForMethod(sourceSection),
-            body, currentScope, (ExpressionNode) body.deepCopy(), holderGenc.getLanguage());
+        new Method(getMethodIdentifier(), holderGenc.getSource(), coord,
+            body, currentScope, (ExpressionNode) body.deepCopy());
 
     SMethod meth = new SMethod(signature, truffleMethod,
-        embeddedBlockMethods.toArray(new SMethod[0]), fullSourceSection);
+        embeddedBlockMethods.toArray(new SMethod[0]));
 
     if (structuralProbe != null) {
       String id = meth.getIdentifier();
@@ -236,7 +233,6 @@ public class MethodGenerationContext
   }
 
   @Override
-  @SuppressWarnings("unchecked")
   public Variable[] getVariables() {
     int numVars = arguments.size() + locals.size();
     if (frameOnStack != null) {
@@ -265,12 +261,6 @@ public class MethodGenerationContext
     currentScope.setVariables(getVariables());
   }
 
-  private SourceSection getSourceSectionForMethod(final SourceSection ssBody) {
-    SourceSection ssMethod = ssBody.getSource().createSection(ssBody.getStartLine(),
-        ssBody.getStartColumn(), ssBody.getCharLength());
-    return ssMethod;
-  }
-
   public void markAsPrimitive() {
     primitive = true;
   }
@@ -279,13 +269,13 @@ public class MethodGenerationContext
     signature = sig;
   }
 
-  private void addArgument(final SSymbol arg, final SourceSection source) {
+  private void addArgument(final SSymbol arg, final long coord) {
     if ((symSelf == arg || symBlockSelf == arg) && arguments.size() > 0) {
       throw new IllegalStateException(
           "The self argument always has to be the first argument of a method");
     }
 
-    Argument argument = new Argument(arg, arguments.size(), source);
+    Argument argument = new Argument(arg, arguments.size(), coord);
     arguments.put(arg, argument);
 
     if (structuralProbe != null) {
@@ -293,12 +283,12 @@ public class MethodGenerationContext
     }
   }
 
-  public void addArgumentIfAbsent(final SSymbol arg, final SourceSection source) {
+  public void addArgumentIfAbsent(final SSymbol arg, final long coord) {
     if (arguments.containsKey(arg)) {
       return;
     }
 
-    addArgument(arg, source);
+    addArgument(arg, coord);
   }
 
   public boolean hasLocal(final SSymbol local) {
@@ -309,8 +299,8 @@ public class MethodGenerationContext
     return locals.size();
   }
 
-  public Local addLocal(final SSymbol local, final SourceSection source) {
-    Local l = new Local(local, source);
+  public Local addLocal(final SSymbol local, final long coord) {
+    Local l = new Local(local, coord);
     l.init(
         currentScope.getFrameDescriptor().addFrameSlot(l),
         currentScope.getFrameDescriptor());
@@ -323,9 +313,9 @@ public class MethodGenerationContext
     return l;
   }
 
-  private Local addLocalAndUpdateScope(final SSymbol name, final SourceSection source)
+  private Local addLocalAndUpdateScope(final SSymbol name, final long coord)
       throws ProgramDefinitionError {
-    Local l = addLocal(name, source);
+    Local l = addLocal(name, coord);
     currentScope.addVariable(l);
     return l;
   }
@@ -395,13 +385,13 @@ public class MethodGenerationContext
     return null;
   }
 
-  public ExpressionNode getLocalReadNode(final Variable variable, final SourceSection source) {
-    return variable.getReadNode(getContextLevel(variable), source);
+  public ExpressionNode getLocalReadNode(final Variable variable, final long coord) {
+    return variable.getReadNode(getContextLevel(variable), coord);
   }
 
   public ExpressionNode getLocalWriteNode(final Variable variable,
-      final ExpressionNode valExpr, final SourceSection source) {
-    return variable.getWriteNode(getContextLevel(variable), valExpr, source);
+      final ExpressionNode valExpr, final long coord) {
+    return variable.getWriteNode(getContextLevel(variable), valExpr, coord);
   }
 
   protected Local getLocal(final SSymbol varName) {
@@ -420,35 +410,33 @@ public class MethodGenerationContext
   }
 
   public ReturnNonLocalNode getNonLocalReturn(final ExpressionNode expr,
-      final SourceSection source) {
+      final long coord) {
     makeOuterCatchNonLocalReturn();
-    return createNonLocalReturn(expr, getFrameOnStackMarker(source),
-        getOuterSelfContextLevel(), source, holderGenc.getUniverse());
+    return createNonLocalReturn(expr, getFrameOnStackMarker(coord),
+        getOuterSelfContextLevel(), coord);
   }
 
-  private ExpressionNode getSelfRead(final SourceSection source) {
-    return getVariable(symSelf).getReadNode(getContextLevel(symSelf),
-        source);
+  private ExpressionNode getSelfRead(final long coord) {
+    return getVariable(symSelf).getReadNode(getContextLevel(symSelf), coord);
   }
 
   public FieldReadNode getObjectFieldRead(final SSymbol fieldName,
-      final SourceSection source) {
+      final long coord) {
     if (!holderGenc.hasField(fieldName)) {
       return null;
     }
-    return createFieldRead(getSelfRead(source),
-        holderGenc.getFieldIndex(fieldName), source);
+    return createFieldRead(getSelfRead(coord),
+        holderGenc.getFieldIndex(fieldName), coord);
   }
 
-  public FieldNode getObjectFieldWrite(final SSymbol fieldName,
-      final ExpressionNode exp, final Universe universe,
-      final SourceSection source) {
+  public FieldNode getObjectFieldWrite(final SSymbol fieldName, final ExpressionNode exp,
+      final long coord) {
     if (!holderGenc.hasField(fieldName)) {
       return null;
     }
 
-    return createFieldWrite(getSelfRead(source), exp,
-        holderGenc.getFieldIndex(fieldName), source);
+    return createFieldWrite(getSelfRead(coord), exp,
+        holderGenc.getFieldIndex(fieldName), coord);
   }
 
   protected void addLocal(final Local l, final SSymbol name) {
@@ -459,9 +447,9 @@ public class MethodGenerationContext
 
   public void mergeIntoScope(final LexicalScope scope, final SMethod toBeInlined) {
     for (Variable v : scope.getVariables()) {
-      Local l = v.splitToMergeIntoOuterScope(universe, currentScope.getFrameDescriptor());
+      Local l = v.splitToMergeIntoOuterScope(currentScope.getFrameDescriptor());
       if (l != null) { // can happen for instance for the block self, which we omit
-        SSymbol name = l.getQualifiedName();
+        SSymbol name = l.getQualifiedName(holderGenc.getSource());
         addLocal(l, name);
       }
     }
@@ -490,18 +478,20 @@ public class MethodGenerationContext
 
   @Override
   public bd.inlining.Variable<?> introduceTempForInlinedVersion(
-      final Inlinable<MethodGenerationContext> blockOrVal, final SourceSection source)
+      final Inlinable<MethodGenerationContext> blockOrVal, final long coord)
       throws ProgramDefinitionError {
     Local loopIdx;
     if (blockOrVal instanceof BlockNode) {
       Argument[] args = ((BlockNode) blockOrVal).getArguments();
       assert args.length == 2;
-      loopIdx = getLocal(args[1].getQualifiedName());
+      loopIdx = getLocal(args[1].getQualifiedName(holderGenc.getSource()));
     } else {
       // if it is a literal, we still need a memory location for counting, so,
       // add a synthetic local
-      loopIdx = addLocalAndUpdateScope(
-          symbolFor("!i" + Universe.getLocationQualifier(source)), source);
+      loopIdx = addLocalAndUpdateScope(symbolFor(
+          "!i" + SourceCoordinate.getLocationQualifier(
+              holderGenc.getSource(), coord)),
+          coord);
     }
     return loopIdx;
   }
@@ -541,12 +531,14 @@ public class MethodGenerationContext
     return str.replace(":", "⫶");
   }
 
-  public void setBlockSignature(final SourceCoordinate coord) {
+  public void setBlockSignature(final Source source, final long coord) {
     String outerMethodName =
         stripColonsAndSourceLocation(outerGenc.getSignature().getString());
 
     int numArgs = getNumberOfArguments();
-    String blockSig = "λ" + outerMethodName + "@" + coord.startLine + "@" + coord.startColumn;
+    int line = SourceCoordinate.getLine(source, coord);
+    int column = SourceCoordinate.getColumn(source, coord);
+    String blockSig = "λ" + outerMethodName + "@" + line + "@" + column;
 
     for (int i = 1; i < numArgs; i++) {
       blockSig += ":";

@@ -5,11 +5,10 @@ import com.oracle.truffle.api.dsl.NodeChild;
 import com.oracle.truffle.api.frame.VirtualFrame;
 
 import bd.primitives.nodes.PreevaluatedExpression;
-import trufflesom.interpreter.SomLanguage;
 import trufflesom.interpreter.bc.RespecializeException;
 import trufflesom.interpreter.nodes.ExpressionNode;
+import trufflesom.interpreter.nodes.GenericMessageSendNode;
 import trufflesom.interpreter.nodes.MessageSendNode;
-import trufflesom.interpreter.nodes.MessageSendNode.GenericMessageSendNode;
 import trufflesom.interpreter.nodes.bc.BytecodeLoopNode;
 import trufflesom.vm.VmSettings;
 import trufflesom.vmobjects.SSymbol;
@@ -42,8 +41,8 @@ public abstract class BinaryExpressionNode extends ExpressionNode
       children = null;
     }
 
-    GenericMessageSendNode send = MessageSendNode.createGeneric(selector, children,
-        sourceSection, SomLanguage.getCurrentContext());
+    GenericMessageSendNode send =
+        MessageSendNode.createGeneric(selector, children, sourceCoord);
 
     if (VmSettings.UseAstInterp) {
       return replace(send);

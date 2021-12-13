@@ -2,13 +2,16 @@ package trufflesom.tests;
 
 import static trufflesom.vm.SymbolTable.symbolFor;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.graalvm.polyglot.Context;
 import org.graalvm.polyglot.Context.Builder;
 import org.junit.Ignore;
 
 import com.oracle.truffle.api.nodes.Node;
-import com.oracle.truffle.api.source.Source;
 
+import bd.source.SourceCoordinate;
 import bd.tools.structure.StructuralProbe;
 import trufflesom.compiler.ClassGenerationContext;
 import trufflesom.compiler.Field;
@@ -25,28 +28,17 @@ import trufflesom.vmobjects.SSymbol;
 
 @Ignore("provides just setup")
 public class TruffleTestSetup {
-  protected final ClassGenerationContext cgenc;
-
-  protected final Universe universe;
-
-  protected final Source sourceForTests;
+  protected ClassGenerationContext cgenc;
 
   protected final StructuralProbe<SSymbol, SClass, SInvokable, Field, Variable> probe;
 
-  protected int fieldCount;
-
-  private static Universe getUniverse() {
-    return SomLanguage.getCurrent().getUniverse();
-  }
+  protected List<String> fieldNames;
+  protected List<String> argNames;
 
   protected TruffleTestSetup() {
-    universe = getUniverse();
     probe = null;
-
-    cgenc = new ClassGenerationContext(universe, null);
-    cgenc.setName(symbolFor("Test"));
-
-    sourceForTests = SomLanguage.getSyntheticSource("dummy-source", "test");
+    fieldNames = new ArrayList<>();
+    argNames = new ArrayList<>();
   }
 
   private static void initTruffle() {
@@ -58,15 +50,26 @@ public class TruffleTestSetup {
     Context context = builder.build();
     context.eval(SomLanguage.INIT);
 
-    Universe u = getUniverse();
-    Source s = SomLanguage.getSyntheticSource("self", "self");
-    u.selfSource = s.createSection(1);
+    Universe.selfSource = SomLanguage.getSyntheticSource("self", "self");
+    Universe.selfCoord = SourceCoordinate.createEmpty();
   }
 
   protected void addField(final String name) {
-    fieldCount += 1;
-    cgenc.addInstanceField(symbolFor(name),
-        sourceForTests.createSection(1, fieldCount, 1));
+    fieldNames.add(name);
+  }
+
+  protected void addArgument(final String name) {
+    argNames.add(name);
+  }
+
+  protected void addAllFields() {
+    int i = 2;
+    for (String fieldName : fieldNames) {
+      cgenc.addInstanceField(symbolFor(fieldName),
+          SourceCoordinate.create(i, 1));
+      i += 1;
+    }
+    fieldNames.clear();
   }
 
   private java.lang.reflect.Field lookup(final Class<?> cls, final String fieldName) {

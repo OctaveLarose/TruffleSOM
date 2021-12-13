@@ -1,22 +1,24 @@
 package trufflesom.primitives.reflection;
 
+import com.oracle.truffle.api.dsl.GenerateNodeFactory;
 import com.oracle.truffle.api.dsl.Specialization;
 import com.oracle.truffle.api.frame.VirtualFrame;
 
 import bd.primitives.Primitive;
-import trufflesom.interpreter.nodes.nary.BinarySystemOperation;
-import trufflesom.vm.Universe;
+import trufflesom.interpreter.nodes.nary.BinaryExpressionNode;
 import trufflesom.vmobjects.SSymbol;
 
 
 @Primitive(className = "Object", primitive = "perform:")
-public abstract class PerformPrim extends BinarySystemOperation {
+@GenerateNodeFactory
+public abstract class PerformPrim extends BinaryExpressionNode {
   @Child protected AbstractSymbolDispatch dispatch;
 
+  @SuppressWarnings("unchecked")
   @Override
-  public BinarySystemOperation initialize(final Universe universe) {
-    super.initialize(universe);
-    dispatch = AbstractSymbolDispatchNodeGen.create(sourceSection, universe);
+  public PerformPrim initialize(final long coord) {
+    super.initialize(coord);
+    dispatch = AbstractSymbolDispatchNodeGen.create(coord);
     return this;
   }
 

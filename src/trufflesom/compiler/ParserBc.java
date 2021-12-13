@@ -44,7 +44,6 @@ import bd.basic.ProgramDefinitionError;
 import bd.tools.structure.StructuralProbe;
 import trufflesom.compiler.bc.BytecodeMethodGenContext;
 import trufflesom.interpreter.nodes.ExpressionNode;
-import trufflesom.vm.Universe;
 import trufflesom.vm.constants.Nil;
 import trufflesom.vmobjects.SClass;
 import trufflesom.vmobjects.SInvokable;
@@ -55,9 +54,8 @@ import trufflesom.vmobjects.SSymbol;
 public class ParserBc extends Parser<BytecodeMethodGenContext> {
 
   public ParserBc(final String content, final Source source,
-      final StructuralProbe<SSymbol, SClass, SInvokable, Field, Variable> structuralProbe,
-      final Universe universe) {
-    super(content, source, structuralProbe, universe);
+      final StructuralProbe<SSymbol, SClass, SInvokable, Field, Variable> structuralProbe) {
+    super(content, source, structuralProbe);
   }
 
   @Override
@@ -414,8 +412,7 @@ public class ParserBc extends Parser<BytecodeMethodGenContext> {
             new BytecodeMethodGenContext(mgenc.getHolder(), mgenc);
         nestedBlock(bgenc);
 
-        SMethod blockMethod = (SMethod) bgenc.assemble(
-            null, lastMethodsSourceSection, lastMethodsSourceSection);
+        SMethod blockMethod = (SMethod) bgenc.assemble(null, lastMethodsCoord);
         mgenc.addEmbeddedBlockMethod(blockMethod);
         mgenc.addLiteral(blockMethod, this);
         emitPUSHBLOCK(mgenc, blockMethod, bgenc.requiresContext());

@@ -57,7 +57,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 
 import com.oracle.truffle.api.frame.FrameSlot;
-import com.oracle.truffle.api.source.SourceSection;
 
 import bd.tools.structure.StructuralProbe;
 import trufflesom.compiler.ClassGenerationContext;
@@ -79,7 +78,6 @@ import trufflesom.interpreter.nodes.bc.BytecodeLoopNode;
 import trufflesom.interpreter.nodes.bc.BytecodeLoopNode.BackJump;
 import trufflesom.interpreter.nodes.literals.LiteralNode;
 import trufflesom.vm.NotYetImplementedException;
-import trufflesom.vm.Universe;
 import trufflesom.vm.constants.Nil;
 import trufflesom.vmobjects.SAbstractObject;
 import trufflesom.vmobjects.SClass;
@@ -88,7 +86,6 @@ import trufflesom.vmobjects.SInvokable.SMethod;
 import trufflesom.vmobjects.SSymbol;
 
 
-@SuppressWarnings("unchecked")
 public class BytecodeMethodGenContext extends MethodGenerationContext {
 
   private final List<Object>                  literals;
@@ -107,24 +104,23 @@ public class BytecodeMethodGenContext extends MethodGenerationContext {
 
   public BytecodeMethodGenContext(final ClassGenerationContext holderGenc,
       final StructuralProbe<SSymbol, SClass, SInvokable, Field, Variable> structuralProbe) {
-    this(holderGenc, null, holderGenc.getUniverse(), false, structuralProbe);
+    this(holderGenc, null, false, structuralProbe);
   }
 
-  public BytecodeMethodGenContext(final Universe universe,
+  public BytecodeMethodGenContext(
       final StructuralProbe<SSymbol, SClass, SInvokable, Field, Variable> structuralProbe) {
-    this(null, null, universe, false, structuralProbe);
+    this(null, null, false, structuralProbe);
   }
 
   public BytecodeMethodGenContext(final ClassGenerationContext holderGenc,
       final MethodGenerationContext outerGenc) {
-    this(holderGenc, outerGenc, holderGenc.getUniverse(), true, outerGenc.structuralProbe);
+    this(holderGenc, outerGenc, true, outerGenc.structuralProbe);
   }
 
   private BytecodeMethodGenContext(final ClassGenerationContext holderGenc,
-      final MethodGenerationContext outerGenc, final Universe universe,
-      final boolean isBlockMethod,
+      final MethodGenerationContext outerGenc, final boolean isBlockMethod,
       final StructuralProbe<SSymbol, SClass, SInvokable, Field, Variable> structuralProbe) {
-    super(holderGenc, outerGenc, universe, isBlockMethod, structuralProbe);
+    super(holderGenc, outerGenc, isBlockMethod, structuralProbe);
     literals = new ArrayList<>();
     bytecode = new ArrayList<>();
     inlinedLoops = new ArrayList<>();
@@ -357,8 +353,8 @@ public class BytecodeMethodGenContext extends MethodGenerationContext {
   }
 
   @Override
-  public Local addLocal(final SSymbol local, final SourceSection source) {
-    Local l = super.addLocal(local, source);
+  public Local addLocal(final SSymbol local, final long coord) {
+    Local l = super.addLocal(local, coord);
     localAndOuterVars.put(local, l);
     return l;
   }
@@ -370,7 +366,7 @@ public class BytecodeMethodGenContext extends MethodGenerationContext {
     localAndOuterVars.put(name, l);
   }
 
-  private BytecodeLoopNode constructBytecodeBody(final SourceSection sourceSection) {
+  private BytecodeLoopNode constructBytecodeBody(final long coord) {
     byte[] bytecodes = getBytecodeArray();
 
     Object[] literalsArr = literals.toArray();
@@ -383,13 +379,13 @@ public class BytecodeMethodGenContext extends MethodGenerationContext {
     }
 
     FrameSlot frameOnStackMarker =
-        throwsNonLocalReturn ? getFrameOnStackMarker(sourceSection).getSlot() : null;
+        throwsNonLocalReturn ? getFrameOnStackMarker(coord).getSlot() : null;
 
     BackJump[] loops = inlinedLoops.toArray(new BackJump[0]);
 
     return new BytecodeLoopNode(
         bytecodes, locals.size(), localsAndOuters, literalsArr, maxStackDepth,
-        frameOnStackMarker, loops, universe);
+        frameOnStackMarker, loops);
   }
 
   public byte[] getBytecodeArray() {
@@ -434,15 +430,14 @@ public class BytecodeMethodGenContext extends MethodGenerationContext {
   }
 
   @Override
-  protected SMethod assembleMethod(final ExpressionNode unused,
-      final SourceSection sourceSection, final SourceSection fullSourceSection) {
+  protected SMethod assembleMethod(final ExpressionNode unused, final long coord) {
     ExpressionNode body = constructTrivialBody();
     if (body == null) {
-      body = constructBytecodeBody(sourceSection);
+      body = constructBytecodeBody(coord);
     }
 
-    body.initialize(sourceSection);
-    return super.assembleMethod(body, sourceSection, fullSourceSection);
+    body.initialize(coord);
+    return super.assembleMethod(body, coord);
   }
 
   /**
@@ -580,7 +575,7 @@ public class BytecodeMethodGenContext extends MethodGenerationContext {
 
     byte constantIdx = getIndex(1);
     SSymbol literal = (SSymbol) literals.get(constantIdx);
-    return GlobalNode.create(literal, universe, this);
+    return GlobalNode.create(literal, this);
   }
 
   private FieldReadNode optimizeFieldGetter(final boolean onlyReturnBytecode,
@@ -1018,9 +1013,5 @@ public class BytecodeMethodGenContext extends MethodGenerationContext {
 
   public ArrayList<Byte> getBytecodes() {
     return bytecode;
-  }
-
-  public Universe getUniverse() {
-    return universe;
   }
 }

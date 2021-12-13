@@ -8,8 +8,7 @@ import com.oracle.truffle.api.nodes.Node;
 
 import bd.primitives.nodes.PreevaluatedExpression;
 import trufflesom.interpreter.Types;
-import trufflesom.interpreter.nodes.MessageSendNode.GenericMessageSendNode;
-import trufflesom.vm.Universe;
+import trufflesom.interpreter.nodes.GenericMessageSendNode;
 import trufflesom.vmobjects.SClass;
 import trufflesom.vmobjects.SInvokable;
 import trufflesom.vmobjects.SObject;
@@ -17,12 +16,10 @@ import trufflesom.vmobjects.SSymbol;
 
 
 public final class UninitializedDispatchNode extends AbstractDispatchNode {
-  private final SSymbol  selector;
-  private final Universe universe;
+  private final SSymbol selector;
 
-  public UninitializedDispatchNode(final SSymbol selector, final Universe universe) {
+  public UninitializedDispatchNode(final SSymbol selector) {
     this.selector = selector;
-    this.universe = universe;
   }
 
   private AbstractDispatchNode specialize(final Object[] arguments) {
@@ -47,37 +44,33 @@ public final class UninitializedDispatchNode extends AbstractDispatchNode {
     }
 
     if (chainDepth < INLINE_CACHE_SIZE) {
-      SClass rcvrClass = Types.getClassOf(rcvr, universe);
+      SClass rcvrClass = Types.getClassOf(rcvr);
       SInvokable method = rcvrClass.lookupInvokable(selector);
-      CallTarget callTarget = null;
-      PreevaluatedExpression expr = null;
-      if (method != null) {
+
+      UninitializedDispatchNode newChainEnd = new UninitializedDispatchNode(selector);
+      DispatchGuard guard = DispatchGuard.create(rcvr);
+
+      AbstractDispatchNode node;
+      if (method == null) {
+        node = new CachedDnuNode(rcvrClass, guard, selector, newChainEnd);
+      } else {
         if (method.isTrivial()) {
-          expr = method.copyTrivialNode();
+          PreevaluatedExpression expr = method.copyTrivialNode();
           assert expr != null;
+          node = new CachedExprNode(guard, expr, method.getSource(), newChainEnd);
         } else {
-          callTarget = method.getCallTarget();
+          CallTarget callTarget = method.getCallTarget();
+          node = new CachedDispatchNode(guard, callTarget, newChainEnd);
         }
       }
 
-      UninitializedDispatchNode newChainEnd =
-          new UninitializedDispatchNode(selector, universe);
-      DispatchGuard guard = DispatchGuard.create(rcvr);
-      AbstractDispatchNode node;
-      if (expr != null) {
-        node = new CachedExprNode(guard, expr, newChainEnd);
-      } else if (method != null) {
-        node = new CachedDispatchNode(guard, callTarget, newChainEnd);
-      } else {
-        node = new CachedDnuNode(rcvrClass, guard, selector, newChainEnd, universe);
-      }
       return replace(node);
     }
 
     // the chain is longer than the maximum defined by INLINE_CACHE_SIZE and
     // thus, this callsite is considered to be megaprophic, and we generalize
     // it.
-    GenericDispatchNode genericReplacement = new GenericDispatchNode(selector, universe);
+    GenericDispatchNode genericReplacement = new GenericDispatchNode(selector);
     GenericMessageSendNode sendNode = (GenericMessageSendNode) first.getParent();
     sendNode.replaceDispatchListHead(genericReplacement);
     return genericReplacement;
