@@ -1,14 +1,13 @@
 package trufflesom.interpreter.nodes.supernodes;
 
 import bd.inlining.ScopeAdaptationVisitor;
-import com.oracle.truffle.api.dsl.Specialization;
+import com.oracle.truffle.api.dsl.UnsupportedSpecializationException;
 import com.oracle.truffle.api.frame.VirtualFrame;
-import trufflesom.compiler.Variable;
+import com.oracle.truffle.api.nodes.Node;
+import com.oracle.truffle.api.nodes.UnexpectedResultException;
 import trufflesom.interpreter.nodes.ExpressionNode;
-import trufflesom.interpreter.nodes.LocalVariableNode;
-import trufflesom.interpreter.nodes.literals.IntegerLiteralNode;
 import trufflesom.interpreter.nodes.specialized.IfInlinedLiteralNode;
-import trufflesom.primitives.arithmetic.AdditionPrim;
+import trufflesom.vm.constants.Nil;
 
 /**
  * Matches the following AST: TODO adjust, it can be made more specific I think
@@ -23,30 +22,53 @@ import trufflesom.primitives.arithmetic.AdditionPrim;
  * IfInlinedLiteralMessageWIPNode TODO name needs to change
  * </pre>
  */
-public abstract class IfInlinedLiteralMessageWIPNode extends ExpressionNode {
-    private final String prim;
-    private final ExpressionNode originalSubtree;
-    private final ExpressionNode bodyNode;
+public final class IfInlinedLiteralMessageWIPNode extends IfInlinedLiteralNode {
+//    private final String prim;
+//    private final ExpressionNode originalSubtree;
 
-    public IfInlinedLiteralMessageWIPNode(final String prim,
-                                          final ExpressionNode bodyNode,
-                                          final ExpressionNode originalSubtree) {
-        this.prim = prim;
-        this.bodyNode = bodyNode;
-        this.originalSubtree = originalSubtree;
-    }
+    @Child private ExpressionNode conditionNode;
+    @Child private ExpressionNode bodyNode;
 
-//    public IfInlinedLiteralMessageWIPNode(final IfInlinedLiteralMessageWIPNode node) {
-//        super(node.local);
-//        this.increment = node.getIncrement();
-//        this.originalSubtree = node.getOriginalSubtree();
+    private final boolean expectedBool;
+
+    @SuppressWarnings("unused") private final ExpressionNode bodyActualNode;
+
+//    public IfInlinedLiteralMessageWIPNode(final String prim,
+//                                          final ExpressionNode bodyNode,
+//                                          final ExpressionNode originalSubtree) {
+//        this.prim = prim;
+//        this.bodyNode = bodyNode;
+//        this.originalSubtree = originalSubtree;
 //    }
 
-    @Specialization
-    public final boolean evaluateCondition(final VirtualFrame frame) {
-//        long newValue = Math.addExact(frame.getLong(slot), increment);
-//        frame.setLong(slot, newValue);
-        return false;
+    public IfInlinedLiteralMessageWIPNode(final ExpressionNode conditionNode,
+                                final ExpressionNode originalBodyNode, final ExpressionNode inlinedBodyNode,
+                                final boolean expectedBool) {
+        super(conditionNode, originalBodyNode, inlinedBodyNode, expectedBool);
+        this.conditionNode = conditionNode;
+        this.expectedBool = expectedBool;
+        this.bodyNode = inlinedBodyNode;
+        this.bodyActualNode = originalBodyNode;
+    }
+
+    // A copy constructor here?
+
+    public boolean evaluateCondition(final VirtualFrame frame) {
+        try {
+            System.out.println(this.getClass().getSimpleName() + " evaluateCondition() called.");
+            return condProf.profile(conditionNode.executeBoolean(frame));
+        } catch (UnexpectedResultException e) {
+            throw new UnsupportedSpecializationException(this, new Node[] {conditionNode}, e.getResult());
+        }
+    }
+
+    @Override
+    public Object executeGeneric(final VirtualFrame frame) {
+        if (evaluateCondition(frame) == expectedBool) {
+            return bodyNode.executeGeneric(frame);
+        } else {
+            return Nil.nilObject;
+        }
     }
 
 //    @Specialization(replaces = {"evaluateCondition"})
@@ -66,9 +88,9 @@ public abstract class IfInlinedLiteralMessageWIPNode extends ExpressionNode {
         throw new RuntimeException("replaceAfterScopeChange: This should never happen!");
     }
 
-    public ExpressionNode getOriginalSubtree() {
-        return originalSubtree;
-    }
+//    public ExpressionNode getOriginalSubtree() {
+//        return originalSubtree;
+//    }
 
     /**
      * Check if the AST subtree has the shape of an increment operation.
@@ -82,21 +104,17 @@ public abstract class IfInlinedLiteralMessageWIPNode extends ExpressionNode {
 //                return readNode.getLocal().equals(var);
 //            }
 //        }
-        return false;
+        return true;
     }
 
     /**
      * Replace ``node`` with a superinstruction. Assumes that the AST subtree has the correct shape.
      */
     public static IfInlinedLiteralMessageWIPNode replaceNode(final IfInlinedLiteralNode node) {
-//        AdditionPrim addPrim = (AdditionPrim) node.getExp();
-//        if (addPrim.getArgument() instanceof IntegerLiteralNode) {
-//            long increment = ((IntegerLiteralNode) addPrim.getArgument()).getValue();
-//            IfInlinedLiteralMessageWIPNode newNode = IncrementOperationNodeGen
-//                    .create(node.getLocal(), increment, node)
-//                    .initialize(node.getSourceSection());
-//            node.replace(newNode);
-//        }
-        return null;
+        IfInlinedLiteralMessageWIPNode newNode = new IfInlinedLiteralMessageWIPNode(
+                node.getConditionNode(), node.getBodyActualNode(), node.getBodyNode(), node.getExpectedBool())
+                .initialize(node.getSourceCoordinate());
+        return node.replace(newNode);
+//        return newNode;
     }
 }

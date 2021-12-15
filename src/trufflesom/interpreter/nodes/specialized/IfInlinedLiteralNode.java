@@ -1,8 +1,6 @@
 package trufflesom.interpreter.nodes.specialized;
 
-import com.oracle.truffle.api.dsl.Cached;
 import com.oracle.truffle.api.dsl.ImportStatic;
-import com.oracle.truffle.api.dsl.Specialization;
 import com.oracle.truffle.api.dsl.UnsupportedSpecializationException;
 import com.oracle.truffle.api.frame.VirtualFrame;
 import com.oracle.truffle.api.nodes.Node;
@@ -21,12 +19,12 @@ import trufflesom.vm.constants.Nil;
 @Inline(selector = "ifFalse:", inlineableArgIdx = 1, additionalArgs = False.class)
 @ImportStatic({IfInlinedLiteralMessageWIPNode.class})
 public class IfInlinedLiteralNode extends ExpressionNode {
-  private final ConditionProfile condProf = ConditionProfile.createCountingProfile();
+  protected final ConditionProfile condProf = ConditionProfile.createCountingProfile();
 
-  @Child private ExpressionNode conditionNode;
-  @Child private ExpressionNode bodyNode;
+  @Child protected ExpressionNode conditionNode;
+  @Child protected ExpressionNode bodyNode;
 
-  private final boolean expectedBool;
+  protected final boolean expectedBool;
 
   // In case we need to revert from this optimistic optimization, keep the
   // original nodes around
@@ -41,24 +39,23 @@ public class IfInlinedLiteralNode extends ExpressionNode {
     this.bodyActualNode = originalBodyNode;
   }
 
-  @Specialization(guards = {"isApplicable"})
-  public Object executeAndReplace(final VirtualFrame frame,
-                                  @Cached("isIfInlinedLiteralMessageNode(getConditionNode())") final boolean isApplicable) {
-    return IfInlinedLiteralMessageWIPNode.replaceNode(this).evaluateCondition(frame);
-  }
-
-  private boolean evaluateCondition(final VirtualFrame frame) {
+  public boolean evaluateCondition(final VirtualFrame frame) {
     try {
       return condProf.profile(conditionNode.executeBoolean(frame));
     } catch (UnexpectedResultException e) {
       // TODO: should rewrite to a node that does a proper message send...
       throw new UnsupportedSpecializationException(this,
-          new Node[] {conditionNode}, e.getResult());
+              new Node[] {conditionNode}, e.getResult());
     }
   }
 
   @Override
   public Object executeGeneric(final VirtualFrame frame) {
+    if (IfInlinedLiteralMessageWIPNode.isIfInlinedLiteralMessageNode(this.getConditionNode())) {
+      IfInlinedLiteralMessageWIPNode bc = IfInlinedLiteralMessageWIPNode.replaceNode(this);
+      return bc.executeGeneric(frame);
+    }
+
     if (evaluateCondition(frame) == expectedBool) {
       return bodyNode.executeGeneric(frame);
     } else {
@@ -66,8 +63,22 @@ public class IfInlinedLiteralNode extends ExpressionNode {
     }
   }
 
+  // Following ones added for supernode testing, may need to be removed later
+
   public ExpressionNode getConditionNode() {
     return conditionNode;
+  }
+
+  public ExpressionNode getBodyNode() {
+    return bodyNode;
+  }
+
+  public ExpressionNode getBodyActualNode() {
+    return bodyActualNode;
+  }
+
+  public boolean getExpectedBool() {
+    return expectedBool;
   }
 
 }
