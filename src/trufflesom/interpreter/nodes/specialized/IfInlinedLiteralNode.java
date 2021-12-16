@@ -1,5 +1,6 @@
 package trufflesom.interpreter.nodes.specialized;
 
+import com.oracle.truffle.api.CompilerDirectives;
 import com.oracle.truffle.api.dsl.ImportStatic;
 import com.oracle.truffle.api.dsl.UnsupportedSpecializationException;
 import com.oracle.truffle.api.frame.VirtualFrame;
@@ -52,6 +53,7 @@ public class IfInlinedLiteralNode extends ExpressionNode {
   @Override
   public Object executeGeneric(final VirtualFrame frame) {
     if (IfInlinedLiteralMessageWIPNode.isIfInlinedLiteralMessageNode(this.getConditionNode(), this.getBodyNode())) {
+      CompilerDirectives.transferToInterpreterAndInvalidate();
       IfInlinedLiteralMessageWIPNode bc = IfInlinedLiteralMessageWIPNode.replaceNode(this);
       return bc.executeGeneric(frame);
     }
