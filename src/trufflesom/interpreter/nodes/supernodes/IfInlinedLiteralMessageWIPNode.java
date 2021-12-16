@@ -31,7 +31,7 @@ public final class IfInlinedLiteralMessageWIPNode extends IfInlinedLiteralNode {
 //    private final ExpressionNode originalSubtree;
 
     @Child private ExpressionNode conditionNode;
-    @Child private ExpressionNode bodyNode;
+    @Child private ReturnNonLocalNode.ReturnLocalNode bodyNode;
 
     private final boolean expectedBool;
 
@@ -46,7 +46,7 @@ public final class IfInlinedLiteralMessageWIPNode extends IfInlinedLiteralNode {
 //    }
 
     public IfInlinedLiteralMessageWIPNode(final ExpressionNode conditionNode,
-                                final ExpressionNode originalSubtree, final ExpressionNode inlinedBodyNode,
+                                final ExpressionNode originalSubtree, final ReturnNonLocalNode.ReturnLocalNode inlinedBodyNode,
                                 final boolean expectedBool) {
         super(conditionNode, originalSubtree, inlinedBodyNode, expectedBool);
         this.conditionNode = conditionNode;
@@ -59,7 +59,7 @@ public final class IfInlinedLiteralMessageWIPNode extends IfInlinedLiteralNode {
 
     public boolean evaluateCondition(final VirtualFrame frame) {
         try {
-            return condProf.profile(conditionNode.executeBoolean(frame));
+            return conditionNode.executeBoolean(frame);
         } catch (UnexpectedResultException e) {
             throw new UnsupportedSpecializationException(this, new Node[] {conditionNode}, e.getResult());
         }
@@ -114,7 +114,10 @@ public final class IfInlinedLiteralMessageWIPNode extends IfInlinedLiteralNode {
      */
     public static IfInlinedLiteralMessageWIPNode replaceNode(final IfInlinedLiteralNode node) {
         IfInlinedLiteralMessageWIPNode newNode = new IfInlinedLiteralMessageWIPNode(
-                node.getConditionNode(), node.getBodyActualNode(), node.getBodyNode(), node.getExpectedBool())
+                node.getConditionNode(),
+                node.getBodyActualNode(),
+                (ReturnNonLocalNode.ReturnLocalNode) node.getBodyNode(),
+                node.getExpectedBool())
                 .initialize(node.getSourceCoordinate());
         return node.replace(newNode);
 //        return newNode;
