@@ -51,10 +51,10 @@ public class IfInlinedLiteralNode extends ExpressionNode {
 
   @Override
   public Object executeGeneric(final VirtualFrame frame) {
-//    if (IfInlinedLiteralMessageWIPNode.isIfInlinedLiteralMessageNode(this.getConditionNode())) {
-//      IfInlinedLiteralMessageWIPNode bc = IfInlinedLiteralMessageWIPNode.replaceNode(this);
-//      return bc.executeGeneric(frame);
-//    }
+    if (IfInlinedLiteralMessageWIPNode.isIfInlinedLiteralMessageNode(this.getConditionNode(), this.getBodyNode())) {
+      IfInlinedLiteralMessageWIPNode bc = IfInlinedLiteralMessageWIPNode.replaceNode(this);
+      return bc.executeGeneric(frame);
+    }
 
     if (evaluateCondition(frame) == expectedBool) {
       return bodyNode.executeGeneric(frame);

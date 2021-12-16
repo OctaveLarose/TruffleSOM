@@ -6,7 +6,11 @@ import com.oracle.truffle.api.frame.VirtualFrame;
 import com.oracle.truffle.api.nodes.Node;
 import com.oracle.truffle.api.nodes.UnexpectedResultException;
 import trufflesom.interpreter.nodes.ExpressionNode;
+import trufflesom.interpreter.nodes.FieldNode;
+import trufflesom.interpreter.nodes.ReturnNonLocalNode;
+import trufflesom.interpreter.nodes.literals.GenericLiteralNode;
 import trufflesom.interpreter.nodes.specialized.IfInlinedLiteralNode;
+import trufflesom.primitives.basics.EqualsPrim;
 import trufflesom.vm.constants.Nil;
 
 /**
@@ -31,7 +35,7 @@ public final class IfInlinedLiteralMessageWIPNode extends IfInlinedLiteralNode {
 
     private final boolean expectedBool;
 
-    @SuppressWarnings("unused") private final ExpressionNode bodyActualNode;
+    @SuppressWarnings("unused") private final ExpressionNode originalSubtree;
 
 //    public IfInlinedLiteralMessageWIPNode(final String prim,
 //                                          final ExpressionNode bodyNode,
@@ -42,20 +46,19 @@ public final class IfInlinedLiteralMessageWIPNode extends IfInlinedLiteralNode {
 //    }
 
     public IfInlinedLiteralMessageWIPNode(final ExpressionNode conditionNode,
-                                final ExpressionNode originalBodyNode, final ExpressionNode inlinedBodyNode,
+                                final ExpressionNode originalSubtree, final ExpressionNode inlinedBodyNode,
                                 final boolean expectedBool) {
-        super(conditionNode, originalBodyNode, inlinedBodyNode, expectedBool);
+        super(conditionNode, originalSubtree, inlinedBodyNode, expectedBool);
         this.conditionNode = conditionNode;
         this.expectedBool = expectedBool;
         this.bodyNode = inlinedBodyNode;
-        this.bodyActualNode = originalBodyNode;
+        this.originalSubtree = originalSubtree;
     }
 
     // A copy constructor here?
 
     public boolean evaluateCondition(final VirtualFrame frame) {
         try {
-            System.out.println(this.getClass().getSimpleName() + " evaluateCondition() called.");
             return condProf.profile(conditionNode.executeBoolean(frame));
         } catch (UnexpectedResultException e) {
             throw new UnsupportedSpecializationException(this, new Node[] {conditionNode}, e.getResult());
@@ -95,16 +98,15 @@ public final class IfInlinedLiteralMessageWIPNode extends IfInlinedLiteralNode {
     /**
      * Check if the AST subtree has the shape of an increment operation.
      */
-    public static boolean isIfInlinedLiteralMessageNode(ExpressionNode exp) {
-//        if (exp instanceof AdditionPrim) {
-//            AdditionPrim addPrim = (AdditionPrim) exp;
-//            if (addPrim.getReceiver() instanceof LocalVariableReadNode
-//                    && addPrim.getArgument() instanceof IntegerLiteralNode) {
-//                LocalVariableReadNode readNode = (LocalVariableReadNode) addPrim.getReceiver();
-//                return readNode.getLocal().equals(var);
-//            }
-//        }
-        return true;
+    public static boolean isIfInlinedLiteralMessageNode(ExpressionNode cond, ExpressionNode body) {
+        if (cond instanceof EqualsPrim && body instanceof ReturnNonLocalNode.ReturnLocalNode) {
+            EqualsPrim ep = (EqualsPrim) cond;
+            if (!(ep.getReceiver() instanceof FieldNode.FieldReadNode) || !(ep.getArgument() instanceof GenericLiteralNode))
+                return false;
+
+            return true;
+        }
+        return false;
     }
 
     /**
