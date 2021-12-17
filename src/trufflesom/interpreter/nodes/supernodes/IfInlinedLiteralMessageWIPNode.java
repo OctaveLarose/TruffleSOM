@@ -55,11 +55,16 @@ public final class IfInlinedLiteralMessageWIPNode extends IfInlinedLiteralNode {
         this.originalSubtree = originalSubtree;
     }
 
-    // A copy constructor here?
-
     public boolean evaluateCondition(final VirtualFrame frame) {
         try {
-            return conditionNode.executeBoolean(frame);
+            if (conditionNode instanceof EqualsPrim) {
+                EqualsPrim equalsPrim = (EqualsPrim) conditionNode;
+                FieldNode.FieldReadNode fieldReadNode = (FieldNode.FieldReadNode) equalsPrim.getReceiver();
+                GenericLiteralNode genericLiteralNode = (GenericLiteralNode) equalsPrim.getArgument();
+                return fieldReadNode.executeGeneric(frame).equals(genericLiteralNode.executeGeneric(frame));
+            } else {
+                return conditionNode.executeBoolean(frame);
+            }
         } catch (UnexpectedResultException e) {
             throw new UnsupportedSpecializationException(this, new Node[] {conditionNode}, e.getResult());
         }
