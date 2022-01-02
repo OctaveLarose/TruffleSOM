@@ -21,7 +21,8 @@ import trufflesom.vmobjects.SObject;
 import trufflesom.vmobjects.SSymbol;
 
 
-public abstract class LocalVariableNode extends ExpressionNode implements Invocation<SSymbol> {
+public abstract class LocalVariableNode extends NoPreEvalExprNode
+    implements Invocation<SSymbol> {
   protected final FrameSlot       slot;
   protected final FrameDescriptor descriptor;
   protected final Local           local;

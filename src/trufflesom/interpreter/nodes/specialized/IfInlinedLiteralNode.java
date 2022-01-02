@@ -13,13 +13,14 @@ import bd.inlining.Inline.False;
 import bd.inlining.Inline.True;
 import trufflesom.interpreter.nodes.ExpressionNode;
 import trufflesom.interpreter.nodes.supernodes.IfInlinedLiteralMessageWIPNode;
+import trufflesom.interpreter.nodes.NoPreEvalExprNode;
 import trufflesom.vm.constants.Nil;
 
 
 @Inline(selector = "ifTrue:", inlineableArgIdx = 1, additionalArgs = True.class)
 @Inline(selector = "ifFalse:", inlineableArgIdx = 1, additionalArgs = False.class)
 @ImportStatic({IfInlinedLiteralMessageWIPNode.class})
-public class IfInlinedLiteralNode extends ExpressionNode {
+public class IfInlinedLiteralNode extends NoPreEvalExprNode {
   protected final ConditionProfile condProf = ConditionProfile.createCountingProfile();
 
   @Child protected ExpressionNode conditionNode;
