@@ -1,8 +1,5 @@
 package trufflesom.interpreter.nodes;
 
-import com.oracle.truffle.api.CompilerDirectives;
-import com.oracle.truffle.api.dsl.Cached;
-import com.oracle.truffle.api.dsl.ImportStatic;
 import com.oracle.truffle.api.dsl.NodeChild;
 import com.oracle.truffle.api.dsl.Specialization;
 import com.oracle.truffle.api.frame.FrameDescriptor;
@@ -14,8 +11,6 @@ import com.oracle.truffle.api.frame.VirtualFrame;
 import bd.inlining.ScopeAdaptationVisitor;
 import bd.tools.nodes.Invocation;
 import trufflesom.compiler.Variable.Local;
-import trufflesom.interpreter.nodes.supernodes.AssignLocalSquareToLocalNode;
-import trufflesom.interpreter.nodes.supernodes.IncrementOperationNode;
 import trufflesom.vm.constants.Nil;
 import trufflesom.vmobjects.SObject;
 import trufflesom.vmobjects.SSymbol;
@@ -30,7 +25,7 @@ public abstract class LocalVariableNode extends NoPreEvalExprNode
   // TODO: We currently assume that there is a 1:1 mapping between lexical contexts
   // and frame descriptors, which is apparently not strictly true anymore in Truffle 1.0.0.
   // Generally, we also need to revise everything in this area and address issue SOMns#240.
-  protected LocalVariableNode(final Local local) {
+  private LocalVariableNode(final Local local) {
     this.local = local;
     this.slot = local.getSlot();
     this.descriptor = local.getFrameDescriptor();
@@ -112,7 +107,6 @@ public abstract class LocalVariableNode extends NoPreEvalExprNode
     }
   }
 
-  @ImportStatic({IncrementOperationNode.class, AssignLocalSquareToLocalNode.class})
   @NodeChild(value = "exp", type = ExpressionNode.class)
   public abstract static class LocalVariableWriteNode extends LocalVariableNode {
 
@@ -132,48 +126,9 @@ public abstract class LocalVariableNode extends NoPreEvalExprNode
       return expValue;
     }
 
-    /**
-     * Check for {@link IncrementOperationNode} superinstruction and replace where applicable.
-     */
-    @Specialization(guards = {"isIncrement", "isLongKind(expValue)"})
-    public final long writeLongAndReplaceWithIncrement(final VirtualFrame frame,
-                                                       final long expValue,
-                                                       final @Cached("isIncrementOperation(getExp(), local)") boolean isIncrement) {
-      CompilerDirectives.transferToInterpreterAndInvalidate();
-      frame.setLong(slot, expValue);
-      IncrementOperationNode.replaceNode(this);
-      return expValue;
-    }
-
-    /**
-     * Check for {@link AssignLocalSquareToLocalNode} superinstruction and replace where applicable.
-     */
-    @Specialization(guards = {"isLongKind(expValue)", "isSquareAssignment"})
-    public final long writeLongAndSetSquareToLocal(final VirtualFrame frame,
-                                                       final long expValue,
-                                                       final @Cached("isSquareAssignmentOperation(getExp())") boolean isSquareAssignment) {
-      CompilerDirectives.transferToInterpreterAndInvalidate();
-      frame.setLong(slot, expValue);
-      AssignLocalSquareToLocalNode.replaceNode(this);
-      return expValue;
-    }
-
     @Specialization(guards = "isLongKind(expValue)")
     public final long writeLong(final VirtualFrame frame, final long expValue) {
       frame.setLong(slot, expValue);
-      return expValue;
-    }
-
-    /**
-     * Check for {@link AssignLocalSquareToLocalNode} superinstruction and replace where applicable.
-     */
-    @Specialization(guards = {"isDoubleKind(expValue)", "isSquareAssignment"})
-    public final double writeDoubleAndSetSquareToLocal(final VirtualFrame frame,
-                                                   final double expValue,
-                                                   final @Cached("isSquareAssignmentOperation(getExp())") boolean isSquareAssignment) {
-      CompilerDirectives.transferToInterpreterAndInvalidate();
-      frame.setDouble(slot, expValue);
-      AssignLocalSquareToLocalNode.replaceNode(this);
       return expValue;
     }
 
