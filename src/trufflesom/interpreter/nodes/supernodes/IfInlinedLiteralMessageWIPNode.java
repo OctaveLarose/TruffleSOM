@@ -27,11 +27,11 @@ import trufflesom.vm.constants.Nil;
  * </pre>
  */
 public final class IfInlinedLiteralMessageWIPNode extends IfInlinedLiteralNode {
-//    private final String prim;
-//    private final ExpressionNode originalSubtree;
-
-    @Child private ExpressionNode conditionNode;
+    @Child private EqualsPrim conditionNode;
     @Child private ReturnNonLocalNode.ReturnLocalNode bodyNode;
+
+    @Child FieldNode.FieldReadNode fieldReadNode;
+    @Child GenericLiteralNode genericLiteralNode;
 
     private final boolean expectedBool;
 
@@ -45,7 +45,7 @@ public final class IfInlinedLiteralMessageWIPNode extends IfInlinedLiteralNode {
 //        this.originalSubtree = originalSubtree;
 //    }
 
-    public IfInlinedLiteralMessageWIPNode(final ExpressionNode conditionNode,
+    public IfInlinedLiteralMessageWIPNode(final EqualsPrim conditionNode,
                                 final ExpressionNode originalSubtree, final ReturnNonLocalNode.ReturnLocalNode inlinedBodyNode,
                                 final boolean expectedBool) {
         super(conditionNode, originalSubtree, inlinedBodyNode, expectedBool);
@@ -53,21 +53,13 @@ public final class IfInlinedLiteralMessageWIPNode extends IfInlinedLiteralNode {
         this.expectedBool = expectedBool;
         this.bodyNode = inlinedBodyNode;
         this.originalSubtree = originalSubtree;
+
+        this.fieldReadNode = (FieldNode.FieldReadNode) this.conditionNode.getReceiver();
+        this.genericLiteralNode = (GenericLiteralNode) this.conditionNode.getArgument();
     }
 
     public boolean evaluateCondition(final VirtualFrame frame) {
-        try {
-            if (conditionNode instanceof EqualsPrim) {
-                EqualsPrim equalsPrim = (EqualsPrim) conditionNode;
-                FieldNode.FieldReadNode fieldReadNode = (FieldNode.FieldReadNode) equalsPrim.getReceiver();
-                GenericLiteralNode genericLiteralNode = (GenericLiteralNode) equalsPrim.getArgument();
-                return fieldReadNode.executeGeneric(frame).equals(genericLiteralNode.executeGeneric(frame));
-            } else {
-                return conditionNode.executeBoolean(frame);
-            }
-        } catch (UnexpectedResultException e) {
-            throw new UnsupportedSpecializationException(this, new Node[] {conditionNode}, e.getResult());
-        }
+        return this.fieldReadNode.executeGeneric(frame).equals(this.genericLiteralNode.executeGeneric(frame));
     }
 
     @Override
@@ -119,7 +111,7 @@ public final class IfInlinedLiteralMessageWIPNode extends IfInlinedLiteralNode {
      */
     public static IfInlinedLiteralMessageWIPNode replaceNode(final IfInlinedLiteralNode node) {
         IfInlinedLiteralMessageWIPNode newNode = new IfInlinedLiteralMessageWIPNode(
-                node.getConditionNode(),
+                (EqualsPrim) node.getConditionNode(),
                 node.getBodyActualNode(),
                 (ReturnNonLocalNode.ReturnLocalNode) node.getBodyNode(),
                 node.getExpectedBool())
