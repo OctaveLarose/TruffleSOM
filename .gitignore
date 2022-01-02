@@ -17,8 +17,3 @@ user-dict.txt
 /tests/tools/nodestats/expected-results
 /tests/tools/nodestats/old-results
 /tests/tools/nodestats/results
-
-libs/
-.idea
-node-stats.yml
-TruffleSOM.iml
