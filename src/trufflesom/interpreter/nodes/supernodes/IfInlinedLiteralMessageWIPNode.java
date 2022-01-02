@@ -1,6 +1,7 @@
 package trufflesom.interpreter.nodes.supernodes;
 
 import bd.inlining.ScopeAdaptationVisitor;
+import com.oracle.truffle.api.CompilerDirectives;
 import com.oracle.truffle.api.dsl.UnsupportedSpecializationException;
 import com.oracle.truffle.api.frame.VirtualFrame;
 import com.oracle.truffle.api.nodes.Node;
@@ -64,6 +65,8 @@ public final class IfInlinedLiteralMessageWIPNode extends IfInlinedLiteralNode {
 
     @Override
     public Object executeGeneric(final VirtualFrame frame) {
+        CompilerDirectives.transferToInterpreterAndInvalidate();
+
         if (evaluateCondition(frame) == expectedBool) {
             return bodyNode.executeGeneric(frame);
         } else {
