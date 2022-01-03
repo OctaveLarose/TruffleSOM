@@ -2,14 +2,10 @@ package trufflesom.interpreter.nodes.supernodes;
 
 import bd.inlining.ScopeAdaptationVisitor;
 import com.oracle.truffle.api.CompilerDirectives;
-import com.oracle.truffle.api.dsl.UnsupportedSpecializationException;
 import com.oracle.truffle.api.frame.VirtualFrame;
-import com.oracle.truffle.api.nodes.Node;
-import com.oracle.truffle.api.nodes.UnexpectedResultException;
 import trufflesom.interpreter.nodes.ExpressionNode;
 import trufflesom.interpreter.nodes.FieldNode;
 import trufflesom.interpreter.nodes.ReturnNonLocalNode;
-import trufflesom.interpreter.nodes.literals.GenericLiteralNode;
 import trufflesom.interpreter.nodes.specialized.IfInlinedLiteralNode;
 import trufflesom.primitives.basics.EqualsPrim;
 import trufflesom.vm.constants.Nil;
@@ -32,19 +28,11 @@ public final class IfInlinedLiteralMessageWIPNode extends IfInlinedLiteralNode {
     @Child private ReturnNonLocalNode.ReturnLocalNode bodyNode;
 
     @Child FieldNode.FieldReadNode fieldReadNode;
-    @Child GenericLiteralNode genericLiteralNode;
+    @Child ExpressionNode condArgNode;
 
     private final boolean expectedBool;
 
     @SuppressWarnings("unused") private final ExpressionNode originalSubtree;
-
-//    public IfInlinedLiteralMessageWIPNode(final String prim,
-//                                          final ExpressionNode bodyNode,
-//                                          final ExpressionNode originalSubtree) {
-//        this.prim = prim;
-//        this.bodyNode = bodyNode;
-//        this.originalSubtree = originalSubtree;
-//    }
 
     public IfInlinedLiteralMessageWIPNode(final EqualsPrim conditionNode,
                                 final ExpressionNode originalSubtree, final ReturnNonLocalNode.ReturnLocalNode inlinedBodyNode,
@@ -56,11 +44,11 @@ public final class IfInlinedLiteralMessageWIPNode extends IfInlinedLiteralNode {
         this.originalSubtree = originalSubtree;
 
         this.fieldReadNode = (FieldNode.FieldReadNode) this.conditionNode.getReceiver();
-        this.genericLiteralNode = (GenericLiteralNode) this.conditionNode.getArgument();
+        this.condArgNode = this.conditionNode.getArgument();
     }
 
     public boolean evaluateCondition(final VirtualFrame frame) {
-        return this.fieldReadNode.executeGeneric(frame).equals(this.genericLiteralNode.executeGeneric(frame));
+        return this.fieldReadNode.executeGeneric(frame).equals(this.condArgNode.executeGeneric(frame));
     }
 
     @Override
@@ -74,16 +62,9 @@ public final class IfInlinedLiteralMessageWIPNode extends IfInlinedLiteralNode {
         }
     }
 
-//    @Specialization(replaces = {"evaluateCondition"})
-//    public final Object evaluateConditionGeneric(final VirtualFrame frame) {
-//        Object result = originalSubtree.executeGeneric(frame);
-//        replace(originalSubtree);
-//        return result;
-//    }
-
     @Override
     public String toString() {
-        return this.getClass().getSimpleName() + "[" + "TODO" + "]";
+        return this.getClass().getSimpleName() + "[" + "IfInlinedLiteralMessageWIPNode-TODO_RENAME" + "]";
     }
 
     @Override
@@ -91,20 +72,13 @@ public final class IfInlinedLiteralMessageWIPNode extends IfInlinedLiteralNode {
         throw new RuntimeException("replaceAfterScopeChange: This should never happen!");
     }
 
-//    public ExpressionNode getOriginalSubtree() {
-//        return originalSubtree;
-//    }
-
     /**
      * Check if the AST subtree has the shape of an increment operation.
      */
     public static boolean isIfInlinedLiteralMessageNode(ExpressionNode cond, ExpressionNode body) {
         if (cond instanceof EqualsPrim && body instanceof ReturnNonLocalNode.ReturnLocalNode) {
             EqualsPrim ep = (EqualsPrim) cond;
-            if (!(ep.getReceiver() instanceof FieldNode.FieldReadNode) || !(ep.getArgument() instanceof GenericLiteralNode))
-                return false;
-
-            return true;
+            return ep.getReceiver() instanceof FieldNode.FieldReadNode;
         }
         return false;
     }
@@ -120,6 +94,5 @@ public final class IfInlinedLiteralMessageWIPNode extends IfInlinedLiteralNode {
                 node.getExpectedBool())
                 .initialize(node.getSourceCoordinate());
         return node.replace(newNode);
-//        return newNode;
     }
 }
