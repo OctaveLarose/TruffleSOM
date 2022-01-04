@@ -28,6 +28,8 @@ public class IfInlinedLiteralNode extends NoPreEvalExprNode {
 
   protected final boolean expectedBool;
 
+  private boolean isSupernodeCandidate = true;
+
   // In case we need to revert from this optimistic optimization, keep the
   // original nodes around
   @SuppressWarnings("unused") private final ExpressionNode bodyActualNode;
@@ -53,11 +55,13 @@ public class IfInlinedLiteralNode extends NoPreEvalExprNode {
 
   @Override
   public Object executeGeneric(final VirtualFrame frame) {
-    if (IfInlinedLiteralMessageWIPNode.isIfInlinedLiteralMessageNode(this.getConditionNode(), this.getBodyNode())) {
+    if (isSupernodeCandidate && IfInlinedLiteralMessageWIPNode.isIfInlinedLiteralMessageNode(this.getConditionNode(), this.getBodyNode())) {
       CompilerDirectives.transferToInterpreterAndInvalidate();
       IfInlinedLiteralMessageWIPNode bc = IfInlinedLiteralMessageWIPNode.replaceNode(this);
       return bc.executeGeneric(frame);
     }
+
+    isSupernodeCandidate = false;
 
     if (evaluateCondition(frame) == expectedBool) {
       return bodyNode.executeGeneric(frame);
