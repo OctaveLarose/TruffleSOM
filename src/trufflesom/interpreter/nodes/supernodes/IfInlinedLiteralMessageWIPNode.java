@@ -30,7 +30,7 @@ public final class IfInlinedLiteralMessageWIPNode extends IfInlinedLiteralNode {
     @Child private ReturnNonLocalNode.ReturnLocalNode bodyNode;
 
     @Child FieldNode.FieldReadNode fieldReadNode;
-    String literalNodeValue;
+    private final String literalNodeValue;
 
     private final boolean expectedBool;
 
