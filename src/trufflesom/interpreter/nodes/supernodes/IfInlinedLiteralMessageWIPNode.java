@@ -6,9 +6,11 @@ import com.oracle.truffle.api.frame.VirtualFrame;
 import trufflesom.interpreter.nodes.ExpressionNode;
 import trufflesom.interpreter.nodes.FieldNode;
 import trufflesom.interpreter.nodes.ReturnNonLocalNode;
+import trufflesom.interpreter.nodes.literals.GenericLiteralNode;
 import trufflesom.interpreter.nodes.specialized.IfInlinedLiteralNode;
 import trufflesom.primitives.basics.EqualsPrim;
 import trufflesom.vm.constants.Nil;
+import trufflesom.vmobjects.SObject;
 
 /**
  * Matches the following AST: TODO adjust, it can be made more specific I think
@@ -28,7 +30,7 @@ public final class IfInlinedLiteralMessageWIPNode extends IfInlinedLiteralNode {
     @Child private ReturnNonLocalNode.ReturnLocalNode bodyNode;
 
     @Child FieldNode.FieldReadNode fieldReadNode;
-    @Child ExpressionNode condArgNode;
+    String literalNodeValue;
 
     private final boolean expectedBool;
 
@@ -44,11 +46,18 @@ public final class IfInlinedLiteralMessageWIPNode extends IfInlinedLiteralNode {
         this.originalSubtree = originalSubtree;
 
         this.fieldReadNode = (FieldNode.FieldReadNode) this.conditionNode.getReceiver();
-        this.condArgNode = this.conditionNode.getArgument();
+        this.literalNodeValue = (String) this.conditionNode.getArgument().executeGeneric(null);
     }
 
     public boolean evaluateCondition(final VirtualFrame frame) {
-        return this.fieldReadNode.executeGeneric(frame).equals(this.condArgNode.executeGeneric(frame));
+        Object objFieldReadVal = this.fieldReadNode.executeGeneric(frame);
+
+        if (objFieldReadVal instanceof SObject) {
+            if (((SObject) objFieldReadVal).getNumberOfFields() == 0) // Assuming this ensures it's a Nil object
+                return false;
+        }
+
+        return literalNodeValue.equals(objFieldReadVal);
     }
 
     @Override
@@ -78,7 +87,16 @@ public final class IfInlinedLiteralMessageWIPNode extends IfInlinedLiteralNode {
     public static boolean isIfInlinedLiteralMessageNode(ExpressionNode cond, ExpressionNode body) {
         if (cond instanceof EqualsPrim && body instanceof ReturnNonLocalNode.ReturnLocalNode) {
             EqualsPrim ep = (EqualsPrim) cond;
-            return ep.getReceiver() instanceof FieldNode.FieldReadNode;
+            if (!(ep.getReceiver() instanceof FieldNode.FieldReadNode))
+                return false;
+
+            if (!(ep.getArgument() instanceof GenericLiteralNode))
+                return false;
+
+            if (!(ep.getArgument().executeGeneric(null) instanceof String))
+                return false;
+
+            return true;
         }
         return false;
     }
