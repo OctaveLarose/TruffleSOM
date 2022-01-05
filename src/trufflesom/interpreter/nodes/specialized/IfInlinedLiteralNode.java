@@ -1,6 +1,7 @@
 package trufflesom.interpreter.nodes.specialized;
 
 import com.oracle.truffle.api.CompilerDirectives;
+import com.oracle.truffle.api.CompilerDirectives.CompilationFinal;
 import com.oracle.truffle.api.dsl.ImportStatic;
 import com.oracle.truffle.api.dsl.UnsupportedSpecializationException;
 import com.oracle.truffle.api.frame.VirtualFrame;
@@ -28,7 +29,7 @@ public class IfInlinedLiteralNode extends NoPreEvalExprNode {
 
   protected final boolean expectedBool;
 
-  private boolean isSupernodeCandidate = true;
+  @CompilationFinal private boolean isSupernodeCandidate = true;
 
   // In case we need to revert from this optimistic optimization, keep the
   // original nodes around
