@@ -51,12 +51,6 @@ public final class IfInlinedLiteralMessageWIPNode extends IfInlinedLiteralNode {
 
     public boolean evaluateCondition(final VirtualFrame frame) {
         Object objFieldReadVal = this.fieldReadNode.executeGeneric(frame);
-
-        if (objFieldReadVal instanceof SObject) {
-            if (((SObject) objFieldReadVal).getNumberOfFields() == 0) // Assuming this ensures it's a Nil object
-                return false;
-        }
-
         return literalNodeValue.equals(objFieldReadVal);
     }
 
