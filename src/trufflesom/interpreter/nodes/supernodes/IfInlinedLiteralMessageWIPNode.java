@@ -26,11 +26,8 @@ import trufflesom.vmobjects.SObject;
  * </pre>
  */
 public final class IfInlinedLiteralMessageWIPNode extends IfInlinedLiteralNode {
-    @Child private EqualsPrim conditionNode;
     @Child private ReturnNonLocalNode.ReturnLocalNode bodyNode;
-
-    @Child FieldNode.FieldReadNode fieldReadNode;
-    private final String literalNodeValue;
+    @Child private FieldReadEqualsStringLiteralNode equalityNode;
 
     private final boolean expectedBool;
 
@@ -40,25 +37,17 @@ public final class IfInlinedLiteralMessageWIPNode extends IfInlinedLiteralNode {
                                 final ExpressionNode originalSubtree, final ReturnNonLocalNode.ReturnLocalNode inlinedBodyNode,
                                 final boolean expectedBool) {
         super(conditionNode, originalSubtree, inlinedBodyNode, expectedBool);
-        this.conditionNode = conditionNode;
         this.expectedBool = expectedBool;
         this.bodyNode = inlinedBodyNode;
         this.originalSubtree = originalSubtree;
-
-        this.fieldReadNode = (FieldNode.FieldReadNode) this.conditionNode.getReceiver();
-        this.literalNodeValue = (String) this.conditionNode.getArgument().executeGeneric(null);
-    }
-
-    public boolean evaluateCondition(final VirtualFrame frame) {
-        Object objFieldReadVal = this.fieldReadNode.executeGeneric(frame);
-        return literalNodeValue.equals(objFieldReadVal);
+        this.equalityNode = new FieldReadEqualsStringLiteralNode(conditionNode);
     }
 
     @Override
     public Object executeGeneric(final VirtualFrame frame) {
         CompilerDirectives.transferToInterpreterAndInvalidate();
 
-        if (evaluateCondition(frame) == expectedBool) {
+        if (equalityNode.executeBoolean(frame) == expectedBool) {
             return bodyNode.executeGeneric(frame);
         } else {
             return Nil.nilObject;
