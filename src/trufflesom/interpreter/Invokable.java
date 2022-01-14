@@ -101,4 +101,8 @@ public abstract class Invokable extends RootNode implements WithSource {
   public PreevaluatedExpression copyTrivialNode() {
     return expressionOrSequence.copyTrivialNode();
   }
+
+  public ExpressionNode getExpressionOrSequence() {
+    return expressionOrSequence;
+  }
 }

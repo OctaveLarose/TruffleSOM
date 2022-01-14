@@ -31,16 +31,25 @@ public final class IfInlinedLiteralMessageWIPNode extends IfInlinedLiteralNode {
 
     private final boolean expectedBool;
 
-    @SuppressWarnings("unused") private final ExpressionNode originalSubtree;
+//    @SuppressWarnings("unused") private final ExpressionNode originalSubtree;
 
     public IfInlinedLiteralMessageWIPNode(final EqualsPrim conditionNode,
-                                final ExpressionNode originalSubtree, final ReturnNonLocalNode.ReturnLocalNode inlinedBodyNode,
-                                final boolean expectedBool) {
+                                          final ExpressionNode originalSubtree,
+                                          final ReturnNonLocalNode.ReturnLocalNode inlinedBodyNode,
+                                          final boolean expectedBool) {
         super(conditionNode, originalSubtree, inlinedBodyNode, expectedBool);
         this.expectedBool = expectedBool;
         this.bodyNode = inlinedBodyNode;
-        this.originalSubtree = originalSubtree;
         this.equalityNode = new FieldReadEqualsStringLiteralNode(conditionNode);
+    }
+
+    public IfInlinedLiteralMessageWIPNode(final FieldReadEqualsStringLiteralNode conditionNode,
+                                          final ReturnNonLocalNode.ReturnLocalNode inlinedBodyNode,
+                                          final boolean expectedBool) {
+        super(conditionNode, null, inlinedBodyNode, expectedBool);
+        this.expectedBool = expectedBool;
+        this.bodyNode = inlinedBodyNode;
+        this.equalityNode = conditionNode;
     }
 
     @Override

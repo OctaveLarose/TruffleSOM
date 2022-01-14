@@ -40,6 +40,7 @@ import com.oracle.truffle.api.source.SourceSection;
 
 import bd.primitives.nodes.PreevaluatedExpression;
 import trufflesom.interpreter.Invokable;
+import trufflesom.interpreter.nodes.ExpressionNode;
 import trufflesom.vm.Classes;
 
 
@@ -88,6 +89,10 @@ public abstract class SInvokable extends SAbstractObject {
       } else {
         return signature.toString();
       }
+    }
+
+    public ExpressionNode getExpressionOrSequence() {
+      return this.invokable.getExpressionOrSequence();
     }
   }
 
