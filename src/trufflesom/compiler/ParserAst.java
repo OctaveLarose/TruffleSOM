@@ -288,18 +288,19 @@ public class ParserAst extends Parser<MethodGenerationContext> {
     } while (sym == Keyword);
 
     SSymbol msg = symbolFor(kw.toString());
-
     long coodWithL = getCoordWithLength(coord);
 
     if (msg.getString().equals("ifTrue:") || msg.getString().equals("ifFalse:")) {
       if (receiver instanceof FieldReadEqualsStringLiteralNode) {
         // arguments[1] is always a BlockNodeWithContext... isn't it?
-//        System.out.println(arguments.get(1).getClass().getSimpleName());
         BlockNodeWithContext blockNode = (BlockNodeWithContext) arguments.get(1);
-        if (blockNode.getMethod().getExpressionOrSequence() instanceof ReturnNonLocalNode) {
-          return new IfInlinedLiteralMessageWIPNode((FieldReadEqualsStringLiteralNode) receiver,
-                  blockNode.getMethod().getExpressionOrSequence(),
-                  msg.getString().equals("ifTrue:"));
+        if (blockNode.getMethod().getInvokable().getExpressionOrSequence() instanceof ReturnNonLocalNode) {
+          ExpressionNode inlinedReturnNode = blockNode.inline(mgenc);
+          if (inlinedReturnNode instanceof ReturnNonLocalNode.ReturnLocalNode) {
+            return new IfInlinedLiteralMessageWIPNode((FieldReadEqualsStringLiteralNode) receiver,
+                    (ReturnNonLocalNode.ReturnLocalNode) inlinedReturnNode,
+                    msg.getString().equals("ifTrue:"));
+          }
         }
       }
     }
