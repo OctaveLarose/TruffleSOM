@@ -69,10 +69,10 @@ public final class IfInlinedLiteralMessageWIPNode extends IfInlinedLiteralNode {
         return this.getClass().getSimpleName() + "[" + "IfInlinedLiteralMessageWIPNode-TODO_RENAME" + "]";
     }
 
-    @Override
-    public void replaceAfterScopeChange(final ScopeAdaptationVisitor inliner) {
-        throw new RuntimeException("replaceAfterScopeChange: This should never happen!");
-    }
+//    @Override
+//    public void replaceAfterScopeChange(final ScopeAdaptationVisitor inliner) {
+//        throw new RuntimeException("replaceAfterScopeChange: This should never happen!");
+//    }
 
     /**
      * Check if the AST subtree has the shape of an increment operation.
