@@ -31,6 +31,7 @@ public final class IfInlinedLiteralMessageWIPNode extends IfInlinedLiteralNode {
 
     private final boolean expectedBool;
 
+
 //    @SuppressWarnings("unused") private final ExpressionNode originalSubtree;
 
     public IfInlinedLiteralMessageWIPNode(final EqualsPrim conditionNode,
