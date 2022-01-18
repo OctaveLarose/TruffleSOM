@@ -55,7 +55,7 @@ public final class IfInlinedLiteralMessageWIPNode extends IfInlinedLiteralNode {
 
     @Override
     public Object executeGeneric(final VirtualFrame frame) {
-        CompilerDirectives.transferToInterpreterAndInvalidate();
+//        CompilerDirectives.transferToInterpreterAndInvalidate();
 
         if (equalityNode.executeBoolean(frame) == expectedBool) {
             return bodyNode.executeGeneric(frame);

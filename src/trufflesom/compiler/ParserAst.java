@@ -294,6 +294,7 @@ public class ParserAst extends Parser<MethodGenerationContext> {
       if (receiver instanceof FieldReadEqualsStringLiteralNode) {
         // arguments[1] is always a BlockNodeWithContext... isn't it?
         BlockNodeWithContext blockNode = (BlockNodeWithContext) arguments.get(1);
+        // mgenc.throwsNonLocalReturn isn't enough, sadly
         if (blockNode.getMethod().getInvokable().getExpressionOrSequence() instanceof ReturnNonLocalNode) {
           ExpressionNode inlinedReturnNode = blockNode.inline(mgenc);
           if (inlinedReturnNode instanceof ReturnNonLocalNode.ReturnLocalNode) {
