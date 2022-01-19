@@ -1,6 +1,7 @@
 package trufflesom.interpreter.nodes.supernodes;
 
 import com.oracle.truffle.api.frame.VirtualFrame;
+import com.oracle.truffle.api.profiles.ConditionProfile;
 import trufflesom.interpreter.nodes.FieldNode;
 import trufflesom.interpreter.nodes.NoPreEvalExprNode;
 import trufflesom.interpreter.nodes.literals.LiteralNode;
@@ -22,6 +23,8 @@ import trufflesom.primitives.basics.EqualsPrim;
  * </pre>
  */
 public final class FieldReadEqualsStringLiteralNode extends NoPreEvalExprNode {
+    private final ConditionProfile condProf = ConditionProfile.createCountingProfile();
+
     @Child FieldNode.FieldReadNode fieldReadNode;
     private final String literalNodeValue;
 
@@ -32,7 +35,7 @@ public final class FieldReadEqualsStringLiteralNode extends NoPreEvalExprNode {
 
     public boolean evaluateCondition(final VirtualFrame frame) {
         Object objFieldReadVal = this.fieldReadNode.executeGeneric(frame);
-        return literalNodeValue.equals(objFieldReadVal);
+        return condProf.profile(literalNodeValue.equals(objFieldReadVal));
     }
 
     public boolean executeBoolean(final VirtualFrame frame) {
