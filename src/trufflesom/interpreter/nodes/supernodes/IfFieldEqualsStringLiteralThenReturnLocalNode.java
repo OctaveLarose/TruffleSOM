@@ -1,7 +1,9 @@
 package trufflesom.interpreter.nodes.supernodes;
 
 import com.oracle.truffle.api.frame.VirtualFrame;
+import trufflesom.interpreter.nodes.ExpressionNode;
 import trufflesom.interpreter.nodes.ReturnNonLocalNode;
+import trufflesom.interpreter.nodes.literals.BlockNode;
 import trufflesom.interpreter.nodes.specialized.IfInlinedLiteralNode;
 import trufflesom.vm.constants.Nil;
 
@@ -44,6 +46,19 @@ public final class IfFieldEqualsStringLiteralThenReturnLocalNode extends IfInlin
         } else {
             return Nil.nilObject;
         }
+    }
+
+    public static boolean isIfInlinedLiteralMessageNode(ExpressionNode conditionNode, ExpressionNode bodyNode) {
+        return conditionNode instanceof FieldReadEqualsStringLiteralNode && bodyNode instanceof ReturnNonLocalNode.ReturnLocalNode;
+    }
+
+    public static IfFieldEqualsStringLiteralThenReturnLocalNode replaceNode(IfInlinedLiteralNode ifInlinedLiteralNode) {
+        IfFieldEqualsStringLiteralThenReturnLocalNode newNode = new IfFieldEqualsStringLiteralThenReturnLocalNode(
+                (FieldReadEqualsStringLiteralNode) ifInlinedLiteralNode.getConditionNode(),
+                (ReturnNonLocalNode.ReturnLocalNode) ifInlinedLiteralNode.getBodyNode(),
+                ifInlinedLiteralNode.getExpectedBool())
+                .initialize(ifInlinedLiteralNode.getSourceCoordinate());
+        return ifInlinedLiteralNode.replace(newNode);
     }
 
     @Override

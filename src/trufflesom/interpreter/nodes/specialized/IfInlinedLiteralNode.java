@@ -1,5 +1,6 @@
 package trufflesom.interpreter.nodes.specialized;
 
+import com.oracle.truffle.api.CompilerDirectives;
 import com.oracle.truffle.api.dsl.ImportStatic;
 import com.oracle.truffle.api.dsl.UnsupportedSpecializationException;
 import com.oracle.truffle.api.frame.VirtualFrame;
@@ -27,6 +28,8 @@ public class IfInlinedLiteralNode extends NoPreEvalExprNode {
 
   protected final boolean expectedBool;
 
+  @CompilerDirectives.CompilationFinal protected boolean isSupernodeCandidate;
+
   // In case we need to revert from this optimistic optimization, keep the
   // original nodes around
   @SuppressWarnings("unused") private final ExpressionNode bodyActualNode;
@@ -38,6 +41,8 @@ public class IfInlinedLiteralNode extends NoPreEvalExprNode {
     this.expectedBool = expectedBool;
     this.bodyNode = inlinedBodyNode;
     this.bodyActualNode = originalBodyNode;
+
+    this.isSupernodeCandidate = true;
   }
 
   public boolean evaluateCondition(final VirtualFrame frame) {
@@ -52,6 +57,15 @@ public class IfInlinedLiteralNode extends NoPreEvalExprNode {
 
   @Override
   public Object executeGeneric(final VirtualFrame frame) {
+    if (isSupernodeCandidate && IfFieldEqualsStringLiteralThenReturnLocalNode.isIfInlinedLiteralMessageNode(this.getConditionNode(), this.getBodyNode())) {
+      CompilerDirectives.transferToInterpreterAndInvalidate();
+      IfFieldEqualsStringLiteralThenReturnLocalNode bc = IfFieldEqualsStringLiteralThenReturnLocalNode.replaceNode(this);
+      return bc.executeGeneric(frame);
+    }
+
+    isSupernodeCandidate = false;
+
+
     if (evaluateCondition(frame) == expectedBool) {
       return bodyNode.executeGeneric(frame);
     } else {

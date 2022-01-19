@@ -288,21 +288,6 @@ public class ParserAst extends Parser<MethodGenerationContext> {
     SSymbol msg = symbolFor(kw.toString());
     long coodWithL = getCoordWithLength(coord);
 
-    if (msg.getString().equals("ifTrue:") || msg.getString().equals("ifFalse:")) {
-      if (receiver instanceof FieldReadEqualsStringLiteralNode) {
-        BlockNodeWithContext blockNode = (BlockNodeWithContext) arguments.get(1);
-        // mgenc.throwsNonLocalReturn isn't enough, sadly
-        if (blockNode.getMethod().getInvokable().getExpressionOrSequence() instanceof ReturnNonLocalNode) {
-          ExpressionNode inlinedReturnNode = blockNode.inline(mgenc);
-          if (inlinedReturnNode instanceof ReturnNonLocalNode.ReturnLocalNode) {
-            return new IfFieldEqualsStringLiteralThenReturnLocalNode((FieldReadEqualsStringLiteralNode) receiver,
-                    (ReturnNonLocalNode.ReturnLocalNode) inlinedReturnNode,
-                    msg.getString().equals("ifTrue:"));
-          }
-        }
-      }
-    }
-
     ExpressionNode inlined = inlinableNodes.inline(msg, arguments, mgenc, coodWithL);
     if (inlined != null) {
       assert !isSuperSend;
