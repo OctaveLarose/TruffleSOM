@@ -7,14 +7,24 @@ import trufflesom.interpreter.nodes.literals.LiteralNode;
 import trufflesom.primitives.basics.EqualsPrim;
 
 // Should inherit from EqualsPrim, probably?
+/**
+ * Supernode designed around the JSON micro benchmark.
+ * <p>
+ * Matches the following AST:
+ * <pre>
+ * EqualsPrim
+ *     FieldNode.FieldReadNode
+ *     LiteralNode
+ * </pre>
+ * <p>
+ * ...and replaces it with:
+ * <pre>
+ * FieldReadEqualsStringLiteralNode
+ * </pre>
+ */
 public final class FieldReadEqualsStringLiteralNode extends NoPreEvalExprNode {
     @Child FieldNode.FieldReadNode fieldReadNode;
     private final String literalNodeValue;
-
-    FieldReadEqualsStringLiteralNode(EqualsPrim conditionNode) {
-        this.fieldReadNode = (FieldNode.FieldReadNode) conditionNode.getReceiver();
-        this.literalNodeValue = (String) conditionNode.getArgument().executeGeneric(null);
-    }
 
     public FieldReadEqualsStringLiteralNode(FieldNode.FieldReadNode fieldReadNode, LiteralNode literalNode) {
         this.fieldReadNode = fieldReadNode;

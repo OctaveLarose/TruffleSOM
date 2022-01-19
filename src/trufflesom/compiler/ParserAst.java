@@ -29,7 +29,6 @@ import com.oracle.truffle.api.source.Source;
 import bd.basic.ProgramDefinitionError;
 import bd.inlining.InlinableNodes;
 import bd.tools.structure.StructuralProbe;
-import trufflesom.interpreter.Method;
 import trufflesom.interpreter.nodes.*;
 import trufflesom.interpreter.nodes.literals.BlockNode;
 import trufflesom.interpreter.nodes.literals.BlockNode.BlockNodeWithContext;
@@ -39,9 +38,8 @@ import trufflesom.interpreter.nodes.literals.IntegerLiteralNode;
 import trufflesom.interpreter.nodes.literals.LiteralNode;
 import trufflesom.interpreter.nodes.specialized.IntIncrementNodeGen;
 import trufflesom.interpreter.nodes.supernodes.FieldReadEqualsStringLiteralNode;
-import trufflesom.interpreter.nodes.supernodes.IfInlinedLiteralMessageWIPNode;
+import trufflesom.interpreter.nodes.supernodes.IfFieldEqualsStringLiteralThenReturnLocalNode;
 import trufflesom.primitives.Primitives;
-import trufflesom.primitives.basics.EqualsPrimFactory;
 import trufflesom.vm.Globals;
 import trufflesom.vmobjects.SArray;
 import trufflesom.vmobjects.SClass;
@@ -292,13 +290,12 @@ public class ParserAst extends Parser<MethodGenerationContext> {
 
     if (msg.getString().equals("ifTrue:") || msg.getString().equals("ifFalse:")) {
       if (receiver instanceof FieldReadEqualsStringLiteralNode) {
-        // arguments[1] is always a BlockNodeWithContext... isn't it?
         BlockNodeWithContext blockNode = (BlockNodeWithContext) arguments.get(1);
         // mgenc.throwsNonLocalReturn isn't enough, sadly
         if (blockNode.getMethod().getInvokable().getExpressionOrSequence() instanceof ReturnNonLocalNode) {
           ExpressionNode inlinedReturnNode = blockNode.inline(mgenc);
           if (inlinedReturnNode instanceof ReturnNonLocalNode.ReturnLocalNode) {
-            return new IfInlinedLiteralMessageWIPNode((FieldReadEqualsStringLiteralNode) receiver,
+            return new IfFieldEqualsStringLiteralThenReturnLocalNode((FieldReadEqualsStringLiteralNode) receiver,
                     (ReturnNonLocalNode.ReturnLocalNode) inlinedReturnNode,
                     msg.getString().equals("ifTrue:"));
           }
