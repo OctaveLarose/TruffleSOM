@@ -2,9 +2,12 @@ package trufflesom.interpreter.nodes.supernodes;
 
 import com.oracle.truffle.api.frame.VirtualFrame;
 import trufflesom.interpreter.nodes.ExpressionNode;
+import trufflesom.interpreter.nodes.FieldNode;
 import trufflesom.interpreter.nodes.ReturnNonLocalNode;
-import trufflesom.interpreter.nodes.literals.BlockNode;
+import trufflesom.interpreter.nodes.literals.GenericLiteralNode;
+import trufflesom.interpreter.nodes.literals.LiteralNode;
 import trufflesom.interpreter.nodes.specialized.IfInlinedLiteralNode;
+import trufflesom.primitives.basics.EqualsPrim;
 import trufflesom.vm.constants.Nil;
 
 /**
@@ -48,13 +51,25 @@ public final class IfFieldEqualsStringLiteralThenReturnLocalNode extends IfInlin
         }
     }
 
-    public static boolean isIfInlinedLiteralMessageNode(ExpressionNode conditionNode, ExpressionNode bodyNode) {
-        return conditionNode instanceof FieldReadEqualsStringLiteralNode && bodyNode instanceof ReturnNonLocalNode.ReturnLocalNode;
+    public static boolean isIfInlinedLiteralMessageNode(ExpressionNode cond, ExpressionNode body) {
+        if (cond instanceof EqualsPrim && body instanceof ReturnNonLocalNode.ReturnLocalNode) {
+            EqualsPrim ep = (EqualsPrim) cond;
+            if (!(ep.getReceiver() instanceof FieldNode.FieldReadNode))
+                return false;
+
+            if (!(ep.getArgument() instanceof GenericLiteralNode))
+                return false;
+
+            return ep.getArgument().executeGeneric(null) instanceof String;
+        }
+        return false;
     }
 
     public static IfFieldEqualsStringLiteralThenReturnLocalNode replaceNode(IfInlinedLiteralNode ifInlinedLiteralNode) {
+        EqualsPrim eqPrim = (EqualsPrim) ifInlinedLiteralNode.getConditionNode();
+
         IfFieldEqualsStringLiteralThenReturnLocalNode newNode = new IfFieldEqualsStringLiteralThenReturnLocalNode(
-                (FieldReadEqualsStringLiteralNode) ifInlinedLiteralNode.getConditionNode(),
+                new FieldReadEqualsStringLiteralNode((FieldNode.FieldReadNode) eqPrim.getReceiver(), (LiteralNode) eqPrim.getArgument()),
                 (ReturnNonLocalNode.ReturnLocalNode) ifInlinedLiteralNode.getBodyNode(),
                 ifInlinedLiteralNode.getExpectedBool())
                 .initialize(ifInlinedLiteralNode.getSourceCoordinate());

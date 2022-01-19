@@ -6,7 +6,6 @@ import trufflesom.interpreter.nodes.NoPreEvalExprNode;
 import trufflesom.interpreter.nodes.literals.LiteralNode;
 import trufflesom.primitives.basics.EqualsPrim;
 
-// Should inherit from EqualsPrim, probably?
 /**
  * Supernode designed around the JSON micro benchmark.
  * <p>
