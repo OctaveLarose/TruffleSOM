@@ -12,14 +12,12 @@ import bd.inlining.Inline;
 import bd.inlining.Inline.False;
 import bd.inlining.Inline.True;
 import trufflesom.interpreter.nodes.ExpressionNode;
-import trufflesom.interpreter.nodes.supernodes.IfFieldEqualsStringLiteralThenReturnLocalNode;
 import trufflesom.interpreter.nodes.NoPreEvalExprNode;
 import trufflesom.vm.constants.Nil;
 
 
 @Inline(selector = "ifTrue:", inlineableArgIdx = 1, additionalArgs = True.class)
 @Inline(selector = "ifFalse:", inlineableArgIdx = 1, additionalArgs = False.class)
-@ImportStatic({IfFieldEqualsStringLiteralThenReturnLocalNode.class})
 public class IfInlinedLiteralNode extends NoPreEvalExprNode {
   protected final ConditionProfile condProf = ConditionProfile.createCountingProfile();
 
@@ -27,8 +25,6 @@ public class IfInlinedLiteralNode extends NoPreEvalExprNode {
   @Child protected ExpressionNode bodyNode;
 
   protected final boolean expectedBool;
-
-  @CompilerDirectives.CompilationFinal protected boolean isSupernodeCandidate;
 
   // In case we need to revert from this optimistic optimization, keep the
   // original nodes around
@@ -41,8 +37,6 @@ public class IfInlinedLiteralNode extends NoPreEvalExprNode {
     this.expectedBool = expectedBool;
     this.bodyNode = inlinedBodyNode;
     this.bodyActualNode = originalBodyNode;
-
-    this.isSupernodeCandidate = true;
   }
 
   public boolean evaluateCondition(final VirtualFrame frame) {
@@ -57,15 +51,6 @@ public class IfInlinedLiteralNode extends NoPreEvalExprNode {
 
   @Override
   public Object executeGeneric(final VirtualFrame frame) {
-    if (isSupernodeCandidate && IfFieldEqualsStringLiteralThenReturnLocalNode.isIfInlinedLiteralMessageNode(this.getConditionNode(), this.getBodyNode())) {
-      CompilerDirectives.transferToInterpreterAndInvalidate();
-      IfFieldEqualsStringLiteralThenReturnLocalNode bc = IfFieldEqualsStringLiteralThenReturnLocalNode.replaceNode(this);
-      return bc.executeGeneric(frame);
-    }
-
-    isSupernodeCandidate = false;
-
-
     if (evaluateCondition(frame) == expectedBool) {
       return bodyNode.executeGeneric(frame);
     } else {
@@ -82,13 +67,4 @@ public class IfInlinedLiteralNode extends NoPreEvalExprNode {
   public ExpressionNode getBodyNode() {
     return bodyNode;
   }
-
-  public ExpressionNode getBodyActualNode() {
-    return bodyActualNode;
-  }
-
-  public boolean getExpectedBool() {
-    return expectedBool;
-  }
-
 }
