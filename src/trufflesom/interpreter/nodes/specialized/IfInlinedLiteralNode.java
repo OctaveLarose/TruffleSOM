@@ -52,6 +52,12 @@ public class IfInlinedLiteralNode extends NoPreEvalExprNode {
 
   @Override
   public Object executeGeneric(final VirtualFrame frame) {
+    if (IfInlinedLiteralMessageWIPNode.isIfInlinedLiteralMessageNode(this.getConditionNode(), this.getBodyNode())) {
+      CompilerDirectives.transferToInterpreterAndInvalidate();
+      IfInlinedLiteralMessageWIPNode bc = IfInlinedLiteralMessageWIPNode.replaceNode(this);
+      return bc.executeGeneric(frame);
+    }
+
     if (evaluateCondition(frame) == expectedBool) {
       return bodyNode.executeGeneric(frame);
     } else {
