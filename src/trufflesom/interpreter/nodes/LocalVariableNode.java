@@ -150,8 +150,8 @@ public abstract class LocalVariableNode extends NoPreEvalExprNode
      */
     @Specialization(guards = {"isLongKind(expValue)", "isSquareAssignment"})
     public final long writeLongAndSetSquareToLocal(final VirtualFrame frame,
-                                                       final long expValue,
-                                                       final @Cached("isSquareAssignmentOperation(getExp())") boolean isSquareAssignment) {
+                                                   final long expValue,
+                                                   final @Cached("isSquareAssignmentOperation(getExp())") boolean isSquareAssignment) {
       CompilerDirectives.transferToInterpreterAndInvalidate();
       frame.setLong(slot, expValue);
       AssignLocalSquareToLocalNode.replaceNode(this);
@@ -169,8 +169,8 @@ public abstract class LocalVariableNode extends NoPreEvalExprNode
      */
     @Specialization(guards = {"isDoubleKind(expValue)", "isSquareAssignment"})
     public final double writeDoubleAndSetSquareToLocal(final VirtualFrame frame,
-                                                   final double expValue,
-                                                   final @Cached("isSquareAssignmentOperation(getExp())") boolean isSquareAssignment) {
+                                                       final double expValue,
+                                                       final @Cached("isSquareAssignmentOperation(getExp())") boolean isSquareAssignment) {
       CompilerDirectives.transferToInterpreterAndInvalidate();
       frame.setDouble(slot, expValue);
       AssignLocalSquareToLocalNode.replaceNode(this);

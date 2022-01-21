@@ -1,6 +1,5 @@
 package trufflesom.interpreter.nodes.specialized;
 
-import com.oracle.truffle.api.dsl.ImportStatic;
 import com.oracle.truffle.api.dsl.UnsupportedSpecializationException;
 import com.oracle.truffle.api.frame.VirtualFrame;
 import com.oracle.truffle.api.nodes.Node;
@@ -18,7 +17,6 @@ import trufflesom.vm.constants.Nil;
 
 @Inline(selector = "ifTrue:", inlineableArgIdx = 1, additionalArgs = True.class)
 @Inline(selector = "ifFalse:", inlineableArgIdx = 1, additionalArgs = False.class)
-@ImportStatic({IfFieldEqualsStringLiteralThenReturnLocalNode.class})
 public class IfInlinedLiteralNode extends NoPreEvalExprNode {
   protected final ConditionProfile condProf = ConditionProfile.createCountingProfile();
 
@@ -46,18 +44,12 @@ public class IfInlinedLiteralNode extends NoPreEvalExprNode {
     } catch (UnexpectedResultException e) {
       // TODO: should rewrite to a node that does a proper message send...
       throw new UnsupportedSpecializationException(this,
-              new Node[] {conditionNode}, e.getResult());
+          new Node[] {conditionNode}, e.getResult());
     }
   }
 
   @Override
   public Object executeGeneric(final VirtualFrame frame) {
-    if (IfInlinedLiteralMessageWIPNode.isIfInlinedLiteralMessageNode(this.getConditionNode(), this.getBodyNode())) {
-      CompilerDirectives.transferToInterpreterAndInvalidate();
-      IfInlinedLiteralMessageWIPNode bc = IfInlinedLiteralMessageWIPNode.replaceNode(this);
-      return bc.executeGeneric(frame);
-    }
-
     if (evaluateCondition(frame) == expectedBool) {
       return bodyNode.executeGeneric(frame);
     } else {
