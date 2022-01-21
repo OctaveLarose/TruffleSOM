@@ -2,6 +2,7 @@ package trufflesom.interpreter.nodes.supernodes;
 
 import bd.inlining.ScopeAdaptationVisitor;
 import com.oracle.truffle.api.dsl.Specialization;
+import com.oracle.truffle.api.frame.FrameSlot;
 import com.oracle.truffle.api.frame.FrameSlotTypeException;
 import com.oracle.truffle.api.frame.VirtualFrame;
 import trufflesom.compiler.Variable;
@@ -24,37 +25,27 @@ import trufflesom.primitives.arithmetic.MultiplicationPrim;
  * </pre>
  */
 public abstract class AssignLocalSquareToLocalNode extends LocalVariableNode {
-    private final Variable.Local squaredVar;
+    private final FrameSlot squaredVarSlot;
     private final LocalVariableNode originalSubtree;
 
     public AssignLocalSquareToLocalNode(final Variable.Local variable,
                                         final Variable.Local squaredVar,
                                         final LocalVariableNode originalSubtree) {
         super(variable);
-        this.squaredVar = squaredVar;
+        this.squaredVarSlot = squaredVar.getSlot();
         this.originalSubtree = originalSubtree;
-    }
-
-    public AssignLocalSquareToLocalNode(final AssignLocalSquareToLocalNode node) {
-        super(node.local);
-        this.squaredVar = node.getSquaredVar();
-        this.originalSubtree = node.getOriginalSubtree();
-    }
-
-    public Variable.Local getSquaredVar() {
-        return squaredVar;
     }
 
     @Specialization(rewriteOn = {FrameSlotTypeException.class, ArithmeticException.class})
     public final long writeLong(final VirtualFrame frame) throws FrameSlotTypeException {
-        long newValue = Math.multiplyExact(frame.getLong(this.squaredVar.getSlot()), frame.getLong(this.squaredVar.getSlot()));
+        long newValue = Math.multiplyExact(frame.getLong(this.squaredVarSlot), frame.getLong(this.squaredVarSlot));
         frame.setLong(slot, newValue);
         return newValue;
     }
 
     @Specialization(rewriteOn = {FrameSlotTypeException.class, ArithmeticException.class})
     public final double writeDouble(final VirtualFrame frame) throws FrameSlotTypeException {
-        double newValue = frame.getDouble(this.squaredVar.getSlot()) * frame.getDouble(this.squaredVar.getSlot());
+        double newValue = frame.getDouble(this.squaredVarSlot) * frame.getDouble(this.squaredVarSlot);
         frame.setDouble(slot, newValue);
         return newValue;
     }
@@ -73,17 +64,12 @@ public abstract class AssignLocalSquareToLocalNode extends LocalVariableNode {
 
     @Override
     public void replaceAfterScopeChange(final ScopeAdaptationVisitor inliner) {
-        // Note: not sure ScopeAdaptationVisitor is the right one here (original used InliningVisitor)
         /*
          * This should never happen because ``replaceAfterScopeChange`` is only called in the
          * parsing stage, whereas the ``IncrementOperationNode`` superinstruction is only inserted
          * into the AST *after* parsing.
          */
         throw new RuntimeException("replaceAfterScopeChange: This should never happen!");
-    }
-
-    public LocalVariableNode getOriginalSubtree() {
-        return originalSubtree;
     }
 
     /**
