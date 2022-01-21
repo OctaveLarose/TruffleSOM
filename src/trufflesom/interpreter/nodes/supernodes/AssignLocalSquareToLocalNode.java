@@ -61,7 +61,7 @@ public abstract class AssignLocalSquareToLocalNode extends LocalVariableNode {
 
     @Override
     public String toString() {
-        return this.getClass().getSimpleName() + "[" + local.name + "]";
+        return this.getClass().getSimpleName() + "[ " + local.name + " ]";
     }
 
     @Override
