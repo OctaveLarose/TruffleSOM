@@ -38,14 +38,16 @@ public abstract class AssignLocalSquareToLocalNode extends LocalVariableNode {
 
     @Specialization(rewriteOn = {FrameSlotTypeException.class, ArithmeticException.class})
     public final long writeLong(final VirtualFrame frame) throws FrameSlotTypeException {
-        long newValue = Math.multiplyExact(frame.getLong(this.squaredVarSlot), frame.getLong(this.squaredVarSlot));
+        long localVarValue = frame.getLong(this.squaredVarSlot);
+        long newValue = Math.multiplyExact(localVarValue, localVarValue);
         frame.setLong(slot, newValue);
         return newValue;
     }
 
     @Specialization(rewriteOn = {FrameSlotTypeException.class, ArithmeticException.class})
     public final double writeDouble(final VirtualFrame frame) throws FrameSlotTypeException {
-        double newValue = frame.getDouble(this.squaredVarSlot) * frame.getDouble(this.squaredVarSlot);
+        double localVarValue = frame.getDouble(this.squaredVarSlot);
+        double newValue = localVarValue * localVarValue;
         frame.setDouble(slot, newValue);
         return newValue;
     }
