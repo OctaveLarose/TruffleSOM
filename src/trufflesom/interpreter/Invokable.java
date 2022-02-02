@@ -15,7 +15,7 @@ import trufflesom.vmobjects.SClass;
 import trufflesom.vmobjects.SInvokable.SMethod;
 
 
-public abstract class Invokable extends RootNode implements WithSource {
+public abstract class Invokable extends AbstractInvokable {
   protected final String name;
   protected final Source source;
   protected final long   sourceCoord;
@@ -30,7 +30,7 @@ public abstract class Invokable extends RootNode implements WithSource {
       final FrameDescriptor frameDescriptor,
       final ExpressionNode expressionOrSequence,
       final ExpressionNode uninitialized) {
-    super(SomLanguage.getCurrent(), frameDescriptor);
+    super(frameDescriptor, source, sourceCoord);
     this.name = name;
     this.source = source;
     this.sourceCoord = sourceCoord;
@@ -38,35 +38,9 @@ public abstract class Invokable extends RootNode implements WithSource {
     this.expressionOrSequence = expressionOrSequence;
   }
 
-  @SuppressWarnings("unchecked")
-  @Override
-  public Invokable initialize(final long sourceCoord) {
-    throw new UnsupportedOperationException();
-  }
-
   @Override
   public String getName() {
     return name;
-  }
-
-  @Override
-  public Source getSource() {
-    return source;
-  }
-
-  @Override
-  public boolean hasSource() {
-    return true;
-  }
-
-  @Override
-  public long getSourceCoordinate() {
-    return sourceCoord;
-  }
-
-  @Override
-  public SourceSection getSourceSection() {
-    return SourceCoordinate.createSourceSection(source, sourceCoord);
   }
 
   @Override

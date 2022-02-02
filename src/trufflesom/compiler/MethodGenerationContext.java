@@ -51,6 +51,7 @@ import bd.tools.structure.StructuralProbe;
 import trufflesom.compiler.Variable.Argument;
 import trufflesom.compiler.Variable.Internal;
 import trufflesom.compiler.Variable.Local;
+import trufflesom.interpreter.AbstractInvokable;
 import trufflesom.interpreter.LexicalScope;
 import trufflesom.interpreter.Method;
 import trufflesom.interpreter.nodes.ExpressionNode;
@@ -58,6 +59,7 @@ import trufflesom.interpreter.nodes.FieldNode;
 import trufflesom.interpreter.nodes.FieldNode.FieldReadNode;
 import trufflesom.interpreter.nodes.ReturnNonLocalNode;
 import trufflesom.interpreter.nodes.literals.BlockNode;
+import trufflesom.interpreter.supernodes.ListIsShorter;
 import trufflesom.primitives.Primitives;
 import trufflesom.vm.constants.Nil;
 import trufflesom.vmobjects.SClass;
@@ -211,13 +213,25 @@ public class MethodGenerationContext
     return assembleMethod(body, coord);
   }
 
+  private SMethod smethod(final AbstractInvokable invokable) {
+    return new SMethod(signature, invokable, embeddedBlockMethods.toArray(new SMethod[0]));
+  }
+
   protected SMethod assembleMethod(ExpressionNode body, final long coord) {
+    String className = holderGenc.getName().getString();
+    String methodName = signature.getString();
+    Source source = holderGenc.getSource();
+
+    if (className.equals("List") && methodName.equals("isShorter:than:")) {
+      return smethod(new ListIsShorter(source, coord));
+    }
+
     if (needsToCatchNonLocalReturn()) {
       body = createCatchNonLocalReturn(body, getFrameOnStackMarker(coord));
     }
 
     Method truffleMethod =
-        new Method(getMethodIdentifier(), holderGenc.getSource(), coord,
+        new Method(getMethodIdentifier(), source, coord,
             body, currentScope, (ExpressionNode) body.deepCopy());
 
     SMethod meth = new SMethod(signature, truffleMethod,
