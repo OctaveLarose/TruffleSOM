@@ -11,6 +11,7 @@ import bd.primitives.nodes.PreevaluatedExpression;
 import trufflesom.compiler.MethodGenerationContext;
 import trufflesom.compiler.Variable;
 import trufflesom.compiler.Variable.Argument;
+import trufflesom.interpreter.Invokable;
 import trufflesom.interpreter.Method;
 import trufflesom.interpreter.nodes.ExpressionNode;
 import trufflesom.vm.Classes;
@@ -93,6 +94,10 @@ public class BlockNode extends LiteralNode {
   @Override
   public ExpressionNode inline(final MethodGenerationContext mgenc) {
     return blockMethod.getInvokable().inline(mgenc, blockMethod);
+  }
+
+  public ExpressionNode getMethodInstructions() {
+    return ((Method) blockMethod.getInvokable()).getExpressionOrSequence();
   }
 
   public static final class BlockNodeWithContext extends BlockNode {

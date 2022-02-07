@@ -11,6 +11,7 @@ import bd.inlining.Inline.False;
 import bd.inlining.Inline.True;
 import trufflesom.interpreter.nodes.ExpressionNode;
 import trufflesom.interpreter.nodes.NoPreEvalExprNode;
+import trufflesom.interpreter.nodes.SequenceNode;
 import trufflesom.vm.constants.Nil;
 
 
@@ -54,5 +55,9 @@ public final class IfInlinedLiteralNode extends NoPreEvalExprNode {
     } else {
       return Nil.nilObject;
     }
+  }
+
+  public ExpressionNode getBody() {
+    return this.bodyNode;
   }
 }

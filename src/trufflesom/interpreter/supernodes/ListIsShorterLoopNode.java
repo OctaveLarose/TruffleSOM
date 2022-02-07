@@ -20,6 +20,11 @@ public class ListIsShorterLoopNode extends ExpressionNode {
         this.returnTrueNode = new ReturnNonLocalNode.ReturnLocalNode(LiteralNode.create(true), frameOnStackForReturn);
     }
 
+    public ListIsShorterLoopNode(ReturnNonLocalNode.ReturnLocalNode returnLocalNode) {
+        this.dispatchNext = new UninitializedDispatchNode(SymbolTable.symbolFor("next"));
+        this.returnTrueNode = returnLocalNode;
+    }
+
     @Override
     public Object executeGeneric(VirtualFrame frame) {
         Object[] args = frame.getArguments();

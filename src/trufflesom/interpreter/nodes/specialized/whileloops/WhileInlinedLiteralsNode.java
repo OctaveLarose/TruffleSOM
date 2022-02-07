@@ -14,6 +14,10 @@ import bd.inlining.Inline.True;
 import trufflesom.interpreter.Invokable;
 import trufflesom.interpreter.nodes.ExpressionNode;
 import trufflesom.interpreter.nodes.NoPreEvalExprNode;
+import trufflesom.interpreter.nodes.ReturnNonLocalNode;
+import trufflesom.interpreter.nodes.SequenceNode;
+import trufflesom.interpreter.nodes.specialized.IfInlinedLiteralNode;
+import trufflesom.interpreter.nodes.specialized.IfTrueIfFalseInlinedLiteralsNode;
 import trufflesom.vm.constants.Nil;
 
 
@@ -82,5 +86,14 @@ public final class WhileInlinedLiteralsNode extends NoPreEvalExprNode {
     if (current != null) {
       ((Invokable) current).propagateLoopCountThroughoutLexicalScope(count);
     }
+  }
+
+  public ReturnNonLocalNode.ReturnLocalNode getReturnLocalNode() {
+    SequenceNode seqNode = (SequenceNode) this.bodyNode;
+    IfInlinedLiteralNode iiln = (IfInlinedLiteralNode) seqNode.getExpressions()[0];
+    if (!(iiln.getBody() instanceof ReturnNonLocalNode.ReturnLocalNode))
+      return null;
+    else
+      return (ReturnNonLocalNode.ReturnLocalNode) iiln.getBody();
   }
 }

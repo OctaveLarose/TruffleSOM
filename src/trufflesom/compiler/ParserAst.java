@@ -36,6 +36,7 @@ import trufflesom.interpreter.nodes.literals.DoubleLiteralNode;
 import trufflesom.interpreter.nodes.literals.GenericLiteralNode;
 import trufflesom.interpreter.nodes.literals.IntegerLiteralNode;
 import trufflesom.interpreter.nodes.literals.LiteralNode;
+import trufflesom.interpreter.nodes.specialized.whileloops.WhileInlinedLiteralsNode;
 import trufflesom.interpreter.supernodes.ListIsShorterLoopNode;
 import trufflesom.primitives.Primitives;
 import trufflesom.vm.Globals;
@@ -283,15 +284,18 @@ public class ParserAst extends Parser<MethodGenerationContext> {
           mgenc.getHolder().getSuperClass(), msg, args, coodWithL);
     }
 
-    // TODO: checking the loop instructions instead of the method name
-    if (msg.getString().equals("whileFalse:") && mgenc.getSignature().getString().equals("isShorter:than:")) {
-//      return new ListIsShorterLoopNode(mgenc.getFrameOnStackMarker(receiver.getSourceCoordinate()));
-      return new ListIsShorterLoopNode(mgenc.getFrameOnStackMarker(getCoordWithLength(coord)));
-    }
-
     ExpressionNode inlined = inlinableNodes.inline(msg, args, mgenc, coodWithL);
     if (inlined != null) {
       assert !isSuperSend;
+      if (msg.getString().equals("whileFalse:")) {
+        WhileInlinedLiteralsNode wiln = (WhileInlinedLiteralsNode) inlined;
+//        BlockNodeWithContext blockNode1 = (BlockNodeWithContext) arguments.get(0);
+//        BlockNodeWithContext blockNode2 = (BlockNodeWithContext) arguments.get(1);
+        if (mgenc.getSignature().getString().equals("isShorter:than:")) {
+//          return new ListIsShorterLoopNode(mgenc.getFrameOnStackMarker(receiver.getSourceCoordinate()));
+          return new ListIsShorterLoopNode(wiln.getReturnLocalNode());
+        }
+      }
       return inlined;
     }
 

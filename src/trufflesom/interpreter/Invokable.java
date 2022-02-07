@@ -75,4 +75,9 @@ public abstract class Invokable extends AbstractInvokable {
   public PreevaluatedExpression copyTrivialNode() {
     return expressionOrSequence.copyTrivialNode();
   }
+
+  public ExpressionNode getExpressionOrSequence() {
+    // Added to check method instructions during parsing, should ideally be implemented differently
+    return expressionOrSequence;
+  }
 }
