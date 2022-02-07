@@ -28,16 +28,15 @@ import com.oracle.truffle.api.source.Source;
 import bd.basic.ProgramDefinitionError;
 import bd.inlining.InlinableNodes;
 import bd.tools.structure.StructuralProbe;
-import trufflesom.interpreter.nodes.ExpressionNode;
-import trufflesom.interpreter.nodes.FieldNode;
-import trufflesom.interpreter.nodes.GlobalNode;
-import trufflesom.interpreter.nodes.MessageSendNode;
+import trufflesom.interpreter.SNodeFactory;
+import trufflesom.interpreter.nodes.*;
 import trufflesom.interpreter.nodes.literals.BlockNode;
 import trufflesom.interpreter.nodes.literals.BlockNode.BlockNodeWithContext;
 import trufflesom.interpreter.nodes.literals.DoubleLiteralNode;
 import trufflesom.interpreter.nodes.literals.GenericLiteralNode;
 import trufflesom.interpreter.nodes.literals.IntegerLiteralNode;
 import trufflesom.interpreter.nodes.literals.LiteralNode;
+import trufflesom.interpreter.supernodes.ListIsShorterLoopNode;
 import trufflesom.primitives.Primitives;
 import trufflesom.vm.Globals;
 import trufflesom.vmobjects.SArray;
@@ -282,6 +281,15 @@ public class ParserAst extends Parser<MethodGenerationContext> {
     if (isSuperSend) {
       return MessageSendNode.createSuperSend(
           mgenc.getHolder().getSuperClass(), msg, args, coodWithL);
+    }
+
+    // TODO: checking the loop instructions instead of the method name
+    if (msg.getString().equals("whileFalse:") && mgenc.getSignature().getString().equals("isShorter:than:")) {
+      ReturnNonLocalNode.ReturnLocalNode rlc = new ReturnNonLocalNode.ReturnLocalNode(
+              LiteralNode.create(true),
+              mgenc.getFrameOnStackMarker(receiver.getSourceCoordinate())
+      );
+      return new ListIsShorterLoopNode(rlc);
     }
 
     ExpressionNode inlined = inlinableNodes.inline(msg, args, mgenc, coodWithL);

@@ -59,7 +59,6 @@ import trufflesom.interpreter.nodes.FieldNode;
 import trufflesom.interpreter.nodes.FieldNode.FieldReadNode;
 import trufflesom.interpreter.nodes.ReturnNonLocalNode;
 import trufflesom.interpreter.nodes.literals.BlockNode;
-import trufflesom.interpreter.supernodes.ListIsShorter;
 import trufflesom.primitives.Primitives;
 import trufflesom.vm.constants.Nil;
 import trufflesom.vmobjects.SClass;
@@ -221,10 +220,6 @@ public class MethodGenerationContext
     String className = holderGenc.getName().getString();
     String methodName = signature.getString();
     Source source = holderGenc.getSource();
-
-    if (className.equals("List") && methodName.equals("isShorter:than:")) {
-      return smethod(new ListIsShorter(source, coord));
-    }
 
     if (needsToCatchNonLocalReturn()) {
       body = createCatchNonLocalReturn(body, getFrameOnStackMarker(coord));

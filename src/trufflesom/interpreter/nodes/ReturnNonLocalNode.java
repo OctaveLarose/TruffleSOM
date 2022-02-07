@@ -105,7 +105,7 @@ public final class ReturnNonLocalNode extends ContextualNode {
     private final Internal  onStackMarkerVar;
     private final FrameSlot frameOnStackMarker;
 
-    private ReturnLocalNode(final ExpressionNode exp, final Internal onStackMarker) {
+    public ReturnLocalNode(final ExpressionNode exp, final Internal onStackMarker) {
       this.expression = exp;
 
       this.onStackMarkerVar = onStackMarker;
