@@ -1,15 +1,12 @@
 package trufflesom.interpreter.supernodes;
 
 import com.oracle.truffle.api.frame.VirtualFrame;
-import com.oracle.truffle.api.source.Source;
-import trufflesom.interpreter.SNodeFactory;
+import trufflesom.compiler.Variable;
 import trufflesom.interpreter.nodes.ExpressionNode;
-import trufflesom.interpreter.nodes.GlobalNode;
 import trufflesom.interpreter.nodes.ReturnNonLocalNode;
 import trufflesom.interpreter.nodes.dispatch.AbstractDispatchNode;
 import trufflesom.interpreter.nodes.dispatch.UninitializedDispatchNode;
 import trufflesom.interpreter.nodes.literals.LiteralNode;
-import trufflesom.interpreter.nodes.nary.BinaryExpressionNode;
 import trufflesom.vm.SymbolTable;
 import trufflesom.vm.constants.Nil;
 
@@ -18,14 +15,9 @@ public class ListIsShorterLoopNode extends ExpressionNode {
 
     @Child private ReturnNonLocalNode.ReturnLocalNode returnTrueNode;
 
-//    public ListIsShorterLoopNode(ReturnNonLocalNode returnNonLocalNode) {
-//      this.dispatchNext = new UninitializedDispatchNode(SymbolTable.symbolFor("next"));
-//      this.returnTrueNode = returnNonLocalNode;
-//    }
-
-    public ListIsShorterLoopNode(ReturnNonLocalNode.ReturnLocalNode returnLocalNode) {
+    public ListIsShorterLoopNode(Variable.Internal frameOnStackForReturn) {
         this.dispatchNext = new UninitializedDispatchNode(SymbolTable.symbolFor("next"));
-        this.returnTrueNode = returnLocalNode;
+        this.returnTrueNode = new ReturnNonLocalNode.ReturnLocalNode(LiteralNode.create(true), frameOnStackForReturn);
     }
 
     @Override
