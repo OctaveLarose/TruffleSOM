@@ -285,7 +285,8 @@ public class ParserAst extends Parser<MethodGenerationContext> {
 
     // TODO: checking the loop instructions instead of the method name
     if (msg.getString().equals("whileFalse:") && mgenc.getSignature().getString().equals("isShorter:than:")) {
-      return new ListIsShorterLoopNode(mgenc.getFrameOnStackMarker(receiver.getSourceCoordinate()));
+//      return new ListIsShorterLoopNode(mgenc.getFrameOnStackMarker(receiver.getSourceCoordinate()));
+      return new ListIsShorterLoopNode(mgenc.getFrameOnStackMarker(getCoordWithLength(coord)));
     }
 
     ExpressionNode inlined = inlinableNodes.inline(msg, args, mgenc, coodWithL);
