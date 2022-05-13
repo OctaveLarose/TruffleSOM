@@ -27,7 +27,7 @@ kernel:           ${kernel}</echo>
     <property name="svm.dir"     location="${lib.dir}/truffle/substratevm" />
     <property name="vm.dir"        location="${lib.dir}/truffle/vm" />
     <property name="compiler.dir"   location="${lib.dir}/truffle/compiler" />
-    <property name="compiler.build" location="${truffle.dir}/mxbuild/dists" />
+    <property name="compiler.build" location="${compiler.dir}/mxbuild/dists" />
     <property name="truffle.build" location="${truffle.dir}/mxbuild/dists" />
     <property name="junit.version" value="4.12" />
 
@@ -50,7 +50,17 @@ kernel:           ${kernel}</echo>
     <path id="common.cp">
         <pathelement location="${classes.dir}" />
     </path>
-    
+
+    <path id="pe-tests.cp">
+        <pathelement location="${compiler.build}/graal-test.jar" />
+        <pathelement location="${compiler.build}/graal.jar" />
+    </path>
+
+    <path id="unit-tests.cp">
+        <path refid="som.cp"/>
+        <path refid="pe-tests.cp"/>
+    </path>
+
     <path id="som.cp">
         <path refid="boot.cp"/>
         <path refid="common.cp"/>
@@ -288,44 +298,65 @@ Native Image Targets
     
     <target name="unit-test" description="Run unit tests">
         <junit haltonerror="false" haltonfailure="false" failureproperty="test.failed.ast"
-            outputtoformatters="true">
+            outputtoformatters="true" fork="true" jvm="/home/octavel/PhD_Programs/my_programs/TruffleSOM/libs/truffle/sdk/mxbuild/linux-amd64/GRAALVM_37044B12A3_JAVA17/graalvm-37044b12a3-java17-22.1.0-dev/bin/java">
+
             <jvmarg value="-ea" />
             <jvmarg value="-esa" />
             <jvmarg value="-Dsom.interp=AST" />
             <jvmarg value="-Dpolyglot.engine.WarnInterpreterOnly=false" />
-            <classpath refid="som.cp" />
-            <batchtest fork="yes" filtertrace="false">
+
+<!--            <jvmarg value="-XX:+UnlockExperimentalVMOptions" />-->
+<!--            <jvmarg value="-XX:+EnableJVMCI" />-->
+<!--            <jvmarg value="-XX:+UseJVMCICompiler" />-->
+<!--            <jvmarg value="-XX:+UseJVMCINativeLibrary"/>-->
+            <jvmarg line="-Dtruffle.class.path.append=/home/octavel/PhD_Programs/my_programs/TruffleSOM/build/classes:/home/octavel/PhD_Programs/my_programs/TruffleSOM/libs/black-diamonds/build/classes:/home/octavel/PhD_Programs/my_programs/TruffleSOM/libs/truffle/sdk/mxbuild/dists/graal-sdk.jar:/home/octavel/PhD_Programs/my_programs/TruffleSOM/libs/truffle/truffle/mxbuild/dists/truffle-api.jar" />
+            <jvmarg value="--add-opens=org.graalvm.truffle/com.oracle.truffle.api=ALL-UNNAMED" />
+            <jvmarg value="--add-opens=org.graalvm.truffle/com.oracle.truffle.api.instrumentation=ALL-UNNAMED" />
+            <jvmarg value="--add-opens=org.graalvm.truffle/com.oracle.truffle.api.interop=ALL-UNNAMED" />
+            <jvmarg value="--add-opens=org.graalvm.truffle/com.oracle.truffle.api.nodes=ALL-UNNAMED" />
+            <jvmarg value="--add-opens=org.graalvm.truffle/com.oracle.truffle.api.source=ALL-UNNAMED" />
+            <jvmarg value="--add-opens=org.graalvm.truffle/com.oracle.truffle.api.dsl=ALL-UNNAMED" />
+            <jvmarg value="--add-opens=org.graalvm.truffle/com.oracle.truffle.api.frame=ALL-UNNAMED" />
+<!--            <jvmarg line="&#45;&#45;module-path=/home/octavel/PhD_Programs/my_programs/TruffleSOM/libs/truffle/sdk/mxbuild/dists/graal-sdk.jar:/home/octavel/PhD_Programs/my_programs/TruffleSOM/libs/truffle/truffle/mxbuild/dists/truffle-api.jar" />-->
+<!--            <jvmarg line="&#45;&#45;upgrade-module-path=/home/octavel/PhD_Programs/my_programs/TruffleSOM/libs/truffle/compiler/mxbuild/dists/graal-truffle-compiler-libgraal.jar"/>-->
+
+<!--            Not sure that's necessary.-->
+            <classpath refid="unit-tests.cp" />
+<!--            <classpath refid="som.cp" />-->
+
+            <batchtest filtertrace="false">
               <fileset dir="tests">
-                  <include name="**/*Test*.java"/>
+<!--                  <include name="**/*Test*.java"/>-->
+                  <include name="**/PartialEvalTests.java"/>
               </fileset>
             </batchtest>
             <formatter type="brief" usefile="false"/>
         </junit>
         
-        <junit haltonerror="false" haltonfailure="false" failureproperty="test.failed.bc"
-            outputtoformatters="true">
-            <jvmarg value="-ea" />
-            <jvmarg value="-esa" />
-            <jvmarg value="-Dsom.interp=BC" />
-            <jvmarg value="-Dpolyglot.engine.WarnInterpreterOnly=false" />
-            <classpath refid="som.cp" />
-            <batchtest fork="yes" filtertrace="false">
-              <fileset dir="tests">
-                  <include name="**/*Test*.java"/>
-              </fileset>
-            </batchtest>
-            <formatter type="brief" usefile="false"/>
-        </junit>
+<!--        <junit haltonerror="false" haltonfailure="false" failureproperty="test.failed.bc"-->
+<!--            outputtoformatters="true">-->
+<!--            <jvmarg value="-ea" />-->
+<!--            <jvmarg value="-esa" />-->
+<!--            <jvmarg value="-Dsom.interp=BC" />-->
+<!--            <jvmarg value="-Dpolyglot.engine.WarnInterpreterOnly=false" />-->
+<!--            <classpath refid="som.cp" />-->
+<!--            <batchtest fork="yes" filtertrace="false">-->
+<!--              <fileset dir="tests">-->
+<!--                  <include name="**/*Test*.java"/>-->
+<!--              </fileset>-->
+<!--            </batchtest>-->
+<!--            <formatter type="brief" usefile="false"/>-->
+<!--        </junit>-->
 
-        <java classname="trufflesom.vm.Universe" fork="true" failonerror="true">
-            <classpath refid="som.cp" />
-            <jvmarg value="-ea" />
-            <jvmarg value="-esa" />
-            <jvmarg value="-Dpolyglot.engine.WarnInterpreterOnly=false" />
-            <arg line="-cp Smalltalk TestSuite/TestHarness.som --ignore-inefficacies" />
-        </java>
-        <fail message="Basic tests failed for AST interpreter." if="test.failed.ast" />
-        <fail message="Basic tests failed for BC interpreter." if="test.failed.bc" />
+<!--        <java classname="trufflesom.vm.Universe" fork="true" failonerror="true">-->
+<!--            <classpath refid="som.cp" />-->
+<!--            <jvmarg value="-ea" />-->
+<!--            <jvmarg value="-esa" />-->
+<!--            <jvmarg value="-Dpolyglot.engine.WarnInterpreterOnly=false" />-->
+<!--            <arg line="-cp Smalltalk TestSuite/TestHarness.som &#45;&#45;ignore-inefficacies" />-->
+<!--        </java>-->
+<!--        <fail message="Basic tests failed for AST interpreter." if="test.failed.ast" />-->
+<!--        <fail message="Basic tests failed for BC interpreter." if="test.failed.bc" />-->
     </target>
 
     <target name="som-test" depends="compile-for-jar" description="Test som script">
