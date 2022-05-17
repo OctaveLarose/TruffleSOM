@@ -54,11 +54,8 @@ kernel:           ${kernel}</echo>
     <path id="pe-tests.cp">
         <pathelement location="${compiler.build}/graal-test.jar" />
         <pathelement location="${compiler.build}/graal.jar" />
-    </path>
-
-    <path id="unit-tests.cp">
-        <path refid="som.cp"/>
-        <path refid="pe-tests.cp"/>
+        <pathelement location="${compiler.build}/graal-only-test.jar" />
+        <pathelement location="${compiler.build}/graal-truffle-compiler-libgraal.jar" />
     </path>
 
     <path id="som.cp">
@@ -70,6 +67,8 @@ kernel:           ${kernel}</echo>
         <pathelement location="${lib.dir}/hamcrest-core-1.3.jar" />
 
         <pathelement location="${truffle.build}/truffle-dsl-processor.jar" />
+
+        <path refid="pe-tests.cp"/>
     </path>
 
     <available file="${jvmci.home}"  type="dir" property="jvmci.home.present" />
@@ -298,18 +297,29 @@ Native Image Targets
     
     <target name="unit-test" description="Run unit tests">
         <junit haltonerror="false" haltonfailure="false" failureproperty="test.failed.ast"
-            outputtoformatters="true" fork="true" jvm="/home/octavel/PhD_Programs/my_programs/TruffleSOM/libs/truffle/sdk/mxbuild/linux-amd64/GRAALVM_37044B12A3_JAVA17/graalvm-37044b12a3-java17-22.1.0-dev/bin/java">
+            outputtoformatters="true" fork="true" jvm="/home/octavel/PhD_Programs/my_programs/TruffleSOM/libs/truffle/sdk/mxbuild/linux-amd64/GRAALVM_A402CF4705_JAVA17_STAGE1/graalvm-a402cf4705-java17-22.1.0-dev/bin/java">
 
             <jvmarg value="-ea" />
             <jvmarg value="-esa" />
             <jvmarg value="-Dsom.interp=AST" />
             <jvmarg value="-Dpolyglot.engine.WarnInterpreterOnly=false" />
 
-<!--            <jvmarg value="-XX:+UnlockExperimentalVMOptions" />-->
+<!--            <jvmarg value="&#45;&#45;list-modules" />-->
+<!--            <jvmarg value="&#45;&#45;show-module-resolution" />-->
+
+<!--            <jvmarg line="&#45;&#45;upgrade-module-path=/home/octavel/PhD_Programs/my_programs/TruffleSOM/libs/truffle/compiler/mxbuild/dists/graal-truffle-compiler-libgraal.jar"/>-->
+<!--            <jvmarg line="&#45;&#45;module-path=/home/octavel/PhD_Programs/my_programs/TruffleSOM/graal.jar:/home/octavel/PhD_Programs/my_programs/TruffleSOM/graal-test.jar" />-->
+
+<!--            <jvmarg line="&#45;&#45;upgrade-module-path=/home/octavel/PhD_Programs/my_programs/TruffleSOM/graal.jar"/>-->
+<!--            <jvmarg line="&#45;&#45;upgrade-module-path=/home/octavel/PhD_Programs/my_programs/TruffleSOM/graal-test.jar"/>-->
+
+            <!--            <jvmarg value="-XX:+UnlockExperimentalVMOptions" />-->
 <!--            <jvmarg value="-XX:+EnableJVMCI" />-->
 <!--            <jvmarg value="-XX:+UseJVMCICompiler" />-->
 <!--            <jvmarg value="-XX:+UseJVMCINativeLibrary"/>-->
-            <jvmarg line="-Dtruffle.class.path.append=/home/octavel/PhD_Programs/my_programs/TruffleSOM/build/classes:/home/octavel/PhD_Programs/my_programs/TruffleSOM/libs/black-diamonds/build/classes:/home/octavel/PhD_Programs/my_programs/TruffleSOM/libs/truffle/sdk/mxbuild/dists/graal-sdk.jar:/home/octavel/PhD_Programs/my_programs/TruffleSOM/libs/truffle/truffle/mxbuild/dists/truffle-api.jar" />
+            <jvmarg line="-Dtruffle.class.path.append=/home/octavel/PhD_Programs/my_programs/TruffleSOM/build/classes:/home/octavel/PhD_Programs/my_programs/TruffleSOM/libs/truffle/sdk/mxbuild/dists/graal-sdk.jar:/home/octavel/PhD_Programs/my_programs/TruffleSOM/libs/truffle/sdk/mxbuild/dists/graal.jar:/home/octavel/PhD_Programs/my_programs/TruffleSOM/libs/truffle/sdk/mxbuild/dists/graal-test.jar:/home/octavel/PhD_Programs/my_programs/TruffleSOM/libs/truffle/sdk/mxbuild/dists/graal-truffle-compiler-libgraal.jar:/home/octavel/PhD_Programs/my_programs/TruffleSOM/libs/truffle/sdk/mxbuild/dists/graal-libgraal-processor.jar:/home/octavel/PhD_Programs/my_programs/TruffleSOM/libs/truffle/truffle/mxbuild/dists/truffle-api.jar:" />
+            <jvmarg line="--module-path=/home/octavel/PhD_Programs/my_programs/TruffleSOM/graal.jar:/home/octavel/PhD_Programs/my_programs/TruffleSOM/graal-test.jar:/home/octavel/PhD_Programs/my_programs/TruffleSOM/libs/truffle/sdk/mxbuild/dists/graal-sdk.jar:/home/octavel/PhD_Programs/my_programs/TruffleSOM/libs/truffle/truffle/mxbuild/dists/truffle-api.jar" />
+
             <jvmarg value="--add-opens=org.graalvm.truffle/com.oracle.truffle.api=ALL-UNNAMED" />
             <jvmarg value="--add-opens=org.graalvm.truffle/com.oracle.truffle.api.instrumentation=ALL-UNNAMED" />
             <jvmarg value="--add-opens=org.graalvm.truffle/com.oracle.truffle.api.interop=ALL-UNNAMED" />
@@ -317,12 +327,30 @@ Native Image Targets
             <jvmarg value="--add-opens=org.graalvm.truffle/com.oracle.truffle.api.source=ALL-UNNAMED" />
             <jvmarg value="--add-opens=org.graalvm.truffle/com.oracle.truffle.api.dsl=ALL-UNNAMED" />
             <jvmarg value="--add-opens=org.graalvm.truffle/com.oracle.truffle.api.frame=ALL-UNNAMED" />
-<!--            <jvmarg line="&#45;&#45;module-path=/home/octavel/PhD_Programs/my_programs/TruffleSOM/libs/truffle/sdk/mxbuild/dists/graal-sdk.jar:/home/octavel/PhD_Programs/my_programs/TruffleSOM/libs/truffle/truffle/mxbuild/dists/truffle-api.jar" />-->
-<!--            <jvmarg line="&#45;&#45;upgrade-module-path=/home/octavel/PhD_Programs/my_programs/TruffleSOM/libs/truffle/compiler/mxbuild/dists/graal-truffle-compiler-libgraal.jar"/>-->
 
-<!--            Not sure that's necessary.-->
-            <classpath refid="unit-tests.cp" />
-<!--            <classpath refid="som.cp" />-->
+            <jvmarg value="--add-opens=jdk.internal.vm.compiler/org.graalvm.compiler.phases=ALL-UNNAMED" />
+            <jvmarg value="--add-opens=jdk.internal.vm.compiler/org.graalvm.compiler.nodes.graphbuilderconf=ALL-UNNAMED" />
+            <jvmarg value="--add-opens=jdk.internal.vm.compiler/org.graalvm.compiler.serviceprovider=ALL-UNNAMED" />
+            <jvmarg value="--add-opens=jdk.internal.vm.compiler/org.graalvm.compiler.debug=ALL-UNNAMED" />
+            <jvmarg value="--add-opens=jdk.internal.vm.compiler/org.graalvm.compiler.runtime=ALL-UNNAMED" />
+            <jvmarg value="--add-opens=jdk.internal.vm.compiler/org.graalvm.compiler.options=ALL-UNNAMED" />
+            <jvmarg value="--add-opens=jdk.internal.vm.ci/jdk.vm.ci.services=ALL-UNNAMED" />
+            <jvmarg value="--add-opens=jdk.internal.vm.ci/jdk.vm.ci.runtime=ALL-UNNAMED" />
+            <jvmarg value="--add-opens=jdk.internal.vm.compiler/org.graalvm.compiler.api.runtime=ALL-UNNAMED" />
+            <jvmarg value="--add-opens=jdk.internal.vm.compiler/org.graalvm.compiler.core.target=ALL-UNNAMED" />
+            <jvmarg value="--add-opens=jdk.internal.vm.compiler/org.graalvm.compiler.truffle.runtime=ALL-UNNAMED" />
+            <jvmarg value="--add-opens=jdk.internal.vm.compiler/org.graalvm.compiler.truffle.compiler=ALL-UNNAMED" />
+<!--            <jvmarg value="&#45;&#45;add-opens=org.graalvm.truffle/com.oracle.truffle.test=ALL-UNNAMED" />-->
+<!--            <jvmarg value="&#45;&#45;add-opens=org.graalvm.truffle/com.oracle.truffle.runtime=ALL-UNNAMED" />-->
+<!--            <jvmarg value="&#45;&#45;add-opens=org.graalvm.truffle/com.oracle.truffle.common=ALL-UNNAMED" />-->
+<!--            <jvmarg value="&#45;&#45;add-opens=org.graalvm.compiler.core/com.oracle.compiler.core.test=ALL-UNNAMED" />-->
+<!--            <jvmarg value="&#45;&#45;add-opens=org.graalvm.compiler/com.oracle.compiler.phases=ALL-UNNAMED" />-->
+<!--            <jvmarg value="&#45;&#45;add-opens=org.graalvm.compiler/com.oracle.compiler.phases=ALL-UNNAMED" />-->
+<!--            <jvmarg value="&#45;&#45;add-opens=org.graalvm.compiler.code=ALL-UNNAMED" />-->
+<!--            <jvmarg value="&#45;&#45;add-opens=com.oracle.graal/org.graalvm.compiler.phases=ALL-UNNAMED" />-->
+<!--            <jvmarg value="&#45;&#45;add-opens=org.graalvm.compiler.nodes=ALL-UNNAMED" />-->
+
+            <classpath refid="som.cp" />
 
             <batchtest filtertrace="false">
               <fileset dir="tests">
