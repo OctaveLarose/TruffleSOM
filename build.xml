@@ -294,7 +294,40 @@ Native Image Targets
     </target>
 
     <target name="test" depends="compile-for-jar,unit-test" description="Execute tests" />
-    
+
+    <!-- I hate the Java module system -->
+    <resources id="add-opens-extravaganza">
+        <string>--add-opens=jdk.internal.vm.ci/jdk.vm.ci.runtime=ALL-UNNAMED</string>
+        <string>--add-opens=org.graalvm.truffle/com.oracle.truffle.api=ALL-UNNAMED</string>
+        <string>--add-opens=org.graalvm.truffle/com.oracle.truffle.api.instrumentation=ALL-UNNAMED</string>
+        <string>--add-opens=org.graalvm.truffle/com.oracle.truffle.api.interop=ALL-UNNAMED</string>
+        <string>--add-opens=org.graalvm.truffle/com.oracle.truffle.api.nodes=ALL-UNNAMED</string>
+        <string>--add-opens=org.graalvm.truffle/com.oracle.truffle.api.source=ALL-UNNAMED</string>
+        <string>--add-opens=org.graalvm.truffle/com.oracle.truffle.api.dsl=ALL-UNNAMED</string>
+        <string>--add-opens=org.graalvm.truffle/com.oracle.truffle.api.frame=ALL-UNNAMED</string>
+
+        <string>--add-opens=jdk.internal.vm.compiler/org.graalvm.compiler.phases=ALL-UNNAMED</string>
+        <string>--add-opens=jdk.internal.vm.compiler/org.graalvm.compiler.nodes.graphbuilderconf=ALL-UNNAMED</string>
+        <string>--add-opens=jdk.internal.vm.compiler/org.graalvm.compiler.serviceprovider=ALL-UNNAMED</string>
+        <string>--add-opens=jdk.internal.vm.compiler/org.graalvm.compiler.debug=ALL-UNNAMED</string>
+        <string>--add-opens=jdk.internal.vm.compiler/org.graalvm.compiler.runtime=ALL-UNNAMED</string>
+        <string>--add-opens=jdk.internal.vm.compiler/org.graalvm.compiler.options=ALL-UNNAMED</string>
+        <string>--add-opens=jdk.internal.vm.compiler/org.graalvm.compiler.api.runtime=ALL-UNNAMED</string>
+        <string>--add-opens=jdk.internal.vm.compiler/org.graalvm.compiler.core.target=ALL-UNNAMED</string>
+        <string>--add-opens=jdk.internal.vm.compiler/org.graalvm.compiler.truffle.runtime=ALL-UNNAMED</string>
+        <string>--add-opens=jdk.internal.vm.compiler/org.graalvm.compiler.truffle.compiler=ALL-UNNAMED</string>
+        <string>--add-opens=jdk.internal.vm.compiler/org.graalvm.compiler.truffle.common=ALL-UNNAMED</string>
+        <string>--add-opens=jdk.internal.vm.compiler/org.graalvm.compiler.printer=ALL-UNNAMED</string>
+        <string>--add-opens=jdk.internal.vm.compiler/org.graalvm.compiler.api.replacements=ALL-UNNAMED</string>
+        <string>--add-opens=jdk.internal.vm.compiler/org.graalvm.compiler.nodes=ALL-UNNAMED</string>
+        <string>--add-opens=jdk.internal.vm.compiler/org.graalvm.compiler.graph.iterators=ALL-UNNAMED</string>
+
+        <string>--add-opens=jdk.internal.vm.ci/jdk.vm.ci.meta=ALL-UNNAMED</string>
+        <string>--add-opens=jdk.internal.vm.ci/jdk.vm.ci.services=ALL-UNNAMED</string>
+        <string>--add-opens=jdk.internal.vm.ci/jdk.vm.ci.runtime=ALL-UNNAMED</string>
+    </resources>
+    <pathconvert property="add-opens-extravaganza" refid="add-opens-extravaganza" pathsep=" " />
+
     <target name="unit-test" description="Run unit tests">
         <junit haltonerror="false" haltonfailure="false" failureproperty="test.failed.ast"
             outputtoformatters="true" fork="true" jvm="/home/octavel/PhD_Programs/my_programs/TruffleSOM/libs/truffle/sdk/mxbuild/linux-amd64/GRAALVM_A402CF4705_JAVA17_STAGE1/graalvm-a402cf4705-java17-22.1.0-dev/bin/java">
@@ -310,27 +343,7 @@ Native Image Targets
             <jvmarg line="-Dtruffle.class.path.append=/home/octavel/PhD_Programs/my_programs/TruffleSOM/build/classes:/home/octavel/PhD_Programs/my_programs/TruffleSOM/libs/truffle/sdk/mxbuild/dists/graal-sdk.jar:/home/octavel/PhD_Programs/my_programs/TruffleSOM/libs/truffle/sdk/mxbuild/dists/graal.jar:/home/octavel/PhD_Programs/my_programs/TruffleSOM/libs/truffle/sdk/mxbuild/dists/graal-test.jar:/home/octavel/PhD_Programs/my_programs/TruffleSOM/libs/truffle/sdk/mxbuild/dists/graal-truffle-compiler-libgraal.jar:/home/octavel/PhD_Programs/my_programs/TruffleSOM/libs/truffle/sdk/mxbuild/dists/graal-libgraal-processor.jar:/home/octavel/PhD_Programs/my_programs/TruffleSOM/libs/truffle/truffle/mxbuild/dists/truffle-api.jar:" />
             <jvmarg line="--module-path=/home/octavel/PhD_Programs/my_programs/TruffleSOM/graal.jar:/home/octavel/PhD_Programs/my_programs/TruffleSOM/graal-test.jar:/home/octavel/PhD_Programs/my_programs/TruffleSOM/libs/truffle/sdk/mxbuild/dists/graal-sdk.jar:/home/octavel/PhD_Programs/my_programs/TruffleSOM/libs/truffle/truffle/mxbuild/dists/truffle-api.jar" />
 
-            <jvmarg value="--add-opens=org.graalvm.truffle/com.oracle.truffle.api=ALL-UNNAMED" />
-            <jvmarg value="--add-opens=org.graalvm.truffle/com.oracle.truffle.api.instrumentation=ALL-UNNAMED" />
-            <jvmarg value="--add-opens=org.graalvm.truffle/com.oracle.truffle.api.interop=ALL-UNNAMED" />
-            <jvmarg value="--add-opens=org.graalvm.truffle/com.oracle.truffle.api.nodes=ALL-UNNAMED" />
-            <jvmarg value="--add-opens=org.graalvm.truffle/com.oracle.truffle.api.source=ALL-UNNAMED" />
-            <jvmarg value="--add-opens=org.graalvm.truffle/com.oracle.truffle.api.dsl=ALL-UNNAMED" />
-            <jvmarg value="--add-opens=org.graalvm.truffle/com.oracle.truffle.api.frame=ALL-UNNAMED" />
-
-            <jvmarg value="--add-opens=jdk.internal.vm.compiler/org.graalvm.compiler.phases=ALL-UNNAMED" />
-            <jvmarg value="--add-opens=jdk.internal.vm.compiler/org.graalvm.compiler.nodes.graphbuilderconf=ALL-UNNAMED" />
-            <jvmarg value="--add-opens=jdk.internal.vm.compiler/org.graalvm.compiler.serviceprovider=ALL-UNNAMED" />
-            <jvmarg value="--add-opens=jdk.internal.vm.compiler/org.graalvm.compiler.debug=ALL-UNNAMED" />
-            <jvmarg value="--add-opens=jdk.internal.vm.compiler/org.graalvm.compiler.runtime=ALL-UNNAMED" />
-            <jvmarg value="--add-opens=jdk.internal.vm.compiler/org.graalvm.compiler.options=ALL-UNNAMED" />
-            <jvmarg value="--add-opens=jdk.internal.vm.ci/jdk.vm.ci.services=ALL-UNNAMED" />
-            <jvmarg value="--add-opens=jdk.internal.vm.ci/jdk.vm.ci.runtime=ALL-UNNAMED" />
-            <jvmarg value="--add-opens=jdk.internal.vm.compiler/org.graalvm.compiler.api.runtime=ALL-UNNAMED" />
-            <jvmarg value="--add-opens=jdk.internal.vm.compiler/org.graalvm.compiler.core.target=ALL-UNNAMED" />
-            <jvmarg value="--add-opens=jdk.internal.vm.compiler/org.graalvm.compiler.truffle.runtime=ALL-UNNAMED" />
-            <jvmarg value="--add-opens=jdk.internal.vm.compiler/org.graalvm.compiler.truffle.compiler=ALL-UNNAMED" />
-
+            <jvmarg line="${add-opens-extravaganza}" />
 
             <classpath refid="som.cp" />
 

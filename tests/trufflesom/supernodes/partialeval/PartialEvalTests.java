@@ -80,6 +80,8 @@ public class PartialEvalTests extends PartialEvaluationTest {
         @Override
         public Object execute(VirtualFrame frame) {
 //            return this.superNode.executeGeneric(frame);
+            frame.setLong(1, 10);
+//            frame.getArguments()
             return this.seqSuperNode.executeGeneric(frame);
         }
     }
@@ -143,6 +145,7 @@ public class PartialEvalTests extends PartialEvaluationTest {
         // Must not compile immediately, the profile is not initialized until the first execution.
         setupContext(Context.newBuilder().allowExperimentalOptions(true).option("engine.CompileImmediately", "false").option("engine.BackgroundCompilation", "false").build());
         this.getContext().eval(SomLanguage.INIT);
+        this.preventProfileCalls = true;
 
         //        Assert.assertEquals(42, 42);
         String test = "l2 * l2.";
