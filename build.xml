@@ -321,6 +321,7 @@ Native Image Targets
         <string>--add-opens=jdk.internal.vm.compiler/org.graalvm.compiler.api.replacements=ALL-UNNAMED</string>
         <string>--add-opens=jdk.internal.vm.compiler/org.graalvm.compiler.nodes=ALL-UNNAMED</string>
         <string>--add-opens=jdk.internal.vm.compiler/org.graalvm.compiler.graph.iterators=ALL-UNNAMED</string>
+        <string>--add-opens=jdk.internal.vm.compiler/org.graalvm.compiler.nodes.cfg=ALL-UNNAMED</string>
 
         <string>--add-opens=jdk.internal.vm.ci/jdk.vm.ci.meta=ALL-UNNAMED</string>
         <string>--add-opens=jdk.internal.vm.ci/jdk.vm.ci.services=ALL-UNNAMED</string>
