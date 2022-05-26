@@ -322,6 +322,7 @@ Native Image Targets
         <string>--add-opens=jdk.internal.vm.compiler/org.graalvm.compiler.nodes=ALL-UNNAMED</string>
         <string>--add-opens=jdk.internal.vm.compiler/org.graalvm.compiler.graph.iterators=ALL-UNNAMED</string>
         <string>--add-opens=jdk.internal.vm.compiler/org.graalvm.compiler.nodes.cfg=ALL-UNNAMED</string>
+        <string>--add-opens=jdk.internal.vm.compiler/org.graalvm.compiler.hotspot=ALL-UNNAMED</string>
 
         <string>--add-opens=jdk.internal.vm.ci/jdk.vm.ci.meta=ALL-UNNAMED</string>
         <string>--add-opens=jdk.internal.vm.ci/jdk.vm.ci.services=ALL-UNNAMED</string>
@@ -331,7 +332,7 @@ Native Image Targets
 
     <target name="unit-test" description="Run unit tests">
         <junit haltonerror="false" haltonfailure="false" failureproperty="test.failed.ast"
-            outputtoformatters="true" fork="true" jvm="/home/octavel/PhD_Programs/my_programs/TruffleSOM/libs/truffle/sdk/mxbuild/linux-amd64/GRAALVM_A402CF4705_JAVA17_STAGE1/graalvm-a402cf4705-java17-22.1.0-dev/bin/java">
+            outputtoformatters="true" fork="true" jvm="${sdk.dir}/mxbuild/linux-amd64/GRAALVM_A402CF4705_JAVA17_STAGE1/graalvm-a402cf4705-java17-22.1.0-dev/bin/java">
 
             <jvmarg value="-ea" />
             <jvmarg value="-esa" />

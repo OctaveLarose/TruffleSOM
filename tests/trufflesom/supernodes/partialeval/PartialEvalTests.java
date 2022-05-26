@@ -8,6 +8,9 @@ import com.oracle.truffle.api.frame.VirtualFrame;
 import com.oracle.truffle.api.nodes.RootNode;
 import com.oracle.truffle.api.source.Source;
 
+import org.graalvm.compiler.api.test.Graal;
+import org.graalvm.compiler.hotspot.HotSpotGraalRuntime;
+import org.graalvm.compiler.hotspot.HotSpotGraalRuntimeProvider;
 import org.graalvm.compiler.truffle.test.PartialEvaluationTest;
 
 import org.graalvm.polyglot.Context;
@@ -35,6 +38,9 @@ import static trufflesom.vm.SymbolTable.symSelf;
 import static trufflesom.vm.SymbolTable.symbolFor;
 
 public class PartialEvalTests extends PartialEvaluationTest {
+    private static final boolean NO_SUPERNODES = false;
+    private static final boolean SUPERNODES_ON = true;
+
     protected ClassGenerationContext cgenc;
     protected MethodGenerationContext mgenc;
 
@@ -84,7 +90,7 @@ public class PartialEvalTests extends PartialEvaluationTest {
         Universe.selfCoord = SourceCoordinate.createEmpty();
     }
 
-    protected SInvokable parseMethodInvokable(final String source) {
+    protected SInvokable parseMethodInvokable(final String source, boolean noSupernodes) {
         Source s = SomLanguage.getSyntheticSource(source, "test");
 
         cgenc = new ClassGenerationContext(s, null);
@@ -95,6 +101,7 @@ public class PartialEvalTests extends PartialEvaluationTest {
         mgenc.addArgumentIfAbsent(symSelf, 0);
 
         ParserAst parser = new ParserAst(source, s, null);
+        parser.setNoSupernodes(noSupernodes);
         try {
             return mgenc.assemble(parser.method(mgenc), 0);
 //            return mgenc.assemble();
@@ -104,7 +111,7 @@ public class PartialEvalTests extends PartialEvaluationTest {
         }
     }
 
-    protected ExpressionNode parseMethodExpression(final String source) {
+    protected ExpressionNode parseMethodExpression(final String source, boolean noSupernodes) {
         Source s = SomLanguage.getSyntheticSource(source, "test");
 
         cgenc = new ClassGenerationContext(s, null);
@@ -115,6 +122,7 @@ public class PartialEvalTests extends PartialEvaluationTest {
         mgenc.addArgumentIfAbsent(symSelf, 0);
 
         ParserAst parser = new ParserAst(source, s, null);
+        parser.setNoSupernodes(noSupernodes);
         try {
             return parser.method(mgenc);
         } catch (ProgramDefinitionError e) {
@@ -154,10 +162,12 @@ public class PartialEvalTests extends PartialEvaluationTest {
         // deactivates execution before compilation
 //        this.preventProfileCalls = true;
 
-        //        Assert.assertEquals(42, 42);
-        String test = "l2 * l2.";
-        SInvokable sInvokable = parseMethodInvokable("test = ( | l1 l2 l3 l4 | l2 := 1. \n" + test + " ^ 42 )");
-        SequenceNode seq = (SequenceNode) parseMethodExpression("test = ( | l1 l2 l3 l4 | l2 := 1. \n" + test + " ^ 42 )");
+        String codeStr = "test = ( | l1 l2 l3 l4 | l2 := 100 atRandom. l3 := l2 * l2. ^ l3 )";
+//        String codeStr = "test: arg = ( | l3 | l3 := arg * arg. ^ l3 )";
+        SInvokable sInvokableSn = parseMethodInvokable(codeStr, SUPERNODES_ON);
+        SInvokable sInvokableOg = parseMethodInvokable(codeStr, NO_SUPERNODES);
+        SequenceNode seqSn = (SequenceNode) parseMethodExpression(codeStr, SUPERNODES_ON);
+        SequenceNode seqOg = (SequenceNode) parseMethodExpression(codeStr, NO_SUPERNODES);
 
 //        ExpressionNode supernodeExpr = readSequenceExpressions(seq, "expressions", ExpressionNode[].class)[0];
 //        assertThat(supernodeExpr, instanceOf(LocalVariableSquareNode.class));
@@ -167,15 +177,14 @@ public class PartialEvalTests extends PartialEvaluationTest {
 // Need something that can be called, so something that inherits from RootNode
 //        OptimizedCallTarget target = (OptimizedCallTarget) testSupernodeRootNode.getCallTarget();
 
-        StructuredGraph graph = partialEval((OptimizedCallTarget) sInvokable.getCallTarget(), new Object[0]);
+        StructuredGraph graphSn = partialEval((OptimizedCallTarget) sInvokableSn.getCallTarget(), new Object[0]);
+        StructuredGraph graphOg = partialEval((OptimizedCallTarget) sInvokableSn.getCallTarget(), new Object[0]);
 
-//        Stream<IfNode> ifWithInjectedProfile = graph.getNodes()
-//                .filter(IfNode.class).stream()
-//                .filter(i -> i.getProfileData().getProfileSource() == ProfileData.ProfileSource.INJECTED);
-//        IfNode ifNode = ifWithInjectedProfile.findFirst().orElseThrow(() -> new AssertionError("If with injected branch probability not found"));
-//        Assert.assertEquals("Expected true successor probability", 0.9, ifNode.getTrueSuccessorProbability(), 0.01);
+        System.out.println(graphSn + "\n" + graphOg);
+//        System.out.println(graphSn.getMethods() == graphOg.getMethods());
+        System.out.println(graphSn.getMethods().size() == graphOg.getMethods().size());
 
-        ControlFlowGraph cfg = ControlFlowGraph.compute(graph, true, false, false, false);
+        ControlFlowGraph cfg = ControlFlowGraph.compute(graphSn, true, false, false, false);
         System.out.println(Arrays.toString(cfg.getBlocks()));
     }
 }

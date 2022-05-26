@@ -265,7 +265,7 @@ public class ParserAst extends Parser<MethodGenerationContext> {
 
     String binSelector = msg.getString();
 
-    if (binSelector.equals("*")) {
+    if (!this.noSupernodes && binSelector.equals("*")) {
       if (receiver instanceof LocalVariableReadNode
           && operand instanceof LocalVariableReadNode) {
         Local rcvrLocal = ((LocalVariableReadNode) receiver).getLocal();

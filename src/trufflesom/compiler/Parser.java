@@ -101,6 +101,8 @@ public abstract class Parser<MGenC extends MethodGenerationContext> {
 
   protected boolean superSend;
 
+  protected boolean noSupernodes = false;
+
   static {
     for (Symbol s : new Symbol[] {Not, And, Or, Star, Div, Mod, Plus, Equal,
         More, Less, Comma, At, Per}) {
@@ -381,6 +383,10 @@ public abstract class Parser<MGenC extends MethodGenerationContext> {
     } else {
       return methodBlock(mgenc);
     }
+  }
+
+  public void setNoSupernodes(boolean noSupernodes) {
+    this.noSupernodes = noSupernodes;
   }
 
   protected ExpressionNode methodBlock(final MGenC mgenc) throws ProgramDefinitionError {

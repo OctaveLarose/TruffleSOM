@@ -24,7 +24,7 @@ import trufflesom.vmobjects.SSymbol;
 public abstract class IntegerPrims {
 
   @GenerateNodeFactory
-  @Primitive(className = "Integer", primitive = "atRandom")
+  @Primitive(className = "Integer", primitive = "atRandom", selector = "atRandom")
   public abstract static class RandomPrim extends UnaryExpressionNode {
     @Specialization
     public final long doLong(final long receiver) {
