@@ -8,9 +8,8 @@ import com.oracle.truffle.api.frame.VirtualFrame;
 import com.oracle.truffle.api.nodes.RootNode;
 import com.oracle.truffle.api.source.Source;
 
-import org.graalvm.compiler.api.test.Graal;
-import org.graalvm.compiler.hotspot.HotSpotGraalRuntime;
-import org.graalvm.compiler.hotspot.HotSpotGraalRuntimeProvider;
+import org.graalvm.compiler.graph.Node;
+import org.graalvm.compiler.graph.iterators.NodeIterable;
 import org.graalvm.compiler.truffle.test.PartialEvaluationTest;
 
 import org.graalvm.polyglot.Context;
@@ -31,15 +30,15 @@ import trufflesom.vmobjects.SInvokable;
 import trufflesom.vmobjects.SSymbol;
 
 import java.util.Arrays;
+import java.util.List;
 
-import static org.hamcrest.core.IsInstanceOf.instanceOf;
 import static org.junit.Assert.assertThat;
 import static trufflesom.vm.SymbolTable.symSelf;
 import static trufflesom.vm.SymbolTable.symbolFor;
 
 public class PartialEvalTests extends PartialEvaluationTest {
-    private static final boolean NO_SUPERNODES = false;
-    private static final boolean SUPERNODES_ON = true;
+    private static final boolean NO_SUPERNODES = true;
+    private static final boolean SUPERNODES_ON = false;
 
     protected ClassGenerationContext cgenc;
     protected MethodGenerationContext mgenc;
@@ -153,6 +152,21 @@ public class PartialEvalTests extends PartialEvaluationTest {
         throw new RuntimeException("Didn't find field: " + fieldName);
     }
 
+    boolean compareStructuredGraphs(StructuredGraph graph1, StructuredGraph graph2) {
+        if (graph1.getNodeCount() != graph2.getNodeCount())
+            return false;
+        NodeIterable<Node> graph2Iterator = graph2.getNodes();
+        List<Node> graph2nodes = graph2Iterator.stream().toList();
+        int i = 0;
+        for (Node n: graph1.getNodes()) {
+            System.out.println(n);
+            System.out.println(graph2nodes.get(i));
+            System.out.println("...");
+        }
+        graph1.getNodeCount();
+        return false;
+    }
+
     @Test
     public void testLoopConditionProfile() {
         // Must not compile immediately, the profile is not initialized until the first execution.
@@ -160,16 +174,21 @@ public class PartialEvalTests extends PartialEvaluationTest {
         this.getContext().eval(SomLanguage.INIT);
 
         // deactivates execution before compilation
-//        this.preventProfileCalls = true;
+        this.preventProfileCalls = true;
 
-        String codeStr = "test = ( | l1 l2 l3 l4 | l2 := 100 atRandom. l3 := l2 * l2. ^ l3 )";
+        String squareCodeStr = "test = ( | l1 l2 l3 l4 | l2 := 100 atRandom. l3 := l2 * l2. ^ l3 )";
+//        String squareCodeStr = "test = ( | l1 l2 l3 l4 | l3 := l3 * l3. ^ l3 )";
+        String intIncrementLocalCodeStr = "test = ( | l1 l2 l3 l4 | l2 := 100 atRandom. l2 := l2 + 42. ^ l3 )";
+//        String intIncrementCodeStr = "test = ( | l1 l2 l3 l4 | l2 := 100 atRandom. l3 := l3 + l2. ^ l3 )";
+
+        String codeStr = squareCodeStr;
 //        String codeStr = "test: arg = ( | l3 | l3 := arg * arg. ^ l3 )";
         SInvokable sInvokableSn = parseMethodInvokable(codeStr, SUPERNODES_ON);
         SInvokable sInvokableOg = parseMethodInvokable(codeStr, NO_SUPERNODES);
-        SequenceNode seqSn = (SequenceNode) parseMethodExpression(codeStr, SUPERNODES_ON);
-        SequenceNode seqOg = (SequenceNode) parseMethodExpression(codeStr, NO_SUPERNODES);
+//        SequenceNode seqSn = (SequenceNode) parseMethodExpression(codeStr, SUPERNODES_ON);
+//        SequenceNode seqOg = (SequenceNode) parseMethodExpression(codeStr, NO_SUPERNODES);
 
-//        ExpressionNode supernodeExpr = readSequenceExpressions(seq, "expressions", ExpressionNode[].class)[0];
+//        ExpressionNode supernodeExpr = readSequenceExpressions(seqSn, "expressions", ExpressionNode[].class)[0];
 //        assertThat(supernodeExpr, instanceOf(LocalVariableSquareNode.class));
 
 //        TestSupernodeRootNode testSupernodeRootNode = new TestSupernodeRootNode((LocalVariableSquareNode) supernodeExpr);
@@ -177,8 +196,8 @@ public class PartialEvalTests extends PartialEvaluationTest {
 // Need something that can be called, so something that inherits from RootNode
 //        OptimizedCallTarget target = (OptimizedCallTarget) testSupernodeRootNode.getCallTarget();
 
+        StructuredGraph graphOg = partialEval((OptimizedCallTarget) sInvokableOg.getCallTarget(), new Object[0]);
         StructuredGraph graphSn = partialEval((OptimizedCallTarget) sInvokableSn.getCallTarget(), new Object[0]);
-        StructuredGraph graphOg = partialEval((OptimizedCallTarget) sInvokableSn.getCallTarget(), new Object[0]);
 
         System.out.println(graphSn + "\n" + graphOg);
 //        System.out.println(graphSn.getMethods() == graphOg.getMethods());
@@ -186,5 +205,7 @@ public class PartialEvalTests extends PartialEvaluationTest {
 
         ControlFlowGraph cfg = ControlFlowGraph.compute(graphSn, true, false, false, false);
         System.out.println(Arrays.toString(cfg.getBlocks()));
+
+        System.out.println(compareStructuredGraphs(graphOg, graphSn));
     }
 }

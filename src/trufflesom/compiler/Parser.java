@@ -101,7 +101,7 @@ public abstract class Parser<MGenC extends MethodGenerationContext> {
 
   protected boolean superSend;
 
-  protected boolean noSupernodes = false;
+  public static boolean noSupernodes = false;
 
   static {
     for (Symbol s : new Symbol[] {Not, And, Or, Star, Div, Mod, Plus, Equal,

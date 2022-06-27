@@ -306,6 +306,7 @@ Native Image Targets
         <string>--add-opens=org.graalvm.truffle/com.oracle.truffle.api.dsl=ALL-UNNAMED</string>
         <string>--add-opens=org.graalvm.truffle/com.oracle.truffle.api.frame=ALL-UNNAMED</string>
 
+        <string>--add-opens=jdk.internal.vm.compiler/org.graalvm.compiler.graph=ALL-UNNAMED</string>
         <string>--add-opens=jdk.internal.vm.compiler/org.graalvm.compiler.phases=ALL-UNNAMED</string>
         <string>--add-opens=jdk.internal.vm.compiler/org.graalvm.compiler.nodes.graphbuilderconf=ALL-UNNAMED</string>
         <string>--add-opens=jdk.internal.vm.compiler/org.graalvm.compiler.serviceprovider=ALL-UNNAMED</string>

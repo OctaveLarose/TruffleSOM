@@ -243,7 +243,7 @@ public abstract class Variable implements bd.inlining.Variable<ExpressionNode> {
         final ExpressionNode valueExpr, final long coord) {
       transferToInterpreterAndInvalidate();
       if (contextLevel > 0) {
-        if (valueExpr instanceof AdditionPrim) {
+        if (!Parser.noSupernodes && valueExpr instanceof AdditionPrim) {
           AdditionPrim add = (AdditionPrim) valueExpr;
           ExpressionNode rcvr = add.getReceiver();
           ExpressionNode arg = add.getArgument();
@@ -265,7 +265,7 @@ public abstract class Variable implements bd.inlining.Variable<ExpressionNode> {
                                            .initialize(coord);
       }
 
-      if (valueExpr instanceof AdditionPrim) {
+      if (!Parser.noSupernodes && valueExpr instanceof AdditionPrim) {
         AdditionPrim add = (AdditionPrim) valueExpr;
         ExpressionNode rcvr = add.getReceiver();
         ExpressionNode arg = add.getArgument();
