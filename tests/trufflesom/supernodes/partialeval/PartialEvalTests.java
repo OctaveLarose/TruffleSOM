@@ -30,7 +30,7 @@ import trufflesom.vmobjects.SInvokable;
 import trufflesom.vmobjects.SSymbol;
 
 import java.util.Arrays;
-import java.util.List;
+import java.util.Iterator;
 
 import static org.junit.Assert.assertThat;
 import static trufflesom.vm.SymbolTable.symSelf;
@@ -155,16 +155,20 @@ public class PartialEvalTests extends PartialEvaluationTest {
     boolean compareStructuredGraphs(StructuredGraph graph1, StructuredGraph graph2) {
         if (graph1.getNodeCount() != graph2.getNodeCount())
             return false;
-        NodeIterable<Node> graph2Iterator = graph2.getNodes();
-        List<Node> graph2nodes = graph2Iterator.stream().toList();
-        int i = 0;
-        for (Node n: graph1.getNodes()) {
-            System.out.println(n);
-            System.out.println(graph2nodes.get(i));
-            System.out.println("...");
+
+        Iterator<Node> graph1Iterator = graph1.getNodes().iterator();
+        Iterator<Node> graph2Iterator = graph2.getNodes().iterator();
+
+        while (graph1Iterator.hasNext()) {
+            Node n1 = graph1Iterator.next();
+            Node n2 = graph2Iterator.next();
+
+//            System.out.println(n1 + "," + n2 + "===> " + n1.valueEquals(n2)); // Works for most but fails for FrameState, HotSpotOptimizedCallTarget, FrameDescriptor...
+
+            if (!n1.getClass().equals(n2.getClass()))
+                return false;
         }
-        graph1.getNodeCount();
-        return false;
+        return true;
     }
 
     @Test
@@ -174,7 +178,7 @@ public class PartialEvalTests extends PartialEvaluationTest {
         this.getContext().eval(SomLanguage.INIT);
 
         // deactivates execution before compilation
-        this.preventProfileCalls = true;
+//        this.preventProfileCalls = true;
 
         String squareCodeStr = "test = ( | l1 l2 l3 l4 | l2 := 100 atRandom. l3 := l2 * l2. ^ l3 )";
 //        String squareCodeStr = "test = ( | l1 l2 l3 l4 | l3 := l3 * l3. ^ l3 )";
@@ -200,12 +204,10 @@ public class PartialEvalTests extends PartialEvaluationTest {
         StructuredGraph graphSn = partialEval((OptimizedCallTarget) sInvokableSn.getCallTarget(), new Object[0]);
 
         System.out.println(graphSn + "\n" + graphOg);
-//        System.out.println(graphSn.getMethods() == graphOg.getMethods());
-        System.out.println(graphSn.getMethods().size() == graphOg.getMethods().size());
 
         ControlFlowGraph cfg = ControlFlowGraph.compute(graphSn, true, false, false, false);
-        System.out.println(Arrays.toString(cfg.getBlocks()));
+        // System.out.println(Arrays.toString(cfg.getBlocks()));
 
-        System.out.println(compareStructuredGraphs(graphOg, graphSn));
+        System.out.println("GRAPH SIMILARITY: " + compareStructuredGraphs(graphOg, graphSn));
     }
 }
