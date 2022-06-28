@@ -30,7 +30,9 @@ import trufflesom.vmobjects.SInvokable;
 import trufflesom.vmobjects.SSymbol;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 
 import static org.junit.Assert.assertThat;
 import static trufflesom.vm.SymbolTable.symSelf;
@@ -200,8 +202,11 @@ public class PartialEvalTests extends PartialEvaluationTest {
 // Need something that can be called, so something that inherits from RootNode
 //        OptimizedCallTarget target = (OptimizedCallTarget) testSupernodeRootNode.getCallTarget();
 
-        StructuredGraph graphOg = partialEval((OptimizedCallTarget) sInvokableOg.getCallTarget(), new Object[0]);
-        StructuredGraph graphSn = partialEval((OptimizedCallTarget) sInvokableSn.getCallTarget(), new Object[0]);
+        StructuredGraph graphOg = partialEval((OptimizedCallTarget) sInvokableOg.getCallTarget(),
+                new HashMap<>(Map.of("dumpGraph", "sureWhyNot", "graphDescription", "original_graph")));
+
+        StructuredGraph graphSn = partialEval((OptimizedCallTarget) sInvokableSn.getCallTarget(),
+                new HashMap<>(Map.of("dumpGraph", "yeahIAgree", "graphDescription", "supernode_graph")));
 
         System.out.println(graphSn + "\n" + graphOg);
 
