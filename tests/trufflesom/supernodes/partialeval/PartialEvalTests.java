@@ -8,8 +8,18 @@ import com.oracle.truffle.api.frame.VirtualFrame;
 import com.oracle.truffle.api.nodes.RootNode;
 import com.oracle.truffle.api.source.Source;
 
+import org.graalvm.collections.EconomicMap;
+import org.graalvm.compiler.code.CompilationResult;
+import org.graalvm.compiler.debug.DebugCloseable;
+import org.graalvm.compiler.debug.DebugContext;
+import org.graalvm.compiler.debug.DebugOptions;
+import org.graalvm.compiler.debug.GraalError;
 import org.graalvm.compiler.graph.Node;
 import org.graalvm.compiler.graph.iterators.NodeIterable;
+import org.graalvm.compiler.java.GraphBuilderPhase;
+import org.graalvm.compiler.nodes.graphbuilderconf.IntrinsicContext;
+import org.graalvm.compiler.options.OptionKey;
+import org.graalvm.compiler.options.OptionValues;
 import org.graalvm.compiler.truffle.test.PartialEvaluationTest;
 
 import org.graalvm.polyglot.Context;
@@ -179,10 +189,12 @@ public class PartialEvalTests extends PartialEvaluationTest {
         setupContext(Context.newBuilder().allowExperimentalOptions(true).option("engine.CompileImmediately", "false").option("engine.BackgroundCompilation", "false").build());
         this.getContext().eval(SomLanguage.INIT);
 
-        // deactivates execution before compilation
+        // can be uncommented to deactivate execution before compilation, but graphs will just be a transferToInterpreter()
 //        this.preventProfileCalls = true;
 
-        String squareCodeStr = "test = ( | l1 l2 l3 l4 | l2 := 100 atRandom. l3 := l2 * l2. ^ l3 )";
+        String squareCodeStr = "test = ( | l1 l2 l3 l4 | l2 := 100.0 atRandom. l3 := 0.01. l3 := l2 * l2. ^ l3 )";
+//        String squareCodeStr = "test = ( | l1 l2 l3 l4 | l2 := 100.0. l3 := l2 * l2. ^ l3 )";
+
 //        String squareCodeStr = "test = ( | l1 l2 l3 l4 | l3 := l3 * l3. ^ l3 )";
         String intIncrementLocalCodeStr = "test = ( | l1 l2 l3 l4 | l2 := 100 atRandom. l2 := l2 + 42. ^ l3 )";
 //        String intIncrementCodeStr = "test = ( | l1 l2 l3 l4 | l2 := 100 atRandom. l3 := l3 + l2. ^ l3 )";
@@ -202,17 +214,47 @@ public class PartialEvalTests extends PartialEvaluationTest {
 // Need something that can be called, so something that inherits from RootNode
 //        OptimizedCallTarget target = (OptimizedCallTarget) testSupernodeRootNode.getCallTarget();
 
-        StructuredGraph graphOg = partialEval((OptimizedCallTarget) sInvokableOg.getCallTarget(),
-                new HashMap<>(Map.of("dumpGraph", "sureWhyNot", "graphDescription", "original_graph")));
+//        StructuredGraph graphOg = partialEval((OptimizedCallTarget) sInvokableOg.getCallTarget(),
+//                new HashMap<>(Map.of("dumpGraph", "sureWhyNot", "graphDescription", "original_graph")));
 
         StructuredGraph graphSn = partialEval((OptimizedCallTarget) sInvokableSn.getCallTarget(),
                 new HashMap<>(Map.of("dumpGraph", "yeahIAgree", "graphDescription", "supernode_graph")));
 
-        System.out.println(graphSn + "\n" + graphOg);
+//        System.out.println("GRAPH SIMILARITY: " + compareStructuredGraphs(compile((OptimizedCallTarget) sInvokableSn.getCallTarget()), graphSn));
+//        System.out.println(graphSn + "\n" + graphOg);
 
-        ControlFlowGraph cfg = ControlFlowGraph.compute(graphSn, true, false, false, false);
+//        ControlFlowGraph cfg = ControlFlowGraph.compute(graphSn, true, false, false, false);
         // System.out.println(Arrays.toString(cfg.getBlocks()));
 
-        System.out.println("GRAPH SIMILARITY: " + compareStructuredGraphs(graphOg, graphSn));
+//        System.out.println("GRAPH SIMILARITY: " + compareStructuredGraphs(graphOg, graphSn));
+
+        System.out.println(summoningSupernodeGraphThroughFuckery());
+    }
+
+    public Object summoningSupernodeGraphThroughFuckery() {
+        StructuredGraph graphToEncode = null;// @formatter:off
+//        HotSpotResolvedJavaMethodImpl method = null;
+
+        EconomicMap<OptionKey<?>, Object> optionsMap = EconomicMap.create();
+        optionsMap.put(DebugOptions.Dump, ":3");
+        optionsMap.put(DebugOptions.PrintGraphHost, "localhost");
+        optionsMap.put(DebugOptions.PrintGraphPort, 4445);
+        optionsMap.put(DebugOptions.DescriptionStr, "supernodeExecuteGeneric");
+        OptionValues options = new OptionValues(optionsMap);
+//
+//        graphToEncode = new StructuredGraph.Builder(options, debug, StructuredGraph.AllowAssumptions.YES).
+//                profileProvider(null).
+//                trackNodeSourcePosition(graphBuilderConfig.trackNodeSourcePosition()).
+//                method(method).
+//                setIsSubstitution(false).
+//                cancellable(graph.getCancellable()).
+//                build();
+//
+////        try (DebugContext.Scope scope = debug.scope("buildGraph", graphToEncode); DebugCloseable a = BuildGraphTimer.start(debug)) {
+//        IntrinsicContext initialIntrinsicContext = null;
+//        GraphBuilderPhase.Instance graphBuilderPhaseInstance = new GraphBuilderPhase.Instance(providers, graphBuilderConfig, optimisticOpts, initialIntrinsicContext);
+//        graphBuilderPhaseInstance.apply(graphToEncode);
+//        }
+        return graphToEncode;
     }
 }

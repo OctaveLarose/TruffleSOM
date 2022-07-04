@@ -30,6 +30,11 @@ public abstract class IntegerPrims {
     public final long doLong(final long receiver) {
       return (long) (receiver * Math.random());
     }
+
+    @Specialization
+    public final double doDouble(final double receiver) {
+      return receiver * Math.random();
+    }
   }
 
   @GenerateNodeFactory
