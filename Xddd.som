@@ -1,0 +1,8 @@
+Xddd = (
+    run = (
+        | l1 l2 l3 l4 |
+        l2 := 100 atRandom.
+        l3 := l2 * l2.
+        l3 println.
+    )
+)
