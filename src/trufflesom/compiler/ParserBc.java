@@ -40,8 +40,8 @@ import java.util.List;
 
 import com.oracle.truffle.api.source.Source;
 
-import bd.basic.ProgramDefinitionError;
-import bd.tools.structure.StructuralProbe;
+import bdt.basic.ProgramDefinitionError;
+import bdt.tools.structure.StructuralProbe;
 import trufflesom.compiler.bc.BytecodeMethodGenContext;
 import trufflesom.interpreter.nodes.ExpressionNode;
 import trufflesom.vm.constants.Nil;
@@ -231,7 +231,7 @@ public class ParserBc extends Parser<BytecodeMethodGenContext> {
     boolean isSuperSend = superSend;
     superSend = false;
 
-    SSymbol msg = unarySelector();
+    SSymbol msg = unarySendSelector();
     if (isSuperSend) {
       emitSUPERSEND(mgenc, msg, this);
     } else {
@@ -244,7 +244,7 @@ public class ParserBc extends Parser<BytecodeMethodGenContext> {
     boolean isSuperSend = superSend;
     superSend = false;
 
-    SSymbol msg = binarySelector();
+    SSymbol msg = binarySendSelector();
 
     boolean isPossibleIncOrDec = msg == symPlus || msg == symMinus;
     if (isPossibleIncOrDec) {
@@ -279,7 +279,7 @@ public class ParserBc extends Parser<BytecodeMethodGenContext> {
 
     StringBuilder kw = new StringBuilder();
     do {
-      kw.append(keyword());
+      kw.append(keywordInSend());
       formula(mgenc);
     } while (sym == Keyword);
 

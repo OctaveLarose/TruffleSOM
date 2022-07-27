@@ -1,5 +1,6 @@
 package trufflesom.interpreter;
 
+import com.oracle.truffle.api.CallTarget;
 import com.oracle.truffle.api.CompilerAsserts;
 import com.oracle.truffle.api.RootCallTarget;
 import com.oracle.truffle.api.Truffle;
@@ -11,7 +12,7 @@ import com.oracle.truffle.api.nodes.Node;
 import com.oracle.truffle.api.nodes.NodeUtil;
 import com.oracle.truffle.api.source.Source;
 
-import bd.primitives.nodes.PreevaluatedExpression;
+import bdt.primitives.nodes.PreevaluatedExpression;
 import trufflesom.compiler.MethodGenerationContext;
 import trufflesom.interpreter.nodes.ExpressionNode;
 import trufflesom.interpreter.nodes.dispatch.AbstractDispatchNode;
@@ -74,13 +75,16 @@ public final class Primitive extends Invokable {
     });
   }
 
+  private static CallTarget getCallerCallTarget() {
+    FrameInstance caller = Truffle.getRuntime().iterateFrames((f) -> f, 1);
+    return caller.getCallTarget(); // caller method
+  }
+
   public static void propagateLoopCount(final long count) {
     CompilerAsserts.neverPartOfCompilation("Primitive.pLC(.)");
 
     // we need to skip the primitive and get to the method that called the primitive
-    FrameInstance caller = Truffle.getRuntime().getCallerFrame();
-
-    RootCallTarget ct = (RootCallTarget) caller.getCallTarget(); // caller method
+    RootCallTarget ct = (RootCallTarget) getCallerCallTarget();
     Invokable m = (Invokable) ct.getRootNode();
 
     if (m instanceof Primitive) {

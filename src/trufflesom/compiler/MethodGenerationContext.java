@@ -40,12 +40,12 @@ import java.util.List;
 
 import com.oracle.truffle.api.source.Source;
 
-import bd.basic.ProgramDefinitionError;
-import bd.inlining.Scope;
-import bd.inlining.ScopeBuilder;
-import bd.inlining.nodes.Inlinable;
-import bd.source.SourceCoordinate;
-import bd.tools.structure.StructuralProbe;
+import bdt.basic.ProgramDefinitionError;
+import bdt.inlining.Scope;
+import bdt.inlining.ScopeBuilder;
+import bdt.inlining.nodes.Inlinable;
+import bdt.source.SourceCoordinate;
+import bdt.tools.structure.StructuralProbe;
 import trufflesom.compiler.Variable.Argument;
 import trufflesom.compiler.Variable.Internal;
 import trufflesom.compiler.Variable.Local;
@@ -134,6 +134,19 @@ public class MethodGenerationContext
   @Override
   public Source getSource() {
     return holderGenc.getSource();
+  }
+
+  /** Includes self, at idx == 0. */
+  public Argument getArgument(final int idx) {
+    int i = 0;
+    for (Argument a : arguments.values()) {
+      if (i == idx) {
+        return a;
+      }
+      i += 1;
+    }
+    throw new IllegalArgumentException(
+        "Tried to access argument " + idx + " but there are only " + arguments.size());
   }
 
   public void markAccessingOuterScopes() {
@@ -267,7 +280,7 @@ public class MethodGenerationContext
     signature = sig;
   }
 
-  private void addArgument(final SSymbol arg, final long coord) {
+  private Argument addArgument(final SSymbol arg, final long coord) {
     if ((symSelf == arg || symBlockSelf == arg) && arguments.size() > 0) {
       throw new IllegalStateException(
           "The self argument always has to be the first argument of a method");
@@ -279,14 +292,15 @@ public class MethodGenerationContext
     if (structuralProbe != null) {
       structuralProbe.recordNewVariable(argument);
     }
+    return argument;
   }
 
-  public void addArgumentIfAbsent(final SSymbol arg, final long coord) {
+  public Argument addArgumentIfAbsent(final SSymbol arg, final long coord) {
     if (arguments.containsKey(arg)) {
-      return;
+      return arguments.get(arg);
     }
 
-    addArgument(arg, coord);
+    return addArgument(arg, coord);
   }
 
   public boolean hasLocal(final SSymbol local) {
@@ -501,7 +515,7 @@ public class MethodGenerationContext
   }
 
   @Override
-  public bd.inlining.Variable<?> introduceTempForInlinedVersion(
+  public bdt.inlining.Variable<?> introduceTempForInlinedVersion(
       final Inlinable<MethodGenerationContext> blockOrVal, final long coord)
       throws ProgramDefinitionError {
     Local loopIdx;

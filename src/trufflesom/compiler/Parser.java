@@ -68,9 +68,11 @@ import java.util.List;
 
 import com.oracle.truffle.api.source.Source;
 
-import bd.basic.ProgramDefinitionError;
-import bd.source.SourceCoordinate;
-import bd.tools.structure.StructuralProbe;
+import bdt.basic.ProgramDefinitionError;
+import bdt.source.SourceCoordinate;
+import bdt.tools.structure.StructuralProbe;
+import trufflesom.compiler.Variable.Argument;
+import trufflesom.compiler.Variable.Local;
 import trufflesom.interpreter.nodes.ExpressionNode;
 import trufflesom.interpreter.nodes.FieldNode.FieldReadNode;
 import trufflesom.interpreter.nodes.GlobalNode;
@@ -82,8 +84,8 @@ import trufflesom.vmobjects.SSymbol;
 
 public abstract class Parser<MGenC extends MethodGenerationContext> {
 
-  protected final Lexer lexer;
-  private final Source  source;
+  protected final Lexer  lexer;
+  protected final Source source;
 
   protected final StructuralProbe<SSymbol, SClass, SInvokable, Field, Variable> structuralProbe;
 
@@ -222,9 +224,13 @@ public abstract class Parser<MGenC extends MethodGenerationContext> {
     this.structuralProbe = structuralProbe;
 
     sym = NONE;
-    lexer = new Lexer(content);
+    lexer = createLexer(content);
     nextSym = NONE;
     getSymbolFromLexer();
+  }
+
+  protected Lexer createLexer(final String content) {
+    return new Lexer(content);
   }
 
   public Source getSource() {
@@ -239,30 +245,35 @@ public abstract class Parser<MGenC extends MethodGenerationContext> {
       StructuralProbe<SSymbol, SClass, SInvokable, Field, Variable> structuralProbe);
 
   public void classdef(final ClassGenerationContext cgenc) throws ProgramDefinitionError {
-    cgenc.setName(symbolFor(text));
     int coord = getStartIndex();
-    if ("Object".equals(text)) {
-      Universe.selfCoord = getCoordWithLength(coord);
-      Universe.selfSource = source;
+
+    try {
+      className(cgenc, coord);
+      expect(Equal);
+
+      superclass(cgenc);
+
+      expect(NewTerm);
+      instanceFields(cgenc);
+
+      while (isIdentifier(sym) || sym == Keyword || sym == OperatorSequence
+          || symIn(binaryOpSyms)) {
+        MGenC mgenc = createMGenC(cgenc, structuralProbe);
+
+        ExpressionNode methodBody = method(mgenc);
+
+        cgenc.addInstanceMethod(mgenc.assemble(methodBody, lastMethodsCoord), this);
+      }
+
+      classSide(cgenc);
+      expect(EndTerm);
+    } finally {
+      cgenc.setSourceCoord(getCoordWithLength(coord));
     }
+  }
 
-    expect(Identifier);
-    expect(Equal);
-
-    superclass(cgenc);
-
-    expect(NewTerm);
-    instanceFields(cgenc);
-
-    while (isIdentifier(sym) || sym == Keyword || sym == OperatorSequence
-        || symIn(binaryOpSyms)) {
-      MGenC mgenc = createMGenC(cgenc, structuralProbe);
-
-      ExpressionNode methodBody = method(mgenc);
-
-      cgenc.addInstanceMethod(mgenc.assemble(methodBody, lastMethodsCoord), this);
-    }
-
+  protected void classSide(final ClassGenerationContext cgenc)
+      throws ProgramDefinitionError, ParseError {
     if (accept(Separator)) {
       cgenc.switchToClassSide();
       classFields(cgenc);
@@ -275,11 +286,21 @@ public abstract class Parser<MGenC extends MethodGenerationContext> {
         cgenc.addClassMethod(mgenc.assemble(methodBody, lastMethodsCoord), this);
       }
     }
-    expect(EndTerm);
-    cgenc.setSourceCoord(getCoordWithLength(coord));
   }
 
-  private void superclass(final ClassGenerationContext cgenc) throws ParseError {
+  protected void className(final ClassGenerationContext cgenc, final int coord)
+      throws ParseError {
+    cgenc.setName(symbolFor(text));
+
+    if ("Object".equals(text)) {
+      Universe.selfCoord = getCoordWithLength(coord);
+      Universe.selfSource = source;
+    }
+
+    expect(Identifier);
+  }
+
+  protected void superclass(final ClassGenerationContext cgenc) throws ParseError {
     SSymbol superName;
     if (sym == Identifier) {
       superName = symbolFor(text);
@@ -338,27 +359,39 @@ public abstract class Parser<MGenC extends MethodGenerationContext> {
         "%(expected)s, but found %(found)s", ss, this);
   }
 
+  protected SSymbol field() throws ParseError {
+    return identifier();
+  }
+
   private void instanceFields(final ClassGenerationContext cgenc)
       throws ProgramDefinitionError {
     if (accept(Or)) {
       while (isIdentifier(sym)) {
-        int coord = getStartIndex();
-        SSymbol var = variable();
-        cgenc.addInstanceField(var, getCoordWithLength(coord));
+        instanceField(cgenc);
       }
       expect(Or);
     }
   }
 
+  protected Field instanceField(final ClassGenerationContext cgenc) throws ParseError {
+    int coord = getStartIndex();
+    SSymbol var = field();
+    return cgenc.addInstanceField(var, getCoordWithLength(coord));
+  }
+
   private void classFields(final ClassGenerationContext cgenc) throws ProgramDefinitionError {
     if (accept(Or)) {
       while (isIdentifier(sym)) {
-        int coord = getStartIndex();
-        SSymbol var = variable();
-        cgenc.addClassField(var, getCoordWithLength(coord));
+        classField(cgenc);
       }
       expect(Or);
     }
+  }
+
+  protected Field classField(final ClassGenerationContext cgenc) throws ParseError {
+    int coord = getStartIndex();
+    SSymbol var = field();
+    return cgenc.addClassField(var, getCoordWithLength(coord));
   }
 
   protected long getEmptyCoord() {
@@ -399,7 +432,7 @@ public abstract class Parser<MGenC extends MethodGenerationContext> {
     return methodBody;
   }
 
-  private void primitiveBlock() throws ParseError {
+  protected void primitiveBlock() throws ParseError {
     expect(Primitive);
     lastMethodsCoord = getCoordWithLength(lastStartIndex);
   }
@@ -448,16 +481,14 @@ public abstract class Parser<MGenC extends MethodGenerationContext> {
 
   protected void binaryPattern(final MGenC mgenc) throws ProgramDefinitionError {
     mgenc.setSignature(binarySelector());
-    int coord = getStartIndex();
-    mgenc.addArgumentIfAbsent(argument(), getCoordWithLength(coord));
+    argument(mgenc);
   }
 
   protected void keywordPattern(final MGenC mgenc) throws ProgramDefinitionError {
     StringBuilder kw = new StringBuilder();
     do {
       kw.append(keyword());
-      int coord = getStartIndex();
-      mgenc.addArgumentIfAbsent(argument(), getCoordWithLength(coord));
+      argument(mgenc);
     } while (sym == Keyword);
 
     mgenc.setSignature(symbolFor(kw.toString()));
@@ -467,7 +498,11 @@ public abstract class Parser<MGenC extends MethodGenerationContext> {
     return identifier();
   }
 
-  protected SSymbol binarySelector() throws ParseError {
+  protected SSymbol unarySendSelector() throws ParseError {
+    return identifier();
+  }
+
+  private SSymbol binarySelectorImpl() throws ParseError {
     String s = new String(text);
 
     // Checkstyle: stop @formatter:off
@@ -481,6 +516,14 @@ public abstract class Parser<MGenC extends MethodGenerationContext> {
     // Checkstyle: resume @formatter:on
 
     return symbolFor(s);
+  }
+
+  protected SSymbol binarySelector() throws ParseError {
+    return binarySelectorImpl();
+  }
+
+  protected SSymbol binarySendSelector() throws ParseError {
+    return binarySelectorImpl();
   }
 
   private SSymbol identifier() throws ParseError {
@@ -499,8 +542,23 @@ public abstract class Parser<MGenC extends MethodGenerationContext> {
     return s;
   }
 
-  private SSymbol argument() throws ProgramDefinitionError {
-    return variable();
+  protected String keywordInSend() throws ParseError {
+    return keyword();
+  }
+
+  protected Argument argument(final MGenC mgenc) throws ProgramDefinitionError {
+    int coord = getStartIndex();
+    return mgenc.addArgumentIfAbsent(variable(), getCoordWithLength(coord));
+  }
+
+  protected Local local(final MGenC mgenc) throws ProgramDefinitionError {
+    int coord = getStartIndex();
+    SSymbol var = variable();
+    if (mgenc.hasLocal(var)) {
+      throw new ParseError("Declared the variable " + var.getString() + " multiple times.",
+          null, this);
+    }
+    return mgenc.addLocal(var, getCoordWithLength(coord));
   }
 
   protected ExpressionNode blockContents(final MGenC mgenc)
@@ -515,13 +573,7 @@ public abstract class Parser<MGenC extends MethodGenerationContext> {
 
   private void locals(final MGenC mgenc) throws ProgramDefinitionError {
     while (isIdentifier(sym)) {
-      int coord = getStartIndex();
-      SSymbol var = variable();
-      if (mgenc.hasLocal(var)) {
-        throw new ParseError("Declared the variable " + var.getString() + " multiple times.",
-            null, this);
-      }
-      mgenc.addLocal(var, getCoordWithLength(coord));
+      local(mgenc);
     }
   }
 
@@ -641,7 +693,7 @@ public abstract class Parser<MGenC extends MethodGenerationContext> {
     return symb;
   }
 
-  private String string() throws ParseError {
+  protected String string() throws ParseError {
     String s = new String(text);
     expect(STString);
     return s;
@@ -655,8 +707,7 @@ public abstract class Parser<MGenC extends MethodGenerationContext> {
   private void blockArguments(final MGenC mgenc) throws ProgramDefinitionError {
     do {
       expect(Colon);
-      int coord = getStartIndex();
-      mgenc.addArgumentIfAbsent(argument(), getCoordWithLength(coord));
+      argument(mgenc);
     } while (sym == Colon);
   }
 

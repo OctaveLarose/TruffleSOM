@@ -61,8 +61,8 @@ import com.oracle.truffle.api.CompilerDirectives.CompilationFinal;
 import com.oracle.truffle.api.CompilerDirectives.TruffleBoundary;
 import com.oracle.truffle.api.source.Source;
 
-import bd.basic.ProgramDefinitionError;
-import bd.tools.structure.StructuralProbe;
+import bdt.basic.ProgramDefinitionError;
+import bdt.tools.structure.StructuralProbe;
 import trufflesom.compiler.Disassembler;
 import trufflesom.compiler.Field;
 import trufflesom.compiler.SourcecodeCompiler;
@@ -92,6 +92,8 @@ public final class Universe {
 
   @CompilationFinal private static int printIR;
 
+  private static SourcecodeCompiler sourceCompiler;
+
   private static StructuralProbe<SSymbol, SClass, SInvokable, Field, Variable> structuralProbe;
 
   @CompilationFinal private static boolean alreadyInitialized;
@@ -100,6 +102,10 @@ public final class Universe {
 
   @CompilationFinal private static SObject systemObject;
   @CompilationFinal private static SClass  systemClass;
+
+  public static void setSourceCompiler(final SourcecodeCompiler compiler) {
+    sourceCompiler = compiler;
+  }
 
   public static void reset() {
     alreadyInitialized = false;
@@ -442,7 +448,7 @@ public final class Universe {
   public static SClass loadShellClass(final String stmt) throws IOException {
     try {
       // Load the class from a stream and return the loaded class
-      SClass result = SourcecodeCompiler.compileClass(stmt, null, null);
+      SClass result = sourceCompiler.compileClass(stmt, null, null);
       if (printIR > 0) {
         Disassembler.dump(result);
       }
@@ -511,7 +517,7 @@ public final class Universe {
     for (String cpEntry : classPath) {
       try {
         // Load the class from a file and return the loaded class
-        SClass result = SourcecodeCompiler.compileClass(
+        SClass result = sourceCompiler.compileClass(
             cpEntry, name.getString(), systemClass, structuralProbe);
         if (printIR > 0) {
           Disassembler.dump(result.getSOMClass());

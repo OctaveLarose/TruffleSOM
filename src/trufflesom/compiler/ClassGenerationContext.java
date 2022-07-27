@@ -34,8 +34,8 @@ import com.oracle.truffle.api.CompilerDirectives.TruffleBoundary;
 import com.oracle.truffle.api.source.Source;
 import com.oracle.truffle.api.source.SourceSection;
 
-import bd.source.SourceCoordinate;
-import bd.tools.structure.StructuralProbe;
+import bdt.source.SourceCoordinate;
+import bdt.tools.structure.StructuralProbe;
 import trufflesom.compiler.Parser.ParseError;
 import trufflesom.vm.Classes;
 import trufflesom.vmobjects.SClass;
@@ -79,6 +79,10 @@ public final class ClassGenerationContext {
 
   public Source getSource() {
     return source;
+  }
+
+  public long getSourceCoord() {
+    return sourceCoord;
   }
 
   public void setSourceCoord(final long sourceCoord) {
@@ -143,20 +147,28 @@ public final class ClassGenerationContext {
     }
   }
 
-  public void addInstanceField(final SSymbol name, final long coord) {
+  public Field addInstanceField(final SSymbol name, final long coord) {
+    int length = SourceCoordinate.getLength(coord);
+    assert name.getString().length() == length;
+
     Field f = new Field(instanceFields.size(), name, coord);
     instanceFields.add(f);
     if (structuralProbe != null) {
       structuralProbe.recordNewSlot(f);
     }
+    return f;
   }
 
-  public void addClassField(final SSymbol name, final long coord) {
+  public Field addClassField(final SSymbol name, final long coord) {
+    int length = SourceCoordinate.getLength(coord);
+    assert name.getString().length() == length;
+
     Field f = new Field(classFields.size(), name, coord);
     classFields.add(f);
     if (structuralProbe != null) {
       structuralProbe.recordNewSlot(f);
     }
+    return f;
   }
 
   public boolean hasField(final SSymbol fieldName) {

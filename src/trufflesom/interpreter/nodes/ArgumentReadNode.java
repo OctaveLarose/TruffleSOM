@@ -2,8 +2,8 @@ package trufflesom.interpreter.nodes;
 
 import com.oracle.truffle.api.frame.VirtualFrame;
 
-import bd.inlining.ScopeAdaptationVisitor;
-import bd.tools.nodes.Invocation;
+import bdt.inlining.ScopeAdaptationVisitor;
+import bdt.tools.nodes.Invocation;
 import trufflesom.compiler.Variable.Argument;
 import trufflesom.vmobjects.SSymbol;
 
@@ -12,9 +12,8 @@ public abstract class ArgumentReadNode {
 
   public static class LocalArgumentReadNode extends NoPreEvalExprNode
       implements Invocation<SSymbol> {
-    public final int argumentIndex;
-
-    protected final Argument arg;
+    public final int      argumentIndex;
+    public final Argument arg;
 
     public LocalArgumentReadNode(final Argument arg) {
       assert arg.index >= 0;
@@ -66,8 +65,8 @@ public abstract class ArgumentReadNode {
   }
 
   public static class LocalArgumentWriteNode extends NoPreEvalExprNode {
-    protected final int      argumentIndex;
-    protected final Argument arg;
+    protected final int   argumentIndex;
+    public final Argument arg;
 
     @Child protected ExpressionNode valueNode;
 
@@ -103,8 +102,8 @@ public abstract class ArgumentReadNode {
 
   public static class NonLocalArgumentReadNode extends ContextualNode
       implements Invocation<SSymbol> {
-    protected final int      argumentIndex;
-    protected final Argument arg;
+    protected final int   argumentIndex;
+    public final Argument arg;
 
     public NonLocalArgumentReadNode(final Argument arg, final int contextLevel) {
       super(contextLevel);
@@ -145,8 +144,8 @@ public abstract class ArgumentReadNode {
   }
 
   public static class NonLocalArgumentWriteNode extends ContextualNode {
-    protected final int      argumentIndex;
-    protected final Argument arg;
+    protected final int   argumentIndex;
+    public final Argument arg;
 
     @Child protected ExpressionNode valueNode;
 
