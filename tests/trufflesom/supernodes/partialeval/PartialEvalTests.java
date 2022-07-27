@@ -9,8 +9,8 @@ import com.oracle.truffle.api.nodes.RootNode;
 import com.oracle.truffle.api.source.Source;
 
 //import jdk.vm.ci.meta.ResolvedJavaMethod;
-
 //import jdk.vm.ci.meta.ResolvedJavaMethod;
+import jdk.vm.ci.meta.ResolvedJavaMethod;
 import org.graalvm.collections.EconomicMap;
 import org.graalvm.compiler.code.CompilationResult;
 import org.graalvm.compiler.debug.DebugCloseable;
@@ -41,6 +41,7 @@ import trufflesom.compiler.*;
 import trufflesom.interpreter.Method;
 import trufflesom.interpreter.SomLanguage;
 import trufflesom.interpreter.nodes.ExpressionNode;
+import trufflesom.interpreter.nodes.LocalVariableNodeFactory;
 import trufflesom.interpreter.nodes.SequenceNode;
 import trufflesom.interpreter.objectstorage.StorageAnalyzer;
 import trufflesom.interpreter.supernodes.LocalVariableReadSquareWriteNodeGen;
@@ -70,34 +71,34 @@ public class PartialEvalTests extends PartialEvaluationTest {
         initTruffle();
     }
 
-    private static class TestSupernodeRootNode extends RootNode {
-        @Child private LocalVariableSquareNode superNode;
-        @Child private SequenceNode seqSuperNode;
-
-        TestSupernodeRootNode(LocalVariableSquareNode superNode) {
-            super(null);
-            this.superNode = superNode;
-        }
-
-        TestSupernodeRootNode(SequenceNode seqSuperNode) {
-            super(null);
-            this.seqSuperNode = seqSuperNode;
-            this.getFrameDescriptor().addFrameSlot(1, FrameSlotKind.Long);
-            this.getFrameDescriptor().addFrameSlot(2, FrameSlotKind.Long);
-            this.getFrameDescriptor().addFrameSlot(5, FrameSlotKind.Long);
-            this.getFrameDescriptor().addFrameSlot(6, FrameSlotKind.Long);
-            this.getFrameDescriptor().addFrameSlot(7, FrameSlotKind.Long);
-//            this.getFrameDescriptor().addFrameSlot(1);
-        }
-
-        @Override
-        public Object execute(VirtualFrame frame) {
-//            return this.superNode.executeGeneric(frame);
-            frame.setLong(1, 10);
-//            frame.getArguments()d
-            return this.seqSuperNode.executeGeneric(frame);
-        }
-    }
+//    private static class TestSupernodeRootNode extends RootNode {
+//        @Child private LocalVariableSquareNode superNode;
+//        @Child private SequenceNode seqSuperNode;
+//
+//        TestSupernodeRootNode(LocalVariableSquareNode superNode) {
+//            super(null);
+//            this.superNode = superNode;
+//        }
+//
+//        TestSupernodeRootNode(SequenceNode seqSuperNode) {
+//            super(null);
+//            this.seqSuperNode = seqSuperNode;
+//            this.getFrameDescriptor().addFrameSlot(1, FrameSlotKind.Long);
+//            this.getFrameDescriptor().addFrameSlot(2, FrameSlotKind.Long);
+//            this.getFrameDescriptor().addFrameSlot(5, FrameSlotKind.Long);
+//            this.getFrameDescriptor().addFrameSlot(6, FrameSlotKind.Long);
+//            this.getFrameDescriptor().addFrameSlot(7, FrameSlotKind.Long);
+////            this.getFrameDescriptor().addFrameSlot(1);
+//        }
+//
+//        @Override
+//        public Object execute(VirtualFrame frame) {
+////            return this.superNode.executeGeneric(frame);
+//            frame.setLong(1, 10);
+////            frame.getArguments()d
+//            return this.seqSuperNode.executeGeneric(frame);
+//        }
+//    }
 
     private static void initTruffle() {
         StorageAnalyzer.initAccessors();
@@ -205,15 +206,21 @@ public class PartialEvalTests extends PartialEvaluationTest {
         // can be uncommented to deactivate execution before compilation, but graphs will just be a transferToInterpreter()
 //        this.preventProfileCalls = true;
 
-//        String squareCodeStr = "test = ( | l1 l2 l3 l4 | l2 := 100.0 atRandom. l3 := 0.01. l3 := l2 * l2. ^ l3 )";
         String squareCodeStr = "test = ( | l1 l2 l3 l4 | l2 := 100.0 atRandom. l3 := 0.01. l3 := l2 * l2. ^ l3 )";
-//        String squareCodeStr = "test = ( | l1 l2 l3 l4 | l2 := 100.0. l3 := l2 * l2. ^ l3 )";
+//        String squareCodeStr = "test = ( | l1 l2 l3 l4 | " +
+//                "l1 := 100.0 atRandom. l2 := 0.01. l2 := l1 * l1. " +
+//                "l3 := 100 atRandom. l4 := 0. l4 := l3 * l3." +
+//                " ^ l2 + l4)";
 
 //        String squareCodeStr = "test = ( | l1 l2 l3 l4 | l3 := l3 * l3. ^ l3 )";
         String intIncrementLocalCodeStr = "test = ( | l1 l2 l3 l4 | l2 := 100 atRandom. l2 := l2 + 42. ^ l3 )";
 //        String intIncrementCodeStr = "test = ( | l1 l2 l3 l4 | l2 := 100 atRandom. l3 := l3 + l2. ^ l3 )";
 
         String codeStr = squareCodeStr;
+       
+        ResolvedJavaMethod method = getResolvedJavaMethod(LocalVariableNodeFactory.LocalVariableReadNodeGen.class, "executeGeneric");
+        System.out.println(method);
+
 //        String codeStr = "test: arg = ( | l3 | l3 := arg * arg. ^ l3 )";
         SInvokable sInvokableSn = parseMethodInvokable(codeStr, SUPERNODES_ON);
         SInvokable sInvokableOg = parseMethodInvokable(codeStr, NO_SUPERNODES);
@@ -232,8 +239,8 @@ public class PartialEvalTests extends PartialEvaluationTest {
 //        StructuredGraph graphOg = partialEval((OptimizedCallTarget) sInvokableOg.getCallTarget(),
 //                new HashMap<>(Map.of("dumpGraph", "sureWhyNot", "graphDescription", "original_graph")));
 
-        StructuredGraph graphSn = partialEval((OptimizedCallTarget) sInvokableSn.getCallTarget(),
-                new HashMap<>(Map.of("dumpGraph", "yeahIAgree", "graphDescription", "supernode_graph")));
+//        StructuredGraph graphSn = partialEval((OptimizedCallTarget) sInvokableSn.getCallTarget(),
+//                new HashMap<>(Map.of("dumpGraph", "yeahIAgree", "graphDescription", "supernode_graph")));
 
 //        Object xdd = new BytecodeParser();
 //        System.out.println("GRAPH SIMILARITY: " + compareStructuredGraphs(compile((OptimizedCallTarget) sInvokableSn.getCallTarget()), graphSn));
@@ -248,7 +255,7 @@ public class PartialEvalTests extends PartialEvaluationTest {
     }
 
     // source is pretty much CachingPEGraphDecoder
-     public Object summoningSupernodeGraphThroughFuckery() {
+  /*   public Object summoningSupernodeGraphThroughFuckery() {
         StructuredGraph graphToEncode = null;// @formatter:off
 //        Method method = null;
 //        try {
@@ -302,5 +309,5 @@ public class PartialEvalTests extends PartialEvaluationTest {
         graphBuilderPhaseInstance.apply(graphToEncode);
 //        }
         return graphToEncode;
-    }
+    }*/
 }
