@@ -1,8 +1,8 @@
 package trufflesom.supernodes.partialeval;
 
-import bd.basic.ProgramDefinitionError;
-import bd.source.SourceCoordinate;
-import bd.tools.structure.StructuralProbe;
+import bdt.basic.ProgramDefinitionError;
+import bdt.source.SourceCoordinate;
+import bdt.tools.structure.StructuralProbe;
 import com.oracle.truffle.api.frame.FrameSlotKind;
 import com.oracle.truffle.api.frame.VirtualFrame;
 import com.oracle.truffle.api.nodes.RootNode;
