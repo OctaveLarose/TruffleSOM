@@ -1,0 +1,20 @@
+Test = (
+    test: inp = (
+        | res |
+        res := inp.
+        res := inp * inp.
+        ^ res
+    )
+
+    run = (
+        | arg |
+
+        1000 timesRepeat: [
+            (2 atRandom) == 1
+                ifTrue: [ arg := 100 atRandom. ]
+                ifFalse: [ arg := 100.0 atRandom. ].
+
+            (self test: arg) println
+        ].
+    )
+)

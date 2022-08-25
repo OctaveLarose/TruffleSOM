@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="graal">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/libs/truffle/compiler/mxbuild/dists/graal.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="truffle-api">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/libs/truffle/truffle/mxbuild/dists/truffle-api.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

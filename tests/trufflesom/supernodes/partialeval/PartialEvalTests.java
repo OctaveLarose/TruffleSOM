@@ -8,9 +8,6 @@ import com.oracle.truffle.api.frame.VirtualFrame;
 import com.oracle.truffle.api.nodes.RootNode;
 import com.oracle.truffle.api.source.Source;
 
-//import jdk.vm.ci.meta.ResolvedJavaMethod;
-//import jdk.vm.ci.meta.ResolvedJavaMethod;
-import jdk.vm.ci.meta.ResolvedJavaMethod;
 import org.graalvm.collections.EconomicMap;
 import org.graalvm.compiler.code.CompilationResult;
 import org.graalvm.compiler.debug.DebugCloseable;
@@ -41,10 +38,8 @@ import trufflesom.compiler.*;
 import trufflesom.interpreter.Method;
 import trufflesom.interpreter.SomLanguage;
 import trufflesom.interpreter.nodes.ExpressionNode;
-import trufflesom.interpreter.nodes.LocalVariableNodeFactory;
 import trufflesom.interpreter.nodes.SequenceNode;
 import trufflesom.interpreter.objectstorage.StorageAnalyzer;
-import trufflesom.interpreter.supernodes.LocalVariableReadSquareWriteNodeGen;
 import trufflesom.interpreter.supernodes.LocalVariableSquareNode;
 import trufflesom.vm.Universe;
 import trufflesom.vmobjects.SClass;
@@ -115,10 +110,10 @@ public class PartialEvalTests extends PartialEvaluationTest {
 
     protected SInvokable parseMethodInvokable(final String source, boolean noSupernodes) {
         Source s = SomLanguage.getSyntheticSource(source, "test");
-
-        cgenc = new ClassGenerationContext(s, null);
-        cgenc.setName(symbolFor("Test"));
 //        addAllFields();
+
+        var cgenc = new ClassGenerationContext(s, null);
+        cgenc.setName(symbolFor("Test"));
 
         mgenc = new MethodGenerationContext(cgenc, (StructuralProbe<SSymbol, SClass, SInvokable, Field, Variable>) null);
         mgenc.addArgumentIfAbsent(symSelf, 0);
@@ -129,6 +124,30 @@ public class PartialEvalTests extends PartialEvaluationTest {
         try {
             ExpressionNode parsedMethod = parser.method(mgenc);
             return mgenc.assemble(parsedMethod, 0);
+//            return mgenc.assemble(((SequenceNode) parsedMethod).expressions[2], 0);
+
+        } catch (ProgramDefinitionError e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    protected SInvokable parseClassInvokable(final String source, boolean noSupernodes) {
+        Source s = SomLanguage.getSyntheticSource(source, "test");
+//        addAllFields();
+
+        var cgenc = new ClassGenerationContext(s, null);
+        cgenc.setName(symbolFor("Test"));
+
+//        mgenc = new MethodGenerationContext(cgenc, (StructuralProbe<SSymbol, SClass, SInvokable, Field, Variable>) null);
+//        mgenc.addArgumentIfAbsent(symSelf, 0);
+
+        ParserAst parser = new ParserAst(source, s, null);
+        parser.setNoSupernodes(noSupernodes);
+
+        try {
+            parser.classdef(cgenc);
+            return cgenc.assemble().lookupInvokable(new SSymbol("run"));
+//            return cgenc.assemble(parsedMethod, 0);
 //            return mgenc.assemble(((SequenceNode) parsedMethod).expressions[2], 0);
 
         } catch (ProgramDefinitionError e) {
@@ -199,9 +218,24 @@ public class PartialEvalTests extends PartialEvaluationTest {
 
     @Test
     public void testLoopConditionProfile() {
+        StorageAnalyzer.initAccessors();
+
+        Universe.setupClassPath("Smalltalk, .");
+        Universe.setSourceCompiler(new SourcecodeCompiler.AstCompiler());
+
+        Context.Builder builder = Universe.createContextBuilder();
+        builder.logHandler(System.err);
+
         // Must not compile immediately, the profile is not initialized until the first execution.
-        setupContext(Context.newBuilder().allowExperimentalOptions(true).option("engine.CompileImmediately", "false").option("engine.BackgroundCompilation", "false").build());
+//        setupContext(Context.newBuilder().allowExperimentalOptions(true).option("engine.CompileImmediately", "false").option("engine.BackgroundCompilation", "false").build());
+        setupContext(builder.build());
         this.getContext().eval(SomLanguage.INIT);
+
+        Universe.initializeObjectSystem();
+
+
+//        Universe.selfSource = SomLanguage.getSyntheticSource("self", "self");
+//        Universe.selfCoord = SourceCoordinate.createEmpty();
 
         // can be uncommented to deactivate execution before compilation, but graphs will just be a transferToInterpreter()
 //        this.preventProfileCalls = true;
@@ -218,14 +252,37 @@ public class PartialEvalTests extends PartialEvaluationTest {
 
         String codeStr = squareCodeStr;
        
-        ResolvedJavaMethod method = getResolvedJavaMethod(LocalVariableNodeFactory.LocalVariableReadNodeGen.class, "executeGeneric");
-        System.out.println(method);
+//        ResolvedJavaMethod method = getResolvedJavaMethod(LocalVariableNodeFactory.LocalVariableReadNodeGen.class, "executeGeneric");
+//        System.out.println(method);
+
 
 //        String codeStr = "test: arg = ( | l3 | l3 := arg * arg. ^ l3 )";
-        SInvokable sInvokableSn = parseMethodInvokable(codeStr, SUPERNODES_ON);
+//        SInvokable sInvokableSn = parseMethodInvokable(codeStr, SUPERNODES_ON);
         SInvokable sInvokableOg = parseMethodInvokable(codeStr, NO_SUPERNODES);
-        SequenceNode seqSn = (SequenceNode) parseMethodExpression(codeStr, SUPERNODES_ON);
+//        SequenceNode seqSn = (SequenceNode) parseMethodExpression(codeStr, SUPERNODES_ON);
         SequenceNode seqOg = (SequenceNode) parseMethodExpression(codeStr, NO_SUPERNODES);
+
+        String classStr = "Test = (" +
+                "    test: inp = (\n" +
+                "        | res |\n" +
+                "        res := inp.\n" +
+                "        res := inp * inp.\n" +
+                "        ^ res\n" +
+                "    )" +
+                "    run = (\n" +
+                "        | arg |\n" +
+                "\n" +
+                "        1000 timesRepeat: [\n" +
+                "            (2 atRandom) == 1\n" +
+                "                ifTrue: [ arg := 100 atRandom. ]\n" +
+                "                ifFalse: [ arg := 100.0 atRandom. ].\n" +
+                "\n" +
+                "            (self test: arg) println\n" +
+                "        ].\n" +
+                "    )" +
+                ")";
+        SInvokable classInvokable = parseClassInvokable(classStr, NO_SUPERNODES);
+//        SequenceNode seqXdd = (SequenceNode) parseMethodExpression(runStr, NO_SUPERNODES);
 
 
 //        ExpressionNode supernodeExpr = readSequenceExpressions(seqSn, "expressions", ExpressionNode[].class)[0];
@@ -238,6 +295,10 @@ public class PartialEvalTests extends PartialEvaluationTest {
 
 //        StructuredGraph graphOg = partialEval((OptimizedCallTarget) sInvokableOg.getCallTarget(),
 //                new HashMap<>(Map.of("dumpGraph", "sureWhyNot", "graphDescription", "original_graph")));
+
+
+        StructuredGraph graphSn = partialEval((OptimizedCallTarget) classInvokable.getCallTarget(),
+                new HashMap<>(Map.of("dumpGraph", "yeahIAgree", "graphDescription", "supernode_graph")));
 
 //        StructuredGraph graphSn = partialEval((OptimizedCallTarget) sInvokableSn.getCallTarget(),
 //                new HashMap<>(Map.of("dumpGraph", "yeahIAgree", "graphDescription", "supernode_graph")));

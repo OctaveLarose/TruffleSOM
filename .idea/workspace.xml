@@ -1,0 +1,584 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="f70eb4af-1393-4b86-a4d2-e8c4f6ee84b2" name="Changes" comment="Start of starting to rely on classgencontext and not mgenc, plus more mess">
+      <change afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/graal.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/graal_test1.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/truffle_api.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/uiDesigner.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/IncLocalVar.som" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/IncLocalVarBetter.som" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test.som" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/TruffleSOM.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/graph.pdf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Xddd.som" beforeDir="false" afterPath="$PROJECT_DIR$/BrokenSupernode.som" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build.xml" beforeDir="false" afterPath="$PROJECT_DIR$/build.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core-lib" beforeDir="false" afterPath="$PROJECT_DIR$/core-lib" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core-lib/Examples/Echo.som" beforeDir="false" afterPath="$PROJECT_DIR$/core-lib/Examples/Echo.som" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/libs/mx" beforeDir="false" afterPath="$PROJECT_DIR$/libs/mx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/libs/truffle" beforeDir="false" afterPath="$PROJECT_DIR$/libs/truffle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/libs/truffle/compiler/mx.compiler/suite.py" beforeDir="false" afterPath="$PROJECT_DIR$/libs/truffle/compiler/mx.compiler/suite.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/libs/truffle/compiler/src/org.graalvm.compiler.truffle.test/src/org/graalvm/compiler/truffle/test/PartialEvaluationTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/libs/truffle/compiler/src/org.graalvm.compiler.truffle.test/src/org/graalvm/compiler/truffle/test/PartialEvaluationTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/som" beforeDir="false" afterPath="$PROJECT_DIR$/som" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/trufflesom/supernodes/partialeval/PartialEvalTests.java" beforeDir="false" afterPath="$PROJECT_DIR$/tests/trufflesom/supernodes/partialeval/PartialEvalTests.java" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="CompilerWorkspaceConfiguration">
+    <option name="CLEAR_OUTPUT_DIRECTORY" value="false" />
+    <option name="MAKE_PROJECT_ON_SAVE" value="true" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="pe-experiments" />
+      </map>
+    </option>
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+    <option name="ROOT_SYNC" value="DONT_SYNC" />
+  </component>
+  <component name="GitSEFilterConfiguration">
+    <file-type-list>
+      <filtered-out-file-type name="LOCAL_BRANCH" />
+      <filtered-out-file-type name="REMOTE_BRANCH" />
+      <filtered-out-file-type name="TAG" />
+      <filtered-out-file-type name="COMMIT_BY_MESSAGE" />
+    </file-type-list>
+  </component>
+  <component name="HighlightingSettingsPerFile">
+    <setting file="file://$PROJECT_DIR$/build.xml" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/libs/truffle/compiler/src/org.graalvm.compiler.truffle.compiler/src/org/graalvm/compiler/truffle/compiler/phases/TruffleHostInliningPhase.java" root0="SKIP_INSPECTION" />
+    <setting file="file://$PROJECT_DIR$/libs/truffle/compiler/src/org.graalvm.compiler.truffle.test/src/org/graalvm/compiler/truffle/test/HostInliningBytecodeInterpreterTest.java" root0="SKIP_INSPECTION" />
+    <setting file="file://$PROJECT_DIR$/libs/truffle/compiler/src/org.graalvm.compiler.truffle.test/src/org/graalvm/compiler/truffle/test/HostInliningTest.java" root0="SKIP_INSPECTION" />
+    <setting file="file://$PROJECT_DIR$/src/trufflesom/compiler/MethodGenerationContext.java" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/src/trufflesom/compiler/bc/BytecodeMethodGenContext.java" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/src/trufflesom/interpreter/Method.java" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/src/trufflesom/interpreter/nodes/SequenceNode.java" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/src/trufflesom/interpreter/nodes/bc/BytecodeLoopNode.java" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/src/trufflesom/interpreter/nodes/nary/BinaryExpressionNode.java" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/src/trufflesom/interpreter/supernodes/StringEqualsNode.java" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/tests/trufflesom/supernodes/partialeval/PartialEvalTests.java" root0="FORCE_HIGHLIGHTING" />
+  </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
+  <component name="ProblemsViewState">
+    <option name="selectedTabId" value="ProjectErrors" />
+  </component>
+  <component name="ProjectId" id="24wQyXIqUGur93tcFNRRGqKnmmU" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true">
+    <ConfirmationsSetting value="1" id="Add" />
+  </component>
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+    <option name="showMembers" value="true" />
+  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ASKED_ADD_EXTERNAL_FILES&quot;: &quot;true&quot;,
+    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
+    &quot;jdk.selected.JAVA_MODULE&quot;: &quot;graalvm-17-debug&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/home/octavel/PhD_Programs/my_programs/TruffleSOM&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;Modules&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.fileTypes&quot;
+  }
+}</component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$" />
+    </key>
+    <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="trufflesom.primitives.arithmetic" />
+      <recent name="trufflesom.interpreter.nodes" />
+    </key>
+  </component>
+  <component name="RunManager" selected="Remote JVM Debug.TruffleSOM">
+    <configuration default="true" type="Applet" factoryName="Applet">
+      <option name="WIDTH" value="400" />
+      <option name="HEIGHT" value="300" />
+      <option name="POLICY_FILE" value="$APPLICATION_HOME_DIR$/bin/appletviewer.policy" />
+      <module />
+      <method />
+    </configuration>
+    <configuration name="&lt;template&gt;" type="WebApp" default="true" selected="false">
+      <Host>localhost</Host>
+      <Port>5050</Port>
+    </configuration>
+    <configuration default="true" type="Application" factoryName="Application">
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="All in TruffleSOM" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="TruffleSOM" />
+      <option name="PACKAGE_NAME" value="" />
+      <option name="MAIN_CLASS_NAME" value="" />
+      <option name="METHOD_NAME" value="" />
+      <option name="TEST_OBJECT" value="package" />
+      <option name="VM_PARAMETERS" value="-ea -Dpolyglot.engine.WarnInterpreterOnly=false" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="TEST_SEARCH_SCOPE">
+        <value defaultName="moduleWithDependencies" />
+      </option>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="AssumedValuePartialEvaluationTest.testDynamic" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="TruffleSOM" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="org.graalvm.compiler.truffle.test.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="org.graalvm.compiler.truffle.test" />
+      <option name="MAIN_CLASS_NAME" value="org.graalvm.compiler.truffle.test.AssumedValuePartialEvaluationTest" />
+      <option name="METHOD_NAME" value="testDynamic" />
+      <option name="TEST_OBJECT" value="method" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="TEST_SEARCH_SCOPE">
+        <value defaultName="moduleWithDependencies" />
+      </option>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="BytecodeMethodTests" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="TruffleSOM" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="trufflesom.tests.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="trufflesom.tests" />
+      <option name="MAIN_CLASS_NAME" value="trufflesom.tests.BytecodeMethodTests" />
+      <option name="METHOD_NAME" value="testTrivialMethodInlining" />
+      <option name="TEST_OBJECT" value="class" />
+      <option name="VM_PARAMETERS" value="-ea -Dpolyglot.engine.WarnInterpreterOnly=false" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="TEST_SEARCH_SCOPE">
+        <value defaultName="moduleWithDependencies" />
+      </option>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="BytecodeMethodTests.testTrivialMethodInlining" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="TruffleSOM" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="trufflesom.tests.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="trufflesom.tests" />
+      <option name="MAIN_CLASS_NAME" value="trufflesom.tests.BytecodeMethodTests" />
+      <option name="METHOD_NAME" value="testTrivialMethodInlining" />
+      <option name="TEST_OBJECT" value="method" />
+      <option name="VM_PARAMETERS" value="-ea -Dpolyglot.engine.WarnInterpreterOnly=false" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="TEST_SEARCH_SCOPE">
+        <value defaultName="moduleWithDependencies" />
+      </option>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="HostInliningTest.test" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="TruffleSOM" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="org.graalvm.compiler.truffle.test.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="org.graalvm.compiler.truffle.test" />
+      <option name="MAIN_CLASS_NAME" value="org.graalvm.compiler.truffle.test.HostInliningTest" />
+      <option name="METHOD_NAME" value="test" />
+      <option name="TEST_OBJECT" value="method" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="TEST_SEARCH_SCOPE">
+        <value defaultName="moduleWithDependencies" />
+      </option>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="JUnit" factoryName="JUnit">
+      <option name="TEST_OBJECT" value="class" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="TEST_SEARCH_SCOPE">
+        <value defaultName="moduleWithDependencies" />
+      </option>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="JetRunConfigurationType">
+      <module name="com.oracle.mxtool.checkcopy" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="KotlinStandaloneScriptRunConfigurationType">
+      <module name="com.oracle.mxtool.checkcopy" />
+      <option name="filePath" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="TruffleSOM" type="Remote">
+      <module name="TruffleSOM" />
+      <option name="USE_SOCKET_TRANSPORT" value="true" />
+      <option name="SERVER_MODE" value="false" />
+      <option name="SHMEM_ADDRESS" />
+      <option name="HOST" value="localhost" />
+      <option name="PORT" value="8080" />
+      <option name="AUTO_RESTART" value="false" />
+      <RunnerSettings RunnerId="Debug">
+        <option name="DEBUG_PORT" value="8080" />
+        <option name="LOCAL" value="false" />
+      </RunnerSettings>
+      <method v="2" />
+    </configuration>
+    <configuration default="true" type="TestNG">
+      <option name="TEST_OBJECT" value="CLASS" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="TEST_SEARCH_SCOPE">
+        <value defaultName="moduleWithDependencies" />
+      </option>
+      <properties />
+      <listeners />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="#org.jetbrains.idea.devkit.run.PluginConfigurationType">
+      <module name="" />
+      <option name="VM_PARAMETERS" value="-Xmx512m -Xms256m -XX:MaxPermSize=250m -ea" />
+      <option name="PROGRAM_PARAMETERS" />
+      <predefined_log_file enabled="true" id="idea.log" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <list>
+      <item itemvalue="JUnit.AssumedValuePartialEvaluationTest.testDynamic" />
+      <item itemvalue="JUnit.HostInliningTest.test" />
+      <item itemvalue="JUnit.All in TruffleSOM" />
+      <item itemvalue="JUnit.BytecodeMethodTests.testTrivialMethodInlining" />
+      <item itemvalue="JUnit.BytecodeMethodTests" />
+      <item itemvalue="Remote JVM Debug.TruffleSOM" />
+    </list>
+    <recent_temporary>
+      <list>
+        <item itemvalue="JUnit.AssumedValuePartialEvaluationTest.testDynamic" />
+        <item itemvalue="JUnit.HostInliningTest.test" />
+        <item itemvalue="JUnit.All in TruffleSOM" />
+        <item itemvalue="JUnit.BytecodeMethodTests" />
+        <item itemvalue="JUnit.BytecodeMethodTests.testTrivialMethodInlining" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="f70eb4af-1393-4b86-a4d2-e8c4f6ee84b2" name="Changes" comment="" />
+      <created>1644539427850</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1644539427850</updated>
+      <workItem from="1644539433503" duration="4000" />
+      <workItem from="1644539447085" duration="3298000" />
+      <workItem from="1644619136230" duration="759000" />
+      <workItem from="1644619974919" duration="7670000" />
+      <workItem from="1656321542666" duration="50000" />
+      <workItem from="1656321600870" duration="2204000" />
+      <workItem from="1656336362835" duration="208000" />
+      <workItem from="1656336580780" duration="339000" />
+      <workItem from="1656336930820" duration="4573000" />
+      <workItem from="1656405396420" duration="6350000" />
+      <workItem from="1656513795109" duration="6536000" />
+      <workItem from="1656594388014" duration="911000" />
+      <workItem from="1656679134222" duration="1440000" />
+      <workItem from="1656690514315" duration="2339000" />
+      <workItem from="1656859216522" duration="10252000" />
+      <workItem from="1656928149630" duration="2051000" />
+      <workItem from="1656938670463" duration="9866000" />
+      <workItem from="1656950638279" duration="729000" />
+      <workItem from="1657058336015" duration="1161000" />
+      <workItem from="1657207978392" duration="3520000" />
+      <workItem from="1657211590547" duration="748000" />
+      <workItem from="1657459367433" duration="5456000" />
+      <workItem from="1657529529518" duration="5049000" />
+      <workItem from="1657629717970" duration="705000" />
+      <workItem from="1657665764386" duration="6710000" />
+      <workItem from="1657920130353" duration="67000" />
+      <workItem from="1658314110740" duration="5164000" />
+      <workItem from="1658326875239" duration="7268000" />
+      <workItem from="1658390681917" duration="11854000" />
+      <workItem from="1658414639846" duration="4131000" />
+      <workItem from="1658476734194" duration="10850000" />
+      <workItem from="1658735915792" duration="8965000" />
+      <workItem from="1658762405326" duration="1650000" />
+      <workItem from="1658764076271" duration="771000" />
+      <workItem from="1658828265163" duration="8857000" />
+      <workItem from="1658844630271" duration="3298000" />
+      <workItem from="1658906970628" duration="7959000" />
+      <workItem from="1658923896111" duration="3036000" />
+      <workItem from="1658999953980" duration="3435000" />
+      <workItem from="1659005612591" duration="2235000" />
+      <workItem from="1659084533593" duration="5775000" />
+      <workItem from="1659100911852" duration="1187000" />
+      <workItem from="1659347167550" duration="1613000" />
+      <workItem from="1659355534085" duration="1080000" />
+      <workItem from="1659356623083" duration="2683000" />
+      <workItem from="1659363821250" duration="3301000" />
+      <workItem from="1659634786662" duration="16000" />
+      <workItem from="1659635042121" duration="3296000" />
+      <workItem from="1659696014930" duration="2321000" />
+      <workItem from="1659712003835" duration="4717000" />
+      <workItem from="1659793732951" duration="11151000" />
+      <workItem from="1659867702538" duration="5701000" />
+      <workItem from="1659978035851" duration="2844000" />
+      <workItem from="1659993447853" duration="1215000" />
+      <workItem from="1660034236004" duration="13520000" />
+      <workItem from="1660158827642" duration="1772000" />
+      <workItem from="1660206979897" duration="12588000" />
+      <workItem from="1660292752826" duration="2977000" />
+      <workItem from="1660309099875" duration="41000" />
+      <workItem from="1660318257403" duration="419000" />
+      <workItem from="1660323968581" duration="876000" />
+      <workItem from="1660555204705" duration="3116000" />
+      <workItem from="1660640463904" duration="1500000" />
+      <workItem from="1660652238248" duration="4333000" />
+      <workItem from="1660724592922" duration="15547000" />
+      <workItem from="1660750049434" duration="1489000" />
+      <workItem from="1660813611346" duration="9624000" />
+      <workItem from="1660900825249" duration="6493000" />
+      <workItem from="1660921032972" duration="1278000" />
+      <workItem from="1660999506873" duration="3764000" />
+      <workItem from="1661161525144" duration="3142000" />
+      <workItem from="1661182238005" duration="1301000" />
+      <workItem from="1661266226248" duration="1853000" />
+      <workItem from="1661335221754" duration="6638000" />
+      <workItem from="1661354118018" duration="4969000" />
+      <workItem from="1661415745488" duration="12254000" />
+    </task>
+    <task id="LOCAL-00001" summary="Graph comparison that isn't complete (in the math sense of the word) but should do for now">
+      <created>1656350196747</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1656350196747</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <ignored-roots>
+      <path value="$PROJECT_DIR$/libs/Truffle" />
+    </ignored-roots>
+    <MESSAGE value="Graph comparison that isn't complete (in the math sense of the word) but should do for now" />
+    <MESSAGE value="Start of starting to rely on classgencontext and not mgenc, plus more mess" />
+    <option name="LAST_COMMIT_MESSAGE" value="Start of starting to rely on classgencontext and not mgenc, plus more mess" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/trufflesom/interpreter/nodes/dispatch/CachedFieldWriteAndSelf.java</url>
+          <line>22</line>
+          <option name="timeStamp" value="4" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/trufflesom/primitives/basics/NewObjectPrim.java</url>
+          <line>25</line>
+          <option name="timeStamp" value="5" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/trufflesom/primitives/basics/NewObjectPrim.java</url>
+          <line>30</line>
+          <option name="timeStamp" value="6" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/trufflesom/primitives/basics/NewObjectPrim.java</url>
+          <line>40</line>
+          <option name="timeStamp" value="8" />
+        </line-breakpoint>
+        <line-breakpoint type="java-line">
+          <url>file://$PROJECT_DIR$/src_gen/trufflesom/primitives/basics/NewObjectPrimFactory.java</url>
+          <line>71</line>
+          <option name="timeStamp" value="9" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/trufflesom/primitives/basics/NewObjectPrim.java</url>
+          <line>35</line>
+          <option name="timeStamp" value="10" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/trufflesom/interpreter/nodes/dispatch/UninitializedDispatchNode.java</url>
+          <line>63</line>
+          <option name="timeStamp" value="11" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src_gen/trufflesom/interpreter/supernodes/LocalVariableSquareNodeGen.java</url>
+          <line>166</line>
+          <option name="timeStamp" value="18" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/libs/truffle/compiler/mxbuild/jdk17/dists/jdk17/graal.src.zip.files/org/graalvm/compiler/truffle/compiler/TruffleCompilerImpl.java</url>
+          <line>644</line>
+          <option name="timeStamp" value="24" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/libs/truffle/compiler/mxbuild/jdk17/dists/jdk17/graal.src.zip.files/org/graalvm/compiler/truffle/compiler/TruffleCompilerImpl.java</url>
+          <line>626</line>
+          <option name="timeStamp" value="25" />
+        </line-breakpoint>
+        <line-breakpoint type="java-line">
+          <url>file://$PROJECT_DIR$/libs/truffle/compiler/mxbuild/jdk17/dists/jdk17/graal.src.zip.files/org/graalvm/compiler/phases/BasePhase.java</url>
+          <line>270</line>
+          <option name="timeStamp" value="29" />
+        </line-breakpoint>
+        <line-breakpoint type="java-line">
+          <url>file://$PROJECT_DIR$/libs/truffle/compiler/mxbuild/jdk17/dists/jdk17/graal.src.zip.files/org/graalvm/compiler/java/GraphBuilderPhase.java</url>
+          <line>60</line>
+          <option name="timeStamp" value="30" />
+        </line-breakpoint>
+        <line-breakpoint type="java-line">
+          <url>file://$PROJECT_DIR$/libs/truffle/compiler/mxbuild/jdk17/dists/jdk17/graal.src.zip.files/org/graalvm/compiler/phases/BasePhase.java</url>
+          <line>315</line>
+          <option name="timeStamp" value="31" />
+        </line-breakpoint>
+        <line-breakpoint type="java-line">
+          <url>file://$PROJECT_DIR$/libs/truffle/compiler/mxbuild/jdk17/dists/jdk17/graal.src.zip.files/org/graalvm/compiler/truffle/compiler/phases/inlining/AgnosticInliningPhase.java</url>
+          <line>83</line>
+          <option name="timeStamp" value="32" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/tests/trufflesom/supernodes/partialeval/PartialEvalTests.java</url>
+          <line>371</line>
+          <option name="timeStamp" value="37" />
+        </line-breakpoint>
+        <line-breakpoint type="java-line">
+          <url>file://$PROJECT_DIR$/libs/truffle/compiler/mxbuild/jdk17/dists/jdk17/graal-test.src.zip.files/org/graalvm/compiler/truffle/test/PartialEvaluationTest.java</url>
+          <line>321</line>
+          <option name="timeStamp" value="42" />
+        </line-breakpoint>
+        <line-breakpoint type="java-line">
+          <url>file://$PROJECT_DIR$/libs/truffle/compiler/mxbuild/jdk17/dists/jdk17/graal.src.zip.files/org/graalvm/compiler/java/BytecodeParser.java</url>
+          <line>1710</line>
+          <option name="timeStamp" value="45" />
+        </line-breakpoint>
+        <line-breakpoint type="java-line">
+          <url>file://$PROJECT_DIR$/src/trufflesom/interpreter/supernodes/IncLocalVariableNode.java</url>
+          <line>39</line>
+          <option name="timeStamp" value="58" />
+        </line-breakpoint>
+        <line-breakpoint type="java-line">
+          <url>file://$PROJECT_DIR$/src/trufflesom/interpreter/supernodes/IncLocalVariableNode.java</url>
+          <line>29</line>
+          <option name="timeStamp" value="59" />
+        </line-breakpoint>
+        <line-breakpoint type="java-line">
+          <url>file://$PROJECT_DIR$/src/trufflesom/interpreter/supernodes/IncLocalVariableNode.java</url>
+          <line>49</line>
+          <option name="timeStamp" value="60" />
+        </line-breakpoint>
+        <line-breakpoint type="java-line">
+          <url>file://$PROJECT_DIR$/libs/truffle/compiler/mxbuild/jdk17/dists/jdk17/graal.src.zip.files/org/graalvm/compiler/replacements/CachingPEGraphDecoder.java</url>
+          <line>164</line>
+          <option name="timeStamp" value="67" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/tests/trufflesom/supernodes/partialeval/PartialEvalTests.java</url>
+          <line>305</line>
+          <option name="timeStamp" value="69" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/libs/truffle/compiler/mxbuild/jdk17/dists/jdk17/graal-test.src.zip.files/org/graalvm/compiler/truffle/test/PartialEvaluationTest.java</url>
+          <line>228</line>
+          <option name="timeStamp" value="70" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/libs/truffle/compiler/mxbuild/jdk17/dists/jdk17/graal-test.src.zip.files/org/graalvm/compiler/truffle/test/AssumedValuePartialEvaluationTest.java</url>
+          <line>81</line>
+          <option name="timeStamp" value="72" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/libs/truffle/compiler/mxbuild/jdk17/dists/jdk17/graal-test.src.zip.files/org/graalvm/compiler/truffle/test/AssumedValuePartialEvaluationTest.java</url>
+          <line>77</line>
+          <option name="timeStamp" value="73" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/libs/truffle/compiler/mxbuild/jdk17/dists/jdk17/graal-test.src.zip.files/org/graalvm/compiler/truffle/test/AssumedValuePartialEvaluationTest.java</url>
+          <line>72</line>
+          <option name="timeStamp" value="74" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/tests/trufflesom/supernodes/partialeval/PartialEvalTests.java</url>
+          <line>286</line>
+          <option name="timeStamp" value="75" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/trufflesom/interpreter/nodes/SequenceNode.java</url>
+          <line>50</line>
+          <option name="timeStamp" value="76" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/trufflesom/interpreter/Method.java</url>
+          <line>61</line>
+          <option name="timeStamp" value="77" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/tests/trufflesom/supernodes/partialeval/PartialEvalTests.java</url>
+          <line>137</line>
+          <option name="timeStamp" value="79" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/tests/trufflesom/supernodes/partialeval/PartialEvalTests.java</url>
+          <line>147</line>
+          <option name="timeStamp" value="80" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/trufflesom/vm/Universe.java</url>
+          <line>511</line>
+          <option name="timeStamp" value="83" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
+  </component>
+  <component name="XSLT-Support.FileAssociations.UIState">
+    <expand />
+    <select />
+  </component>
+</project>
