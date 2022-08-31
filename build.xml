@@ -329,7 +329,7 @@ Native Image Targets
 
     <target name="unit-test" description="Run unit tests">
         <junit haltonerror="false" haltonfailure="false" failureproperty="test.failed.ast"
-            outputtoformatters="true" fork="true" jvm="${sdk.dir}/mxbuild/linux-amd64/GRAALVM_A402CF4705_JAVA17_STAGE1/graalvm-a402cf4705-java17-22.2.0-dev/bin/java">
+            outputtoformatters="true" fork="true" jvm="${sdk.dir}/mxbuild/linux-amd64/GRAALVM_1AB71B6E79_JAVA17_STAGE1/graalvm-1ab71b6e79-java17-22.3.0-dev/bin/java">
 
             <jvmarg value="-ea" />
             <jvmarg value="-esa" />

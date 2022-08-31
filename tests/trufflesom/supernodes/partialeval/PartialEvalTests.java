@@ -8,9 +8,6 @@ import com.oracle.truffle.api.frame.VirtualFrame;
 import com.oracle.truffle.api.nodes.RootNode;
 import com.oracle.truffle.api.source.Source;
 
-//import jdk.vm.ci.meta.ResolvedJavaMethod;
-//import jdk.vm.ci.meta.ResolvedJavaMethod;
-import jdk.vm.ci.meta.ResolvedJavaMethod;
 import org.graalvm.collections.EconomicMap;
 import org.graalvm.compiler.code.CompilationResult;
 import org.graalvm.compiler.debug.DebugCloseable;
@@ -218,8 +215,8 @@ public class PartialEvalTests extends PartialEvaluationTest {
 
         String codeStr = squareCodeStr;
        
-        ResolvedJavaMethod method = getResolvedJavaMethod(LocalVariableNodeFactory.LocalVariableReadNodeGen.class, "executeGeneric");
-        System.out.println(method);
+//        ResolvedJavaMethod method = getResolvedJavaMethod(LocalVariableNodeFactory.LocalVariableReadNodeGen.class, "executeGeneric");
+//        System.out.println(method);
 
 //        String codeStr = "test: arg = ( | l3 | l3 := arg * arg. ^ l3 )";
         SInvokable sInvokableSn = parseMethodInvokable(codeStr, SUPERNODES_ON);
@@ -239,8 +236,8 @@ public class PartialEvalTests extends PartialEvaluationTest {
 //        StructuredGraph graphOg = partialEval((OptimizedCallTarget) sInvokableOg.getCallTarget(),
 //                new HashMap<>(Map.of("dumpGraph", "sureWhyNot", "graphDescription", "original_graph")));
 
-//        StructuredGraph graphSn = partialEval((OptimizedCallTarget) sInvokableSn.getCallTarget(),
-//                new HashMap<>(Map.of("dumpGraph", "yeahIAgree", "graphDescription", "supernode_graph")));
+        StructuredGraph graphSn = partialEval((OptimizedCallTarget) sInvokableSn.getCallTarget(),
+                new HashMap<>(Map.of("dumpGraph", "yeahIAgree", "graphDescription", "supernode_graph")));
 
 //        Object xdd = new BytecodeParser();
 //        System.out.println("GRAPH SIMILARITY: " + compareStructuredGraphs(compile((OptimizedCallTarget) sInvokableSn.getCallTarget()), graphSn));
