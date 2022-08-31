@@ -1,7 +1,6 @@
 Test = (
     test: inp = (
         | res |
-        res := inp.
         res := inp * inp.
         ^ res
     )
@@ -9,7 +8,7 @@ Test = (
     run = (
         | arg |
 
-        1000 timesRepeat: [
+        10000 timesRepeat: [
             (2 atRandom) == 1
                 ifTrue: [ arg := 100 atRandom. ]
                 ifFalse: [ arg := 100.0 atRandom. ].

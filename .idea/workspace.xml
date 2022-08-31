@@ -5,30 +5,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="f70eb4af-1393-4b86-a4d2-e8c4f6ee84b2" name="Changes" comment="Start of starting to rely on classgencontext and not mgenc, plus more mess">
-      <change afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/graal.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/graal_test1.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/truffle_api.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/uiDesigner.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/IncLocalVar.som" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/IncLocalVarBetter.som" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test.som" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/TruffleSOM.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/graph.pdf" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Xddd.som" beforeDir="false" afterPath="$PROJECT_DIR$/BrokenSupernode.som" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build.xml" beforeDir="false" afterPath="$PROJECT_DIR$/build.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core-lib" beforeDir="false" afterPath="$PROJECT_DIR$/core-lib" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core-lib/Examples/Echo.som" beforeDir="false" afterPath="$PROJECT_DIR$/core-lib/Examples/Echo.som" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Test.som" beforeDir="false" afterPath="$PROJECT_DIR$/Test.som" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/libs/mx" beforeDir="false" afterPath="$PROJECT_DIR$/libs/mx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/libs/truffle" beforeDir="false" afterPath="$PROJECT_DIR$/libs/truffle" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/libs/truffle/compiler/mx.compiler/suite.py" beforeDir="false" afterPath="$PROJECT_DIR$/libs/truffle/compiler/mx.compiler/suite.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/libs/truffle/compiler/src/org.graalvm.compiler.truffle.test/src/org/graalvm/compiler/truffle/test/PartialEvaluationTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/libs/truffle/compiler/src/org.graalvm.compiler.truffle.test/src/org/graalvm/compiler/truffle/test/PartialEvaluationTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/som" beforeDir="false" afterPath="$PROJECT_DIR$/som" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/trufflesom/supernodes/partialeval/PartialEvalTests.java" beforeDir="false" afterPath="$PROJECT_DIR$/tests/trufflesom/supernodes/partialeval/PartialEvalTests.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -65,17 +45,23 @@
   </component>
   <component name="HighlightingSettingsPerFile">
     <setting file="file://$PROJECT_DIR$/build.xml" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/libs/truffle/compiler/src/org.graalvm.compiler.nodes/src/org/graalvm/compiler/nodes/extended/BoxNode.java" root0="SKIP_INSPECTION" />
     <setting file="file://$PROJECT_DIR$/libs/truffle/compiler/src/org.graalvm.compiler.truffle.compiler/src/org/graalvm/compiler/truffle/compiler/phases/TruffleHostInliningPhase.java" root0="SKIP_INSPECTION" />
     <setting file="file://$PROJECT_DIR$/libs/truffle/compiler/src/org.graalvm.compiler.truffle.test/src/org/graalvm/compiler/truffle/test/HostInliningBytecodeInterpreterTest.java" root0="SKIP_INSPECTION" />
     <setting file="file://$PROJECT_DIR$/libs/truffle/compiler/src/org.graalvm.compiler.truffle.test/src/org/graalvm/compiler/truffle/test/HostInliningTest.java" root0="SKIP_INSPECTION" />
+    <setting file="file://$PROJECT_DIR$/som" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/src/trufflesom/compiler/MethodGenerationContext.java" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/src/trufflesom/compiler/Parser.java" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/src/trufflesom/compiler/bc/BytecodeMethodGenContext.java" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/src/trufflesom/interpreter/Method.java" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/src/trufflesom/interpreter/nodes/SequenceNode.java" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/src/trufflesom/interpreter/nodes/bc/BytecodeLoopNode.java" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/src/trufflesom/interpreter/nodes/nary/BinaryExpressionNode.java" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/src/trufflesom/interpreter/supernodes/StringEqualsNode.java" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/src/trufflesom/vm/Universe.java" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/src_gen/trufflesom/interpreter/supernodes/LocalVariableReadSquareWriteNodeGen.java" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/tests/trufflesom/supernodes/partialeval/PartialEvalTests.java" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/tests/trufflesom/tests/TruffleTestSetup.java" root0="FORCE_HIGHLIGHTING" />
   </component>
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
@@ -389,6 +375,8 @@
       <workItem from="1661335221754" duration="6638000" />
       <workItem from="1661354118018" duration="4969000" />
       <workItem from="1661415745488" duration="12254000" />
+      <workItem from="1661760543798" duration="6380000" />
+      <workItem from="1661850740199" duration="1254000" />
     </task>
     <task id="LOCAL-00001" summary="Graph comparison that isn't complete (in the math sense of the word) but should do for now">
       <created>1656350196747</created>
