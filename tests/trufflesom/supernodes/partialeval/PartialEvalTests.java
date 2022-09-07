@@ -233,8 +233,8 @@ public class PartialEvalTests extends PartialEvaluationTest {
 // Need something that can be called, so something that inherits from RootNode
 //        OptimizedCallTarget target = (OptimizedCallTarget) testSupernodeRootNode.getCallTarget();
 
-        StructuredGraph graphOg = partialEval((OptimizedCallTarget) sInvokableOg.getCallTarget(),
-                new HashMap<>(Map.of("dumpGraph", "sureWhyNot", "graphDescription", "original_graph")));
+//        StructuredGraph graphOg = partialEval((OptimizedCallTarget) sInvokableOg.getCallTarget(),
+//                new HashMap<>(Map.of("dumpGraph", "sureWhyNot", "graphDescription", "original_graph")));
 
 //        StructuredGraph graphSn = partialEval((OptimizedCallTarget) sInvokableSn.getCallTarget(),
 //                new HashMap<>(Map.of("dumpGraph", "yeahIAgree", "graphDescription", "supernode_graph")));
