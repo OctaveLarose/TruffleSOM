@@ -29,14 +29,11 @@ import bdt.basic.ProgramDefinitionError;
 import bdt.inlining.InlinableNodes;
 import bdt.tools.structure.StructuralProbe;
 import trufflesom.compiler.Variable.Local;
+import trufflesom.interpreter.nodes.*;
 import trufflesom.interpreter.nodes.ArgumentReadNode.LocalArgumentReadNode;
 import trufflesom.interpreter.nodes.ArgumentReadNode.NonLocalArgumentReadNode;
-import trufflesom.interpreter.nodes.ExpressionNode;
-import trufflesom.interpreter.nodes.FieldNode;
 import trufflesom.interpreter.nodes.FieldNode.FieldReadNode;
-import trufflesom.interpreter.nodes.GlobalNode;
 import trufflesom.interpreter.nodes.LocalVariableNode.LocalVariableReadNode;
-import trufflesom.interpreter.nodes.MessageSendNode;
 import trufflesom.interpreter.nodes.NonLocalVariableNode.NonLocalVariableReadNode;
 import trufflesom.interpreter.nodes.literals.BlockNode;
 import trufflesom.interpreter.nodes.literals.BlockNode.BlockNodeWithContext;
@@ -51,6 +48,8 @@ import trufflesom.interpreter.supernodes.NonLocalFieldStringEqualsNode;
 import trufflesom.interpreter.supernodes.NonLocalVariableSquareNodeGen;
 import trufflesom.interpreter.supernodes.StringEqualsNodeGen;
 import trufflesom.primitives.Primitives;
+import trufflesom.primitives.arithmetic.MultiplicationV2Prim;
+import trufflesom.primitives.arithmetic.MultiplicationV2PrimFactory;
 import trufflesom.vm.Globals;
 import trufflesom.vm.NotYetImplementedException;
 import trufflesom.vmobjects.SArray;
@@ -269,12 +268,12 @@ public class ParserAst extends Parser<MethodGenerationContext> {
 
     if (!noSupernodes) {
       if (binSelector.equals("*")) {
-        if (receiver instanceof LocalVariableReadNode
-                && operand instanceof LocalVariableReadNode) {
-          Local rcvrLocal = ((LocalVariableReadNode) receiver).getLocal();
-          Local opLocal = ((LocalVariableReadNode) operand).getLocal();
+        if (receiver instanceof LocalArgumentReadNode
+                && operand instanceof LocalArgumentReadNode) {
+          Variable.Argument rcvrLocal = ((LocalArgumentReadNode) receiver).getArg();
+          Variable.Argument opLocal = ((LocalArgumentReadNode) operand).getArg();
           if (rcvrLocal.equals(opLocal)) {
-            return LocalVariableSquareNodeGen.create(rcvrLocal).initialize(coordWithL);
+            return MultiplicationV2PrimFactory.create(new ArgumentReadV2Node.LocalArgumentReadNode(rcvrLocal), new ArgumentReadV2Node.LocalArgumentReadNode(opLocal));
           }
         } else if (receiver instanceof NonLocalVariableReadNode
                 && operand instanceof NonLocalVariableReadNode) {

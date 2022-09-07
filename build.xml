@@ -454,7 +454,9 @@ Native Image Targets
               <env key="JAVA_HOME" value="@{java-home}" />
               <arg line="native-image" if:true="@{is-ce}" />
               <arg line="--macro:truffle --no-fallback" />
-              
+
+              <arg line="-J-Xdebug -J-Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=8080" if:true="${dbg}" />
+
               <arg line="--initialize-at-build-time='bd,tools,trufflesom,org.graalvm.graphio'" if:set="dump.method" />
               <arg line="--initialize-at-build-time='bd,tools,trufflesom'"                 unless:set="dump.method" />
               <arg line="-H:Dump= -H:PrintGraph=File -H:MethodFilter=${dump.method}"           if:set="dump.method" />

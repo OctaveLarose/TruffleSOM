@@ -203,14 +203,14 @@ public class PartialEvalTests extends PartialEvaluationTest {
         // can be uncommented to deactivate execution before compilation, but graphs will just be a transferToInterpreter()
 //        this.preventProfileCalls = true;
 
-        String squareCodeStr = "test = ( | l1 l2 l3 l4 | l2 := 100.0 atRandom. l3 := 0.01. l3 := l2 * l2. ^ l3 )";
-//        String squareCodeStr = "test = ( | l1 l2 l3 l4 | " +
-//                "l1 := 100.0 atRandom. l2 := 0.01. l2 := l1 * l1. " +
-//                "l3 := 100 atRandom. l4 := 0. l4 := l3 * l3." +
-//                " ^ l2 + l4)";
+//        String squareCodeStr = "test = ( | l1 l2 l3 l4 | l2 := 100.0 atRandom. l3 := 0.01. l3 := l2 * l2. ^ l3 )";
+        String squareCodeStr = "test = ( | l1 l2 l3 l4 | " +
+                "l1 := 100.0 atRandom. l2 := 0.01. l2 := l1 * l1. " +
+                "l3 := 100 atRandom. l4 := 0. l4 := l3 * l3." +
+                " ^ l2 + l4)";
 
 //        String squareCodeStr = "test = ( | l1 l2 l3 l4 | l3 := l3 * l3. ^ l3 )";
-        String intIncrementLocalCodeStr = "test = ( | l1 l2 l3 l4 | l2 := 100 atRandom. l2 := l2 + 42. ^ l3 )";
+//        String intIncrementLocalCodeStr = "test = ( | l1 l2 l3 l4 | l2 := 100 atRandom. l2 := l2 + 42. ^ l3 )";
 //        String intIncrementCodeStr = "test = ( | l1 l2 l3 l4 | l2 := 100 atRandom. l3 := l3 + l2. ^ l3 )";
 
         String codeStr = squareCodeStr;
@@ -219,9 +219,9 @@ public class PartialEvalTests extends PartialEvaluationTest {
 //        System.out.println(method);
 
 //        String codeStr = "test: arg = ( | l3 | l3 := arg * arg. ^ l3 )";
-        SInvokable sInvokableSn = parseMethodInvokable(codeStr, SUPERNODES_ON);
+//        SInvokable sInvokableSn = parseMethodInvokable(codeStr, SUPERNODES_ON);
         SInvokable sInvokableOg = parseMethodInvokable(codeStr, NO_SUPERNODES);
-        SequenceNode seqSn = (SequenceNode) parseMethodExpression(codeStr, SUPERNODES_ON);
+//        SequenceNode seqSn = (SequenceNode) parseMethodExpression(codeStr, SUPERNODES_ON);
         SequenceNode seqOg = (SequenceNode) parseMethodExpression(codeStr, NO_SUPERNODES);
 
 
@@ -233,11 +233,11 @@ public class PartialEvalTests extends PartialEvaluationTest {
 // Need something that can be called, so something that inherits from RootNode
 //        OptimizedCallTarget target = (OptimizedCallTarget) testSupernodeRootNode.getCallTarget();
 
-//        StructuredGraph graphOg = partialEval((OptimizedCallTarget) sInvokableOg.getCallTarget(),
-//                new HashMap<>(Map.of("dumpGraph", "sureWhyNot", "graphDescription", "original_graph")));
+        StructuredGraph graphOg = partialEval((OptimizedCallTarget) sInvokableOg.getCallTarget(),
+                new HashMap<>(Map.of("dumpGraph", "sureWhyNot", "graphDescription", "original_graph")));
 
-        StructuredGraph graphSn = partialEval((OptimizedCallTarget) sInvokableSn.getCallTarget(),
-                new HashMap<>(Map.of("dumpGraph", "yeahIAgree", "graphDescription", "supernode_graph")));
+//        StructuredGraph graphSn = partialEval((OptimizedCallTarget) sInvokableSn.getCallTarget(),
+//                new HashMap<>(Map.of("dumpGraph", "yeahIAgree", "graphDescription", "supernode_graph")));
 
 //        Object xdd = new BytecodeParser();
 //        System.out.println("GRAPH SIMILARITY: " + compareStructuredGraphs(compile((OptimizedCallTarget) sInvokableSn.getCallTarget()), graphSn));
