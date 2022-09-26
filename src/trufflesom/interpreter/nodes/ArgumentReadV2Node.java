@@ -39,6 +39,11 @@ public abstract class ArgumentReadV2Node {
     }
 
     @Override
+    public final double executeDouble(final VirtualFrame frame) {
+      return (double) frame.getArguments()[argumentIndex];
+    }
+
+    @Override
     public void replaceAfterScopeChange(final ScopeAdaptationVisitor inliner) {
       inliner.updateRead(arg, this, 0);
     }
