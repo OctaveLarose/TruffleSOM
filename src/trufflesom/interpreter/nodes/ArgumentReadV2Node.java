@@ -22,9 +22,11 @@ public abstract class ArgumentReadV2Node {
       this.arg = arg;
       this.argumentIndex = arg.index;
 
-      // if these methods are never called, I can't use them to replace existing calls... bad hack
-      this.doLong(new FrameWithoutBoxing(new FrameDescriptor(), new Object[]{Long.valueOf(42), Long.valueOf(42)}));
-      this.doDouble(new FrameWithoutBoxing(new FrameDescriptor(), new Object[]{42.0, 42.0}));
+      if (arg.index > 10000) {
+        // if these methods are never called, I can't use them to replace existing calls... bad hack
+        this.doLong(new FrameWithoutBoxing(new FrameDescriptor(), new Object[]{Long.valueOf(42), Long.valueOf(42)}));
+        this.doDouble(new FrameWithoutBoxing(new FrameDescriptor(), new Object[]{42.0, 42.0}));
+      }
     }
 
     /** Only to be used in primitives. */
