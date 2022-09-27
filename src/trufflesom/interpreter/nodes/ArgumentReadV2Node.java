@@ -2,7 +2,10 @@ package trufflesom.interpreter.nodes;
 
 import bdt.inlining.ScopeAdaptationVisitor;
 import bdt.tools.nodes.Invocation;
+import com.oracle.truffle.api.frame.Frame;
+import com.oracle.truffle.api.frame.FrameDescriptor;
 import com.oracle.truffle.api.frame.VirtualFrame;
+import com.oracle.truffle.api.impl.FrameWithoutBoxing;
 import trufflesom.compiler.Variable.Argument;
 import trufflesom.vmobjects.SSymbol;
 
@@ -18,6 +21,10 @@ public abstract class ArgumentReadV2Node {
       assert arg.index >= 0;
       this.arg = arg;
       this.argumentIndex = arg.index;
+
+      // if these methods are never called, I can't use them to replace existing calls... bad hack
+      this.doLong(new FrameWithoutBoxing(new FrameDescriptor(), new Object[]{Long.valueOf(42), Long.valueOf(42)}));
+      this.doDouble(new FrameWithoutBoxing(new FrameDescriptor(), new Object[]{42.0, 42.0}));
     }
 
     /** Only to be used in primitives. */
@@ -33,13 +40,11 @@ public abstract class ArgumentReadV2Node {
       return frame.getArguments()[argumentIndex];
     }
 
-    @Override
-    public final long executeLong(final VirtualFrame frame) {
+    public final long doLong(final VirtualFrame frame) {
       return (long) frame.getArguments()[argumentIndex];
     }
 
-    @Override
-    public final double executeDouble(final VirtualFrame frame) {
+    public final double doDouble(final VirtualFrame frame) {
       return (double) frame.getArguments()[argumentIndex];
     }
 
