@@ -21,12 +21,6 @@ public abstract class ArgumentReadV2Node {
       assert arg.index >= 0;
       this.arg = arg;
       this.argumentIndex = arg.index;
-
-      if (arg.index > 10000) {
-        // if these methods are never called, I can't use them to replace existing calls... bad hack
-        this.doLong(new FrameWithoutBoxing(new FrameDescriptor(), new Object[]{Long.valueOf(42), Long.valueOf(42)}));
-//        this.doDouble(new FrameWithoutBoxing(new FrameDescriptor(), new Object[]{42.0, 42.0}));
-      }
     }
 
     /** Only to be used in primitives. */
@@ -46,9 +40,9 @@ public abstract class ArgumentReadV2Node {
       return (long) frame.getArguments()[argumentIndex];
     }
 
-//    public final double doDouble(final VirtualFrame frame) {
-//      return (double) frame.getArguments()[argumentIndex];
-//    }
+    public final double doDouble(final VirtualFrame frame) {
+      return (double) frame.getArguments()[argumentIndex];
+    }
 
     @Override
     public void replaceAfterScopeChange(final ScopeAdaptationVisitor inliner) {
@@ -126,6 +120,13 @@ public abstract class ArgumentReadV2Node {
       assert contextLevel > 0;
       this.arg = arg;
       this.argumentIndex = arg.index;
+
+      if (arg.index > 10000) {
+        var argReadNode = new ArgumentReadV2Node.LocalArgumentReadNode(arg);
+        // if these methods are never called, I can't use them to replace existing calls... bad hack
+        argReadNode.doLong(new FrameWithoutBoxing(new FrameDescriptor(), new Object[]{Long.valueOf(42), Long.valueOf(42)}));
+        argReadNode.doDouble(new FrameWithoutBoxing(new FrameDescriptor(), new Object[]{42.0, 42.0}));
+      }
     }
 
     @Override
