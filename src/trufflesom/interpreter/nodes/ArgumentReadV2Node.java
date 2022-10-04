@@ -2,7 +2,9 @@ package trufflesom.interpreter.nodes;
 
 import bdt.inlining.ScopeAdaptationVisitor;
 import bdt.tools.nodes.Invocation;
+import com.oracle.truffle.api.frame.FrameDescriptor;
 import com.oracle.truffle.api.frame.VirtualFrame;
+import com.oracle.truffle.api.impl.FrameWithoutBoxing;
 import trufflesom.compiler.Variable.Argument;
 import trufflesom.vmobjects.SSymbol;
 
@@ -21,8 +23,8 @@ public abstract class ArgumentReadV2Node {
 
       if (arg.index > 10000) {
         // if these methods are never called, I can't use them to replace existing calls... bad hack
-        this.doLong(null);
-        this.doDouble(null);
+        this.doLong(new FrameWithoutBoxing(new FrameDescriptor(), new Object[]{}));
+        this.doDouble(new FrameWithoutBoxing(new FrameDescriptor(), new Object[]{}));
       }
     }
 
