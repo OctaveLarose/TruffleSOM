@@ -275,6 +275,13 @@ public class ParserAst extends Parser<MethodGenerationContext> {
           if (rcvrLocal.equals(opLocal)) {
             return MultiplicationV2PrimFactory.create(new ArgumentReadV2Node.LocalArgumentReadNode(rcvrLocal), new ArgumentReadV2Node.LocalArgumentReadNode(opLocal));
           }
+        } else if (receiver instanceof LocalVariableReadNode
+                && operand instanceof LocalVariableReadNode) {
+          Local rcvrLocal = ((LocalVariableReadNode) receiver).getLocal();
+          Local opLocal = ((LocalVariableReadNode) operand).getLocal();
+          if (rcvrLocal.equals(opLocal)) {
+            return LocalVariableSquareNodeGen.create(rcvrLocal).initialize(coordWithL);
+          }
         } else if (receiver instanceof NonLocalVariableReadNode
                 && operand instanceof NonLocalVariableReadNode) {
           Local rcvrLocal = ((NonLocalVariableReadNode) receiver).getLocal();
