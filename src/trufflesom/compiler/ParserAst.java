@@ -27,6 +27,7 @@ import com.oracle.truffle.api.source.Source;
 import bdt.basic.ProgramDefinitionError;
 import bdt.inlining.InlinableNodes;
 import bdt.tools.structure.StructuralProbe;
+import trufflesom.Flags;
 import trufflesom.interpreter.nodes.ExpressionNode;
 import trufflesom.interpreter.nodes.FieldNode;
 import trufflesom.interpreter.nodes.GlobalNode;
@@ -424,7 +425,7 @@ public class ParserAst extends Parser<MethodGenerationContext> {
         SMethod blockMethod = (SMethod) bgenc.assemble(blockBody, lastMethodsCoord);
         mgenc.addEmbeddedBlockMethod(blockMethod);
 
-        if (bgenc.requiresContext()) {
+        if (Flags.disableOptBlockNodesWithoutContext || bgenc.requiresContext()) {
           return new BlockNodeWithContext(blockMethod).initialize(getCoordWithLength(coord));
         } else {
           return new BlockNode(blockMethod).initialize(getCoordWithLength(coord));
