@@ -426,6 +426,11 @@ Native Image Targets
               <arg line="-Dsom.jitCompiler=false" if:true="${no.jit}" />
               <!-- <arg line="-Dbd.settings=som.vm.VmSettings" /> -->
 
+                
+              <!-- DISABLING OPTIMIZATIONS INDIVIDUALLY -->
+<!--              <arg line="-Dopt.disableBlocksWithoutContext=true" />-->
+
+
               <!-- <arg line="-H:+PrintRuntimeCompileMethods" /> -->
               <!-- <arg line="-H:+PrintMethodHistogram" />
                    <arg line="-H:+RuntimeAssertions" />
