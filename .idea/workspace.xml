@@ -1,0 +1,642 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="f70eb4af-1393-4b86-a4d2-e8c4f6ee84b2" name="Changes" comment="Removing some comments and no longer calling exploreGraph() to get children">
+      <change beforePath="$PROJECT_DIR$/build.xml" beforeDir="false" afterPath="$PROJECT_DIR$/build.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/trufflesom/interpreter/nodes/GlobalNode.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/trufflesom/interpreter/nodes/GlobalNode.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/trufflesom/interpreter/nodes/dispatch/UninitializedDispatchNode.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/trufflesom/interpreter/nodes/dispatch/UninitializedDispatchNode.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/trufflesom/vm/OptimizationFlags.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/trufflesom/vm/OptimizationFlags.java" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="CompilerWorkspaceConfiguration">
+    <option name="CLEAR_OUTPUT_DIRECTORY" value="false" />
+    <option name="MAKE_PROJECT_ON_SAVE" value="true" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="mandelbrot-supernode-inlining-no-supernodes" />
+        <entry key="$PROJECT_DIR$/libs/truffle" value="tmp" />
+      </map>
+    </option>
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+    <option name="ROOT_SYNC" value="DONT_SYNC" />
+  </component>
+  <component name="GitSEFilterConfiguration">
+    <file-type-list>
+      <filtered-out-file-type name="LOCAL_BRANCH" />
+      <filtered-out-file-type name="REMOTE_BRANCH" />
+      <filtered-out-file-type name="TAG" />
+      <filtered-out-file-type name="COMMIT_BY_MESSAGE" />
+    </file-type-list>
+  </component>
+  <component name="HighlightingSettingsPerFile">
+    <setting file="file://$PROJECT_DIR$/build.xml" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/libs/truffle/compiler/src/org.graalvm.compiler.core.common/src/org/graalvm/compiler/core/common/type/IntegerStamp.java" root0="SKIP_INSPECTION" />
+    <setting file="file://$PROJECT_DIR$/libs/truffle/compiler/src/org.graalvm.compiler.core.common/src/org/graalvm/compiler/core/common/type/Stamp.java" root0="SKIP_INSPECTION" />
+    <setting file="file://$PROJECT_DIR$/libs/truffle/compiler/src/org.graalvm.compiler.core.common/src/org/graalvm/compiler/core/common/type/StampPair.java" root0="SKIP_INSPECTION" />
+    <setting file="file://$PROJECT_DIR$/libs/truffle/compiler/src/org.graalvm.compiler.nodes/src/org/graalvm/compiler/nodes/CallTargetNode.java" root0="SKIP_INSPECTION" />
+    <setting file="file://$PROJECT_DIR$/libs/truffle/compiler/src/org.graalvm.compiler.nodes/src/org/graalvm/compiler/nodes/StructuredGraph.java" root0="SKIP_INSPECTION" />
+    <setting file="file://$PROJECT_DIR$/libs/truffle/compiler/src/org.graalvm.compiler.nodes/src/org/graalvm/compiler/nodes/extended/BoxNode.java" root0="SKIP_INSPECTION" />
+    <setting file="file://$PROJECT_DIR$/libs/truffle/compiler/src/org.graalvm.compiler.phases.common/src/org/graalvm/compiler/phases/common/inlining/InliningUtil.java" root0="SKIP_INSPECTION" />
+    <setting file="file://$PROJECT_DIR$/libs/truffle/compiler/src/org.graalvm.compiler.truffle.compiler/src/org/graalvm/compiler/truffle/compiler/phases/TruffleHostInliningPhase.java" root0="SKIP_INSPECTION" />
+    <setting file="file://$PROJECT_DIR$/libs/truffle/compiler/src/org.graalvm.compiler.truffle.test/src/org/graalvm/compiler/truffle/test/HostInliningBytecodeInterpreterTest.java" root0="SKIP_INSPECTION" />
+    <setting file="file://$PROJECT_DIR$/libs/truffle/compiler/src/org.graalvm.compiler.truffle.test/src/org/graalvm/compiler/truffle/test/HostInliningTest.java" root0="SKIP_INSPECTION" />
+    <setting file="file://$PROJECT_DIR$/som" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/src/trufflesom/compiler/MethodGenerationContext.java" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/src/trufflesom/compiler/Parser.java" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/src/trufflesom/compiler/bc/BytecodeMethodGenContext.java" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/src/trufflesom/interpreter/Invokable.java" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/src/trufflesom/interpreter/Method.java" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/src/trufflesom/interpreter/nodes/SequenceNode.java" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/src/trufflesom/interpreter/nodes/bc/BytecodeLoopNode.java" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/src/trufflesom/interpreter/nodes/nary/BinaryExpressionNode.java" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/src/trufflesom/vm/Universe.java" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/src/trufflesom/vmobjects/SClass.java" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/tests/trufflesom/tests/TruffleTestSetup.java" root0="FORCE_HIGHLIGHTING" />
+  </component>
+  <component name="MacroExpansionManager">
+    <option name="directoryName" value="3jg51stn" />
+  </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
+  <component name="ProblemsViewState">
+    <option name="selectedTabId" value="ProjectErrors" />
+  </component>
+  <component name="ProjectId" id="24wQyXIqUGur93tcFNRRGqKnmmU" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true">
+    <ConfirmationsSetting value="1" id="Add" />
+  </component>
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+    <option name="showMembers" value="true" />
+  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ASKED_ADD_EXTERNAL_FILES&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;ShowUsagesActions.previewPropertyKey&quot;: &quot;true&quot;,
+    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
+    &quot;jdk.selected.JAVA_MODULE&quot;: &quot;graalvm-17-debug&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/home/octavel/PhD_Programs/my_programs/TruffleSOM/libs/truffle/truffle/src&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;Modules&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  }
+}</component>
+  <component name="RecentsManager">
+    <key name="CreateClassDialog.RecentsKey">
+      <recent name="com.oracle.svm.truffle" />
+    </key>
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$" />
+      <recent name="$PROJECT_DIR$/Examples/Benchmarks/LanguageFeatures" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/libs/truffle/substratevm/src/com.oracle.svm.truffle/src/com/oracle/svm/truffle" />
+    </key>
+    <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="trufflesom.interpreter.nodes" />
+      <recent name="trufflesom.primitives.arithmetic" />
+    </key>
+  </component>
+  <component name="RunManager" selected="JUnit.tests in TruffleSOM">
+    <configuration default="true" type="Applet" factoryName="Applet">
+      <option name="WIDTH" value="400" />
+      <option name="HEIGHT" value="300" />
+      <option name="POLICY_FILE" value="$APPLICATION_HOME_DIR$/bin/appletviewer.policy" />
+      <module />
+      <method />
+    </configuration>
+    <configuration name="&lt;template&gt;" type="WebApp" default="true" selected="false">
+      <Host>localhost</Host>
+      <Port>5050</Port>
+    </configuration>
+    <configuration default="true" type="Application" factoryName="Application">
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="AssumedValuePartialEvaluationTest.testDynamic" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="TruffleSOM" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="org.graalvm.compiler.truffle.test.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="org.graalvm.compiler.truffle.test" />
+      <option name="MAIN_CLASS_NAME" value="org.graalvm.compiler.truffle.test.AssumedValuePartialEvaluationTest" />
+      <option name="METHOD_NAME" value="testDynamic" />
+      <option name="TEST_OBJECT" value="method" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="TEST_SEARCH_SCOPE">
+        <value defaultName="moduleWithDependencies" />
+      </option>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="BytecodeMethodTests" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="TruffleSOM" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="trufflesom.tests.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="trufflesom.tests" />
+      <option name="MAIN_CLASS_NAME" value="trufflesom.tests.BytecodeMethodTests" />
+      <option name="METHOD_NAME" value="testTrivialMethodInlining" />
+      <option name="TEST_OBJECT" value="class" />
+      <option name="VM_PARAMETERS" value="-ea -Dpolyglot.engine.WarnInterpreterOnly=false" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="TEST_SEARCH_SCOPE">
+        <value defaultName="moduleWithDependencies" />
+      </option>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="BytecodeMethodTests.testTrivialMethodInlining" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="TruffleSOM" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="trufflesom.tests.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="trufflesom.tests" />
+      <option name="MAIN_CLASS_NAME" value="trufflesom.tests.BytecodeMethodTests" />
+      <option name="METHOD_NAME" value="testTrivialMethodInlining" />
+      <option name="TEST_OBJECT" value="method" />
+      <option name="VM_PARAMETERS" value="-ea -Dpolyglot.engine.WarnInterpreterOnly=false" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="TEST_SEARCH_SCOPE">
+        <value defaultName="moduleWithDependencies" />
+      </option>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="HostInliningTest.test" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="TruffleSOM" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="org.graalvm.compiler.truffle.test.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="org.graalvm.compiler.truffle.test" />
+      <option name="MAIN_CLASS_NAME" value="org.graalvm.compiler.truffle.test.HostInliningTest" />
+      <option name="METHOD_NAME" value="test" />
+      <option name="TEST_OBJECT" value="method" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="TEST_SEARCH_SCOPE">
+        <value defaultName="moduleWithDependencies" />
+      </option>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="JUnit" factoryName="JUnit">
+      <option name="TEST_OBJECT" value="class" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="TEST_SEARCH_SCOPE">
+        <value defaultName="moduleWithDependencies" />
+      </option>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="tests in TruffleSOM" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="TruffleSOM" />
+      <option name="PACKAGE_NAME" value="" />
+      <option name="MAIN_CLASS_NAME" value="" />
+      <option name="METHOD_NAME" value="" />
+      <option name="TEST_OBJECT" value="directory" />
+      <option name="VM_PARAMETERS" value="-ea -Dpolyglot.engine.WarnInterpreterOnly=false" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="TEST_SEARCH_SCOPE">
+        <value defaultName="moduleWithDependencies" />
+      </option>
+      <dir value="$PROJECT_DIR$/tests" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="JetRunConfigurationType">
+      <module name="com.oracle.mxtool.checkcopy" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="KotlinStandaloneScriptRunConfigurationType">
+      <module name="com.oracle.mxtool.checkcopy" />
+      <option name="filePath" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="TruffleSOM" type="Remote">
+      <module name="TruffleSOM" />
+      <option name="USE_SOCKET_TRANSPORT" value="true" />
+      <option name="SERVER_MODE" value="false" />
+      <option name="SHMEM_ADDRESS" />
+      <option name="HOST" value="localhost" />
+      <option name="PORT" value="8000" />
+      <option name="AUTO_RESTART" value="false" />
+      <RunnerSettings RunnerId="Debug">
+        <option name="DEBUG_PORT" value="8000" />
+        <option name="LOCAL" value="false" />
+      </RunnerSettings>
+      <method v="2" />
+    </configuration>
+    <configuration default="true" type="TestNG">
+      <option name="TEST_OBJECT" value="CLASS" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="TEST_SEARCH_SCOPE">
+        <value defaultName="moduleWithDependencies" />
+      </option>
+      <properties />
+      <listeners />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="#org.jetbrains.idea.devkit.run.PluginConfigurationType">
+      <module name="" />
+      <option name="VM_PARAMETERS" value="-Xmx512m -Xms256m -XX:MaxPermSize=250m -ea" />
+      <option name="PROGRAM_PARAMETERS" />
+      <predefined_log_file enabled="true" id="idea.log" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <list>
+      <item itemvalue="JUnit.AssumedValuePartialEvaluationTest.testDynamic" />
+      <item itemvalue="JUnit.HostInliningTest.test" />
+      <item itemvalue="JUnit.tests in TruffleSOM" />
+      <item itemvalue="JUnit.BytecodeMethodTests.testTrivialMethodInlining" />
+      <item itemvalue="JUnit.BytecodeMethodTests" />
+      <item itemvalue="Remote JVM Debug.TruffleSOM" />
+    </list>
+    <recent_temporary>
+      <list>
+        <item itemvalue="JUnit.tests in TruffleSOM" />
+        <item itemvalue="JUnit.BytecodeMethodTests" />
+        <item itemvalue="JUnit.BytecodeMethodTests.testTrivialMethodInlining" />
+        <item itemvalue="JUnit.BytecodeMethodTests" />
+        <item itemvalue="JUnit.BytecodeMethodTests.testTrivialMethodInlining" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="f70eb4af-1393-4b86-a4d2-e8c4f6ee84b2" name="Changes" comment="" />
+      <created>1644539427850</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1644539427850</updated>
+      <workItem from="1644539433503" duration="4000" />
+      <workItem from="1644539447085" duration="3298000" />
+      <workItem from="1644619136230" duration="759000" />
+      <workItem from="1644619974919" duration="7670000" />
+      <workItem from="1656321542666" duration="50000" />
+      <workItem from="1656321600870" duration="2204000" />
+      <workItem from="1656336362835" duration="208000" />
+      <workItem from="1656336580780" duration="339000" />
+      <workItem from="1656336930820" duration="4573000" />
+      <workItem from="1656405396420" duration="6350000" />
+      <workItem from="1656513795109" duration="6536000" />
+      <workItem from="1656594388014" duration="911000" />
+      <workItem from="1656679134222" duration="1440000" />
+      <workItem from="1656690514315" duration="2339000" />
+      <workItem from="1656859216522" duration="10252000" />
+      <workItem from="1656928149630" duration="2051000" />
+      <workItem from="1656938670463" duration="9866000" />
+      <workItem from="1656950638279" duration="729000" />
+      <workItem from="1657058336015" duration="1161000" />
+      <workItem from="1657207978392" duration="3520000" />
+      <workItem from="1657211590547" duration="748000" />
+      <workItem from="1657459367433" duration="5456000" />
+      <workItem from="1657529529518" duration="5049000" />
+      <workItem from="1657629717970" duration="705000" />
+      <workItem from="1657665764386" duration="6710000" />
+      <workItem from="1657920130353" duration="67000" />
+      <workItem from="1658314110740" duration="5164000" />
+      <workItem from="1658326875239" duration="7268000" />
+      <workItem from="1658390681917" duration="11854000" />
+      <workItem from="1658414639846" duration="4131000" />
+      <workItem from="1658476734194" duration="10850000" />
+      <workItem from="1658735915792" duration="8965000" />
+      <workItem from="1658762405326" duration="1650000" />
+      <workItem from="1658764076271" duration="771000" />
+      <workItem from="1658828265163" duration="8857000" />
+      <workItem from="1658844630271" duration="3298000" />
+      <workItem from="1658906970628" duration="7959000" />
+      <workItem from="1658923896111" duration="3036000" />
+      <workItem from="1658999953980" duration="3435000" />
+      <workItem from="1659005612591" duration="2235000" />
+      <workItem from="1659084533593" duration="5775000" />
+      <workItem from="1659100911852" duration="1187000" />
+      <workItem from="1659347167550" duration="1613000" />
+      <workItem from="1659355534085" duration="1080000" />
+      <workItem from="1659356623083" duration="2683000" />
+      <workItem from="1659363821250" duration="3301000" />
+      <workItem from="1659634786662" duration="16000" />
+      <workItem from="1659635042121" duration="3296000" />
+      <workItem from="1659696014930" duration="2321000" />
+      <workItem from="1659712003835" duration="4717000" />
+      <workItem from="1659793732951" duration="11151000" />
+      <workItem from="1659867702538" duration="5701000" />
+      <workItem from="1659978035851" duration="2844000" />
+      <workItem from="1659993447853" duration="1215000" />
+      <workItem from="1660034236004" duration="13520000" />
+      <workItem from="1660158827642" duration="1772000" />
+      <workItem from="1660206979897" duration="12588000" />
+      <workItem from="1660292752826" duration="2977000" />
+      <workItem from="1660309099875" duration="41000" />
+      <workItem from="1660318257403" duration="419000" />
+      <workItem from="1660323968581" duration="876000" />
+      <workItem from="1660555204705" duration="3116000" />
+      <workItem from="1660640463904" duration="1500000" />
+      <workItem from="1660652238248" duration="4333000" />
+      <workItem from="1660724592922" duration="15547000" />
+      <workItem from="1660750049434" duration="1489000" />
+      <workItem from="1660813611346" duration="9624000" />
+      <workItem from="1660900825249" duration="6493000" />
+      <workItem from="1660921032972" duration="1278000" />
+      <workItem from="1660999506873" duration="3764000" />
+      <workItem from="1661161525144" duration="3142000" />
+      <workItem from="1661182238005" duration="1301000" />
+      <workItem from="1661266226248" duration="1853000" />
+      <workItem from="1661335221754" duration="6638000" />
+      <workItem from="1661354118018" duration="4969000" />
+      <workItem from="1661415745488" duration="12254000" />
+      <workItem from="1661760543798" duration="6380000" />
+      <workItem from="1661850740199" duration="1254000" />
+      <workItem from="1661934375556" duration="16243000" />
+      <workItem from="1662022054861" duration="9609000" />
+      <workItem from="1662039109049" duration="4898000" />
+      <workItem from="1662107813687" duration="11844000" />
+      <workItem from="1662126177620" duration="1114000" />
+      <workItem from="1662127300219" duration="249000" />
+      <workItem from="1662127608143" duration="3597000" />
+      <workItem from="1662216329112" duration="5749000" />
+      <workItem from="1662289387867" duration="10175000" />
+      <workItem from="1662379852355" duration="7652000" />
+      <workItem from="1662452357991" duration="24762000" />
+      <workItem from="1662537913126" duration="16881000" />
+      <workItem from="1662580825513" duration="2437000" />
+      <workItem from="1662629855468" duration="12551000" />
+      <workItem from="1662650393876" duration="4616000" />
+      <workItem from="1662666781018" duration="760000" />
+      <workItem from="1662711553157" duration="6642000" />
+      <workItem from="1662907383758" duration="10585000" />
+      <workItem from="1662974438913" duration="8692000" />
+      <workItem from="1663314876966" duration="632000" />
+      <workItem from="1663515404179" duration="3242000" />
+      <workItem from="1663536431664" duration="610000" />
+      <workItem from="1663575836841" duration="5532000" />
+      <workItem from="1663606564897" duration="7000" />
+      <workItem from="1663663847775" duration="10198000" />
+      <workItem from="1663750862808" duration="8702000" />
+      <workItem from="1663839951395" duration="15178000" />
+      <workItem from="1663869132025" duration="203000" />
+      <workItem from="1663927246836" duration="3992000" />
+      <workItem from="1663939919143" duration="5021000" />
+      <workItem from="1664053619688" duration="3469000" />
+      <workItem from="1664130822355" duration="613000" />
+      <workItem from="1664183804502" duration="10515000" />
+      <workItem from="1664207234114" duration="4038000" />
+      <workItem from="1664271641852" duration="16488000" />
+      <workItem from="1664354957472" duration="11175000" />
+      <workItem from="1664374570863" duration="4270000" />
+      <workItem from="1664445631114" duration="9624000" />
+      <workItem from="1664530566804" duration="6041000" />
+      <workItem from="1664637774142" duration="3247000" />
+      <workItem from="1664786692596" duration="17609000" />
+      <workItem from="1664873721245" duration="7366000" />
+      <workItem from="1664961115993" duration="16630000" />
+      <workItem from="1664986486510" duration="1296000" />
+      <workItem from="1665048988967" duration="8511000" />
+      <workItem from="1665063948699" duration="4774000" />
+      <workItem from="1665132236281" duration="9045000" />
+      <workItem from="1665150343511" duration="6342000" />
+      <workItem from="1665391320300" duration="6702000" />
+      <workItem from="1665405638890" duration="11888000" />
+      <workItem from="1665423302081" duration="78000" />
+      <workItem from="1665424455546" duration="92000" />
+      <workItem from="1665426908342" duration="54000" />
+      <workItem from="1665427008812" duration="14000" />
+      <workItem from="1665479375012" duration="9819000" />
+      <workItem from="1665495438771" duration="3660000" />
+      <workItem from="1665567272261" duration="9803000" />
+      <workItem from="1665583395603" duration="3239000" />
+      <workItem from="1665594488878" duration="1535000" />
+      <workItem from="1665648130172" duration="3805000" />
+      <workItem from="1665663487498" duration="3874000" />
+      <workItem from="1665668237008" duration="1603000" />
+      <workItem from="1665740722783" duration="7202000" />
+      <workItem from="1665756013845" duration="653000" />
+      <workItem from="1665757111159" duration="3792000" />
+      <workItem from="1665940027430" duration="659000" />
+      <workItem from="1665943450521" duration="2709000" />
+      <workItem from="1665997617400" duration="7471000" />
+      <workItem from="1666009899657" duration="5271000" />
+      <workItem from="1666081143957" duration="8670000" />
+      <workItem from="1666182045876" duration="2726000" />
+      <workItem from="1666186137353" duration="1910000" />
+      <workItem from="1666188130244" duration="77000" />
+      <workItem from="1666188370723" duration="2571000" />
+      <workItem from="1666191322979" duration="2710000" />
+      <workItem from="1666195597647" duration="2443000" />
+      <workItem from="1666256424943" duration="1686000" />
+      <workItem from="1666259187987" duration="13388000" />
+      <workItem from="1666281775089" duration="4338000" />
+      <workItem from="1666346174226" duration="8979000" />
+      <workItem from="1666767792481" duration="330000" />
+      <workItem from="1667152176871" duration="1978000" />
+      <workItem from="1667214671221" duration="600000" />
+      <workItem from="1667230753112" duration="5284000" />
+      <workItem from="1667297580007" duration="4463000" />
+      <workItem from="1667302866926" duration="2535000" />
+      <workItem from="1667308982268" duration="100000" />
+      <workItem from="1667309194321" duration="5346000" />
+      <workItem from="1667324821552" duration="2406000" />
+      <workItem from="1667380796536" duration="4343000" />
+      <workItem from="1667396411760" duration="9886000" />
+      <workItem from="1667470372925" duration="1201000" />
+      <workItem from="1667472907285" duration="21000" />
+      <workItem from="1667474547287" duration="184000" />
+      <workItem from="1667474873069" duration="1616000" />
+      <workItem from="1667480342332" duration="1687000" />
+      <workItem from="1667987720461" duration="154000" />
+      <workItem from="1667987902464" duration="1039000" />
+      <workItem from="1668080453231" duration="627000" />
+      <workItem from="1669112639084" duration="48000" />
+      <workItem from="1669123962068" duration="126000" />
+      <workItem from="1669210572423" duration="84000" />
+      <workItem from="1669288594747" duration="75000" />
+      <workItem from="1669383661304" duration="314000" />
+      <workItem from="1669898821468" duration="91000" />
+      <workItem from="1674134256288" duration="600000" />
+      <workItem from="1674142555559" duration="5000" />
+      <workItem from="1674653858456" duration="75000" />
+      <workItem from="1674654100043" duration="4840000" />
+      <workItem from="1674726988507" duration="1858000" />
+      <workItem from="1674811464667" duration="1805000" />
+      <workItem from="1674827283735" duration="878000" />
+      <workItem from="1674828183277" duration="89000" />
+      <workItem from="1674828281683" duration="5286000" />
+      <workItem from="1675075613302" duration="1916000" />
+    </task>
+    <task id="LOCAL-00001" summary="Graph comparison that isn't complete (in the math sense of the word) but should do for now">
+      <created>1656350196747</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1656350196747</updated>
+    </task>
+    <task id="LOCAL-00002" summary="virtual to concrete related tweak to get it running">
+      <created>1662538915511</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1662538915511</updated>
+    </task>
+    <task id="LOCAL-00003" summary="Breaks during compilation instead of inlining">
+      <created>1662553188460</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1662553188460</updated>
+    </task>
+    <task id="LOCAL-00004" summary="virtual to concrete tweaks compile but segfaults">
+      <created>1662563722474</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1662563722474</updated>
+    </task>
+    <task id="LOCAL-00005" summary="very minor tweaks related to main experimentation in my truffle fork">
+      <created>1662563763186</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1662563763186</updated>
+    </task>
+    <task id="LOCAL-00006" summary="Formatting. Not sure why it doesn't compile">
+      <created>1662565571742</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1662565571742</updated>
+    </task>
+    <task id="LOCAL-00007" summary="rebench minimized config and gitlab ci update to fix pipeline and speed it up">
+      <created>1667297795710</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1667297795710</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <ignored-roots>
+      <path value="$PROJECT_DIR$/libs/Truffle" />
+    </ignored-roots>
+    <MESSAGE value="Graph comparison that isn't complete (in the math sense of the word) but should do for now" />
+    <MESSAGE value="Start of starting to rely on classgencontext and not mgenc, plus more mess" />
+    <MESSAGE value="virtual to concrete related tweak to get it running" />
+    <MESSAGE value="Breaks during compilation instead of inlining" />
+    <MESSAGE value="virtual to concrete tweaks compile but segfaults" />
+    <MESSAGE value="very minor tweaks related to main experimentation in my triffle" />
+    <MESSAGE value="very minor tweaks related to main experimentation in my truffle fork" />
+    <MESSAGE value="Formatting. Not sure why it doesn't compile" />
+    <MESSAGE value="Removing some comments and no longer calling exploreGraph() to get children" />
+    <MESSAGE value="rebench minimized config and gitlab ci update to fix pipeline and speed it up" />
+    <option name="LAST_COMMIT_MESSAGE" value="rebench minimized config and gitlab ci update to fix pipeline and speed it up" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/trufflesom/interpreter/nodes/dispatch/CachedFieldWriteAndSelf.java</url>
+          <line>22</line>
+          <option name="timeStamp" value="4" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/trufflesom/primitives/basics/NewObjectPrim.java</url>
+          <line>28</line>
+          <option name="timeStamp" value="5" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/trufflesom/primitives/basics/NewObjectPrim.java</url>
+          <line>33</line>
+          <option name="timeStamp" value="6" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/trufflesom/primitives/basics/NewObjectPrim.java</url>
+          <line>51</line>
+          <option name="timeStamp" value="8" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src_gen/trufflesom/primitives/basics/NewObjectPrimFactory.java</url>
+          <line>71</line>
+          <option name="timeStamp" value="9" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/trufflesom/primitives/basics/NewObjectPrim.java</url>
+          <line>38</line>
+          <option name="timeStamp" value="10" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/trufflesom/interpreter/nodes/dispatch/UninitializedDispatchNode.java</url>
+          <line>49</line>
+          <option name="timeStamp" value="11" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/trufflesom/interpreter/nodes/MessageSendNode.java</url>
+          <line>34</line>
+          <option name="timeStamp" value="20" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
+  </component>
+  <component name="XSLT-Support.FileAssociations.UIState">
+    <expand />
+    <select />
+  </component>
+</project>

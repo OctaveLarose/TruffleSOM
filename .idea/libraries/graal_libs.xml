@@ -1,0 +1,21 @@
+<component name="libraryTable">
+  <library name="graal-libs">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/libs/truffle/compiler/mxbuild/dists/graal-compiler-micro-benchmarks.jar!/" />
+      <root url="jar://$PROJECT_DIR$/libs/truffle/compiler/mxbuild/dists/graal-compiler-whitebox-micro-benchmarks.jar!/" />
+      <root url="jar://$PROJECT_DIR$/libs/truffle/compiler/mxbuild/dists/graal-graphio.jar!/" />
+      <root url="jar://$PROJECT_DIR$/libs/truffle/compiler/mxbuild/dists/graal-libgraal-processor.jar!/" />
+      <root url="jar://$PROJECT_DIR$/libs/truffle/compiler/mxbuild/dists/graal-management-libgraal.jar!/" />
+      <root url="jar://$PROJECT_DIR$/libs/truffle/compiler/mxbuild/dists/graal-management.jar!/" />
+      <root url="jar://$PROJECT_DIR$/libs/truffle/compiler/mxbuild/dists/graal-nativebridge-processor.jar!/" />
+      <root url="jar://$PROJECT_DIR$/libs/truffle/compiler/mxbuild/dists/graal-only-test.jar!/" />
+      <root url="jar://$PROJECT_DIR$/libs/truffle/compiler/mxbuild/dists/graal-processor.jar!/" />
+      <root url="jar://$PROJECT_DIR$/libs/truffle/compiler/mxbuild/dists/graal-test.jar!/" />
+      <root url="jar://$PROJECT_DIR$/libs/truffle/compiler/mxbuild/dists/graal-truffle-compiler-libgraal.jar!/" />
+      <root url="jar://$PROJECT_DIR$/libs/truffle/compiler/mxbuild/dists/graal-truffle-jfr-impl.jar!/" />
+      <root url="jar://$PROJECT_DIR$/libs/truffle/compiler/mxbuild/dists/graal.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
