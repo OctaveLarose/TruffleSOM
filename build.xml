@@ -429,6 +429,8 @@ Native Image Targets
                 
               <!-- DISABLING OPTIMIZATIONS INDIVIDUALLY -->
 <!--              <arg line="-Dopt.disableBlocksWithoutContext=true" />-->
+<!--              <arg line="-Dopt.disableInlineCaching=true" />-->
+<!--              <arg line="-Dopt.disableGlobalCaching=true" />-->
 
 
               <!-- <arg line="-H:+PrintRuntimeCompileMethods" /> -->

@@ -8,6 +8,7 @@ import com.oracle.truffle.api.nodes.Node;
 
 import bdt.primitives.nodes.PreevaluatedExpression;
 import trufflesom.interpreter.Types;
+import trufflesom.vm.OptimizationFlags;
 import trufflesom.vmobjects.SClass;
 import trufflesom.vmobjects.SInvokable;
 import trufflesom.vmobjects.SObject;
@@ -42,7 +43,7 @@ public final class UninitializedDispatchNode extends AbstractDispatchNode {
       }
     }
 
-    if (chainDepth < INLINE_CACHE_SIZE) {
+    if (!OptimizationFlags.disableInlineCaching && chainDepth < INLINE_CACHE_SIZE) {
       UninitializedDispatchNode newChainEnd = new UninitializedDispatchNode(selector);
       AbstractDispatchNode node = createDispatch(rcvr, selector, newChainEnd);
 

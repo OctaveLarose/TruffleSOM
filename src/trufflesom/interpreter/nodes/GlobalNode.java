@@ -47,6 +47,7 @@ import trufflesom.interpreter.nodes.dispatch.AbstractDispatchNode;
 import trufflesom.interpreter.nodes.dispatch.CachedLiteralNode;
 import trufflesom.interpreter.nodes.dispatch.DispatchGuard;
 import trufflesom.vm.Globals.Association;
+import trufflesom.vm.OptimizationFlags;
 import trufflesom.vm.constants.Nil;
 import trufflesom.vmobjects.SAbstractObject;
 import trufflesom.vmobjects.SBlock;
@@ -64,18 +65,20 @@ public abstract class GlobalNode extends ExpressionNode
 
   public static GlobalNode create(final SSymbol globalName,
       final MethodGenerationContext mgenc) {
-    if (globalName == symNil) {
-      return new NilGlobalNode(globalName);
-    } else if (globalName == symTrue) {
-      return new TrueGlobalNode(globalName);
-    } else if (globalName == symFalse) {
-      return new FalseGlobalNode(globalName);
-    }
+    if (!OptimizationFlags.disableGlobalCaching) {
+      if (globalName == symNil) {
+        return new NilGlobalNode(globalName);
+      } else if (globalName == symTrue) {
+        return new TrueGlobalNode(globalName);
+      } else if (globalName == symFalse) {
+        return new FalseGlobalNode(globalName);
+      }
 
-    // Get the global from the universe
-    Association assoc = getGlobalsAssociation(globalName);
-    if (assoc != null) {
-      return new CachedGlobalReadNode(globalName, assoc);
+      // Get the global from the universe
+      Association assoc = getGlobalsAssociation(globalName);
+      if (assoc != null) {
+        return new CachedGlobalReadNode(globalName, assoc);
+      }
     }
 
     if (mgenc != null) {
