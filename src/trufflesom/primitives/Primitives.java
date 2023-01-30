@@ -115,6 +115,7 @@ import trufflesom.primitives.reflection.PerformInSuperclassPrimFactory;
 import trufflesom.primitives.reflection.PerformPrimFactory;
 import trufflesom.primitives.reflection.PerformWithArgumentsInSuperclassPrimFactory;
 import trufflesom.primitives.reflection.PerformWithArgumentsPrimFactory;
+import trufflesom.vm.OptimizationFlags;
 import trufflesom.vm.SymbolTable;
 import trufflesom.vm.Universe;
 import trufflesom.vmobjects.SClass;
@@ -133,8 +134,11 @@ public final class Primitives extends PrimitiveLoader<ExpressionNode, SSymbol> {
 
   static {
     specializer = initSpecializers();
-    inlinableNodes = new InlinableNodes<>(
-        SymbolTable.SymbolProvider, getInlinableNodes(), getInlinableFactories());
+    if (!OptimizationFlags.disableInliningNodes) {
+      inlinableNodes = new InlinableNodes<>(SymbolTable.SymbolProvider, getInlinableNodes(), getInlinableFactories());
+    } else {
+      inlinableNodes = new InlinableNodes<>(SymbolTable.SymbolProvider, null, null);
+    }
     Current = new Primitives();
   }
 

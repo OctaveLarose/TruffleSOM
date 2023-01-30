@@ -11,4 +11,7 @@ public final class OptimizationFlags {
 
     @CompilationFinal
     public static final boolean disableGlobalCaching = System.getProperty("opt.disableGlobalCaching") != null;
+
+    @CompilationFinal
+    public static final boolean disableInliningNodes = System.getProperty("opt.disableInliningNodes") != null;
 }
