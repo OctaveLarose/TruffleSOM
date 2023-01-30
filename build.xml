@@ -431,7 +431,8 @@ Native Image Targets
 <!--              <arg line="-Dopt.disableBlocksWithoutContext=true" />-->
 <!--              <arg line="-Dopt.disableInlineCaching=true" />-->
 <!--              <arg line="-Dopt.disableGlobalCaching=true" />-->
-              <arg line="-Dopt.disableInliningNodes=true" />
+<!--              <arg line="-Dopt.disableInliningNodes=true" />-->
+<!--              <arg line="-Dopt.disableSupernodes=true" />-->
 
 
               <!-- <arg line="-H:+PrintRuntimeCompileMethods" /> -->

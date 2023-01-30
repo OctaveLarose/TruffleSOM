@@ -263,12 +263,15 @@ public class ParserAst extends Parser<MethodGenerationContext> {
       return inlined;
     }
 
-    if (msg.getString().equals("+") && operand instanceof IntegerLiteralNode) {
-      IntegerLiteralNode lit = (IntegerLiteralNode) operand;
-      if (lit.executeLong(null) == 1) {
-        return IntIncrementNodeGen.create(receiver);
+    if (!OptimizationFlags.disableSupernodes) {
+      if (msg.getString().equals("+") && operand instanceof IntegerLiteralNode) {
+        IntegerLiteralNode lit = (IntegerLiteralNode) operand;
+        if (lit.executeLong(null) == 1) {
+          return IntIncrementNodeGen.create(receiver);
+        }
       }
     }
+
     return MessageSendNode.create(msg, args, coordWithL);
   }
 
@@ -425,7 +428,7 @@ public class ParserAst extends Parser<MethodGenerationContext> {
         SMethod blockMethod = (SMethod) bgenc.assemble(blockBody, lastMethodsCoord);
         mgenc.addEmbeddedBlockMethod(blockMethod);
 
-        if (OptimizationFlags.disableOptBlockNodesWithoutContext || bgenc.requiresContext()) {
+        if (OptimizationFlags.disableBlockNodesWithoutContext || bgenc.requiresContext()) {
           return new BlockNodeWithContext(blockMethod).initialize(getCoordWithLength(coord));
         } else {
           return new BlockNode(blockMethod).initialize(getCoordWithLength(coord));
