@@ -18,17 +18,18 @@ import trufflesom.vmobjects.SSymbol;
 /**
  * Intended to replace both local and non-local variable nodes. Obviously slower
  */
-public abstract class GenericVariableNode extends ContextualNode implements Invocation<SSymbol> {
+public abstract class GenericVariableNode extends NoPreEvalExprNode implements Invocation<SSymbol> {
 
   protected final int   slotIndex;
   protected final Local local;
+  protected final int   contextLevel;
 
   private static final ValueProfile frameType = ValueProfile.createClassProfile();
 
   private GenericVariableNode(final int contextLevel, final Local local) {
-    super(contextLevel);
     this.local = local;
     this.slotIndex = local.getIndex();
+    this.contextLevel = contextLevel;
   }
 
   @Override
