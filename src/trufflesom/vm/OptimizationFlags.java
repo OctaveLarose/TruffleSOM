@@ -26,4 +26,12 @@ public final class OptimizationFlags {
     /// Disables supernodes. This only includes IntIncrementNode for now. TODO which others can be considered supernodes?
     @CompilationFinal
     public static final boolean disableSupernodes = System.getProperty("opt.disableSupernodes") != null;
+
+    /// Disables quickening. Would probably destroy BC interp performance because it's deeply entwined with the BC interpreter. TODO though
+//    @CompilationFinal
+//    public static final boolean disableQuickening = System.getProperty("opt.bc.disableQuickening") != null;
+
+    /// Disables local and non-local variable nodes, instead relying on the freshly made (and far slower) GenericVariableNode
+    @CompilationFinal
+    public static final boolean disableLocalAndNonLocalVars = System.getProperty("opt.disableLocalAndNonLocalVars") != null;
 }

@@ -433,6 +433,8 @@ Native Image Targets
 <!--              <arg line="-Dopt.disableGlobalCaching=true" />-->
 <!--              <arg line="-Dopt.disableInliningNodes=true" />-->
 <!--              <arg line="-Dopt.disableSupernodes=true" />-->
+<!--              <arg line="-Dopt.bc.disableQuickening=true" />-->
+              <arg line="-Dopt.disableLocalAndNonLocalVars=true" />
 
 
               <!-- <arg line="-H:+PrintRuntimeCompileMethods" /> -->

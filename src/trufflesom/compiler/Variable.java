@@ -22,11 +22,15 @@ import trufflesom.interpreter.nodes.ArgumentReadNode.LocalArgumentWriteNode;
 import trufflesom.interpreter.nodes.ArgumentReadNode.NonLocalArgumentReadNode;
 import trufflesom.interpreter.nodes.ArgumentReadNode.NonLocalArgumentWriteNode;
 import trufflesom.interpreter.nodes.ExpressionNode;
+import trufflesom.interpreter.nodes.GenericVariableNodeFactory;
+import trufflesom.interpreter.nodes.GenericVariableNodeFactory.GenericVariableWriteNodeGen;
+import trufflesom.interpreter.nodes.GenericVariableNodeFactory.GenericVariableReadNodeGen;
 import trufflesom.interpreter.nodes.LocalVariableNodeFactory.LocalVariableReadNodeGen;
 import trufflesom.interpreter.nodes.LocalVariableNodeFactory.LocalVariableWriteNodeGen;
 import trufflesom.interpreter.nodes.NonLocalVariableNodeFactory.NonLocalVariableReadNodeGen;
 import trufflesom.interpreter.nodes.NonLocalVariableNodeFactory.NonLocalVariableWriteNodeGen;
 import trufflesom.vm.NotYetImplementedException;
+import trufflesom.vm.OptimizationFlags;
 import trufflesom.vmobjects.SSymbol;
 
 
@@ -172,6 +176,11 @@ public abstract class Variable implements bdt.inlining.Variable<ExpressionNode> 
     @Override
     public ExpressionNode getReadNode(final int contextLevel, final long coord) {
       transferToInterpreterAndInvalidate();
+
+      if (OptimizationFlags.disableLocalAndNonLocalVars) {
+        return GenericVariableReadNodeGen.create(contextLevel, this).initialize(coord);
+      }
+
       if (contextLevel > 0) {
         return NonLocalVariableReadNodeGen.create(contextLevel, this).initialize(coord);
       }
@@ -196,6 +205,11 @@ public abstract class Variable implements bdt.inlining.Variable<ExpressionNode> 
     public ExpressionNode getWriteNode(final int contextLevel,
         final ExpressionNode valueExpr, final long coord) {
       transferToInterpreterAndInvalidate();
+
+      if (OptimizationFlags.disableLocalAndNonLocalVars) {
+        return GenericVariableWriteNodeGen.create(contextLevel, this, valueExpr).initialize(coord);
+      }
+
       if (contextLevel > 0) {
         return NonLocalVariableWriteNodeGen.create(contextLevel, this, valueExpr)
                                            .initialize(coord);
