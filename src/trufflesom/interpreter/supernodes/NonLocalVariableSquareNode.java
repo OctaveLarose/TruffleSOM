@@ -10,10 +10,11 @@ import com.oracle.truffle.api.nodes.Node;
 import bdt.inlining.ScopeAdaptationVisitor;
 import bdt.inlining.ScopeAdaptationVisitor.ScopeElement;
 import trufflesom.compiler.Variable.Local;
+import trufflesom.interpreter.nodes.GenericVariableNode;
 import trufflesom.interpreter.nodes.NonLocalVariableNode;
 
 
-public abstract class NonLocalVariableSquareNode extends NonLocalVariableNode {
+public abstract class NonLocalVariableSquareNode extends GenericVariableNode {
 
   public NonLocalVariableSquareNode(final int contextLevel, final Local local) {
     super(contextLevel, local);

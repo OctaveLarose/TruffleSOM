@@ -7,13 +7,14 @@ import com.oracle.truffle.api.nodes.Node;
 import bdt.inlining.ScopeAdaptationVisitor;
 import bdt.inlining.ScopeAdaptationVisitor.ScopeElement;
 import trufflesom.compiler.Variable.Local;
+import trufflesom.interpreter.nodes.GenericVariableNode;
 import trufflesom.interpreter.nodes.NonLocalVariableNode;
 import trufflesom.interpreter.nodes.dispatch.AbstractDispatchNode;
 import trufflesom.interpreter.nodes.dispatch.UninitializedDispatchNode;
 import trufflesom.vmobjects.SSymbol;
 
 
-public final class NonLocalVarReadUnaryMsgWriteNode extends NonLocalVariableNode {
+public final class NonLocalVarReadUnaryMsgWriteNode extends GenericVariableNode {
 
   @Child AbstractDispatchNode dispatch;
   private final SSymbol       selector;

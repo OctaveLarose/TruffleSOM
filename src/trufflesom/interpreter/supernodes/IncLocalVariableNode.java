@@ -11,11 +11,11 @@ import bdt.inlining.ScopeAdaptationVisitor;
 import bdt.inlining.ScopeAdaptationVisitor.ScopeElement;
 import trufflesom.compiler.Variable.Local;
 import trufflesom.interpreter.nodes.ExpressionNode;
-import trufflesom.interpreter.nodes.LocalVariableNode;
+import trufflesom.interpreter.nodes.GenericVariableNode;
 
 
 @NodeChild(value = "value", type = ExpressionNode.class)
-public abstract class IncLocalVariableNode extends LocalVariableNode {
+public abstract class IncLocalVariableNode extends GenericVariableNode {
 
   protected IncLocalVariableNode(final Local variable) {
     super(variable);
