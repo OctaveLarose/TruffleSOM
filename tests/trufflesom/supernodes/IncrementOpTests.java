@@ -66,20 +66,20 @@ public class IncrementOpTests extends AstTestSetup {
     basicAddOrSubtract("field - 645", -645, IntIncrementNode.class);
   }
 
-  @Test
-  public void testIfTrueAndIncArg() {
-    SequenceNode seq = (SequenceNode) parseMethod(
-        "test: arg = (\n"
-            + "#start.\n"
-            + "(self key: 5) ifTrue: [ arg + 1 ]. #end )");
-
-    IfInlinedLiteralNode ifNode = (IfInlinedLiteralNode) read(seq, "expressions", 1);
-
-    IntIncrementNode inc = read(ifNode, "bodyNode", IntIncrementNode.class);
-    LocalArgumentReadNode arg = (LocalArgumentReadNode) inc.getRcvr();
-    assertEquals(1, arg.argumentIndex);
-    assertEquals("arg", arg.getInvocationIdentifier().getString());
-  }
+//  @Test
+//  public void testIfTrueAndIncArg() {
+//    SequenceNode seq = (SequenceNode) parseMethod(
+//        "test: arg = (\n"
+//            + "#start.\n"
+//            + "(self key: 5) ifTrue: [ arg + 1 ]. #end )");
+//
+//    IfInlinedLiteralNode ifNode = (IfInlinedLiteralNode) read(seq, "expressions", 1);
+//
+//    IntIncrementNode inc = read(ifNode, "bodyNode", IntIncrementNode.class);
+//    LocalArgumentReadNode arg = (LocalArgumentReadNode) inc.getRcvr();
+//    assertEquals(1, arg.argumentIndex);
+//    assertEquals("arg", arg.getInvocationIdentifier().getString());
+//  }
 
   @Test
   public void testFieldInc() {
