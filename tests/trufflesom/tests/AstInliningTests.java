@@ -13,13 +13,16 @@ import trufflesom.interpreter.nodes.ArgumentReadNode.LocalArgumentReadNode;
 import trufflesom.interpreter.nodes.ArgumentReadNode.NonLocalArgumentReadNode;
 import trufflesom.interpreter.nodes.ExpressionNode;
 import trufflesom.interpreter.nodes.FieldNode.FieldReadNode;
+import trufflesom.interpreter.nodes.GenericVariableNode;
 import trufflesom.interpreter.nodes.GlobalNode.FalseGlobalNode;
 import trufflesom.interpreter.nodes.GlobalNode.NilGlobalNode;
 import trufflesom.interpreter.nodes.GlobalNode.TrueGlobalNode;
 import trufflesom.interpreter.nodes.GlobalNode.UninitializedGlobalReadNode;
-import trufflesom.interpreter.nodes.LocalVariableNode.LocalVariableWriteNode;
-import trufflesom.interpreter.nodes.NonLocalVariableNode.NonLocalVariableReadNode;
-import trufflesom.interpreter.nodes.NonLocalVariableNode.NonLocalVariableWriteNode;
+import trufflesom.interpreter.nodes.GenericVariableNode.GenericVariableWriteNode;
+import trufflesom.interpreter.nodes.GenericVariableNode.GenericVariableReadNode;
+//import trufflesom.interpreter.nodes.LocalVariableNode.LocalVariableWriteNode;
+//import trufflesom.interpreter.nodes.NonLocalVariableNode.NonLocalVariableReadNode;
+//import trufflesom.interpreter.nodes.NonLocalVariableNode.NonLocalVariableWriteNode;
 import trufflesom.interpreter.nodes.ReturnNonLocalNode.ReturnLocalNode;
 import trufflesom.interpreter.nodes.SequenceNode;
 import trufflesom.interpreter.nodes.literals.BlockNode;
@@ -202,7 +205,7 @@ public class AstInliningTests extends AstTestSetup {
     ExpressionNode[] body =
         read(read(ifFalseNode, "bodyNode"), "expressions", ExpressionNode[].class);
 
-    LocalVariableWriteNode write = (LocalVariableWriteNode) body[0];
+    GenericVariableWriteNode write = (GenericVariableWriteNode) body[0];
     assertEquals("h", write.getInvocationIdentifier().getString());
 
     assertThat((Object) body[1], instanceOf(ReturnLocalNode.class));
@@ -230,7 +233,7 @@ public class AstInliningTests extends AstTestSetup {
 
     BlockNode blockNode =
         (BlockNode) read(read(ifTrueNode, "bodyNode"), "expressions", 1);
-    NonLocalVariableWriteNode write = (NonLocalVariableWriteNode) read(
+    GenericVariableWriteNode write = (GenericVariableWriteNode) read(
         read(blockNode.getMethod().getInvokable(), "body"), "expressions", 0);
     assertEquals(1, write.getContextLevel());
     assertEquals("a", write.getInvocationIdentifier().getString());
@@ -240,7 +243,7 @@ public class AstInliningTests extends AstTestSetup {
     ExpressionNode[] body =
         read(read(ifFalseNode, "bodyNode"), "expressions", ExpressionNode[].class);
 
-    LocalVariableWriteNode writeH = (LocalVariableWriteNode) body[0];
+    GenericVariableWriteNode writeH = (GenericVariableWriteNode) body[0];
     assertEquals("h", writeH.getInvocationIdentifier().getString());
 
     assertThat((Object) body[2], instanceOf(ReturnLocalNode.class));
@@ -269,7 +272,7 @@ public class AstInliningTests extends AstTestSetup {
     assertEquals("a", readA.getInvocationIdentifier().getString());
     assertEquals(1, (int) read(readA, "argumentIndex", Integer.class));
 
-    NonLocalVariableReadNode readB = (NonLocalVariableReadNode) blockExprs[1];
+    GenericVariableReadNode readB = (GenericVariableReadNode) blockExprs[1];
     assertEquals(1, readB.getContextLevel());
     assertEquals("b", readB.getInvocationIdentifier().getString());
 
@@ -280,7 +283,7 @@ public class AstInliningTests extends AstTestSetup {
     assertEquals("a", readA.getInvocationIdentifier().getString());
     assertEquals(1, (int) read(readA, "argumentIndex", Integer.class));
 
-    readB = (NonLocalVariableReadNode) blockExprs[1];
+    readB = (GenericVariableReadNode) blockExprs[1];
     assertEquals(2, readB.getContextLevel());
     assertEquals("b", readB.getInvocationIdentifier().getString());
   }
