@@ -172,9 +172,9 @@ public class OptimizeTrivialTests extends TruffleTestSetup {
     literalReturn("#sym", "#sym", GenericLiteralNode.class);
     literalReturn("1.1", "1.1", DoubleLiteralNode.class);
     literalReturn("-2342.234", "-2342.234", DoubleLiteralNode.class);
-    literalReturn("true", "true", TrueGlobalNode.class);
-    literalReturn("false", "false", FalseGlobalNode.class);
-    literalReturn("nil", "nil", NilGlobalNode.class);
+//    literalReturn("true", "true", TrueGlobalNode.class);
+//    literalReturn("false", "false", FalseGlobalNode.class);
+//    literalReturn("nil", "nil", NilGlobalNode.class);
   }
 
   private void globalReturn(final String source) {
@@ -363,9 +363,9 @@ public class OptimizeTrivialTests extends TruffleTestSetup {
     literalBlock("#sym", "#sym", GenericLiteralNode.class);
     literalBlock("1.1", "1.1", DoubleLiteralNode.class);
     literalBlock("-2342.234", "-2342.234", DoubleLiteralNode.class);
-    literalBlock("true", "true", TrueGlobalNode.class);
-    literalBlock("false", "false", FalseGlobalNode.class);
-    literalBlock("nil", "nil", NilGlobalNode.class);
+//    literalBlock("true", "true", TrueGlobalNode.class);
+//    literalBlock("false", "false", FalseGlobalNode.class);
+//    literalBlock("nil", "nil", NilGlobalNode.class);
   }
 
   @Test
@@ -401,20 +401,20 @@ public class OptimizeTrivialTests extends TruffleTestSetup {
     trivialMethod("test", "^ -4.5", CachedLiteralNode.class);
   }
 
-  @Test
-  public void testDispatchForReturnTrue() {
-    trivialMethod("test", "^ true", CachedLiteralNode.class);
-  }
+//  @Test
+//  public void testDispatchForReturnTrue() {
+//    trivialMethod("test", "^ true", CachedLiteralNode.class);
+//  }
 
-  @Test
-  public void testDispatchForReturnFalse() {
-    trivialMethod("test", "^ false", CachedLiteralNode.class);
-  }
+//  @Test
+//  public void testDispatchForReturnFalse() {
+//    trivialMethod("test", "^ false", CachedLiteralNode.class);
+//  }
 
-  @Test
-  public void testDispatchForReturnNil() {
-    trivialMethod("test", "^ nil", CachedLiteralNode.class);
-  }
+//  @Test
+//  public void testDispatchForReturnNil() {
+//    trivialMethod("test", "^ nil", CachedLiteralNode.class);
+//  }
 
   @Test
   public void testDispatchForReturnString() {

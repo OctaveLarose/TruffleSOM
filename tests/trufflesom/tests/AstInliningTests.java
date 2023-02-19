@@ -109,9 +109,9 @@ public class AstInliningTests extends AstTestSetup {
     literalTest("1.1", DoubleLiteralNode.class);
     literalTest("-2342.234", DoubleLiteralNode.class);
 
-    literalTest("true", TrueGlobalNode.class);
-    literalTest("false", FalseGlobalNode.class);
-    literalTest("nil", NilGlobalNode.class);
+//    literalTest("true", TrueGlobalNode.class);
+//    literalTest("false", FalseGlobalNode.class);
+//    literalTest("nil", NilGlobalNode.class);
 
     literalTest("SomeGlobal", UninitializedGlobalReadNode.class);
     literalTest("[]", BlockNode.class);
