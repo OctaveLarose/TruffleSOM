@@ -10,10 +10,10 @@ import com.oracle.truffle.api.nodes.Node;
 import bdt.inlining.ScopeAdaptationVisitor;
 import bdt.inlining.ScopeAdaptationVisitor.ScopeElement;
 import trufflesom.compiler.Variable.Local;
-import trufflesom.interpreter.nodes.NonLocalVariableNode;
+import trufflesom.interpreter.nodes.GenericVariableNode;
 
 
-public abstract class IntIncNonLocalVariableNode extends NonLocalVariableNode {
+public abstract class IntIncNonLocalVariableNode extends GenericVariableNode {
 
   private final long incValue;
 
@@ -25,7 +25,7 @@ public abstract class IntIncNonLocalVariableNode extends NonLocalVariableNode {
 
   @Specialization(guards = "ctx.isLong(slotIndex)", rewriteOn = {FrameSlotTypeException.class})
   public final long doLong(final VirtualFrame frame,
-      @Bind("determineContext(frame)") final MaterializedFrame ctx)
+      @Bind("determineContextMaybeLocal(frame)") final MaterializedFrame ctx)
       throws FrameSlotTypeException {
     long current = ctx.getLong(slotIndex);
     long result = Math.addExact(current, incValue);
@@ -36,7 +36,7 @@ public abstract class IntIncNonLocalVariableNode extends NonLocalVariableNode {
   @Specialization(guards = "ctx.isDouble(slotIndex)",
       rewriteOn = {FrameSlotTypeException.class})
   public final double doDouble(final VirtualFrame frame,
-      @Bind("determineContext(frame)") final MaterializedFrame ctx)
+      @Bind("determineContextMaybeLocal(frame)") final MaterializedFrame ctx)
       throws FrameSlotTypeException {
     double current = ctx.getDouble(slotIndex);
     double result = current + incValue;

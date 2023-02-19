@@ -28,16 +28,12 @@ import bdt.basic.ProgramDefinitionError;
 import bdt.inlining.InlinableNodes;
 import bdt.tools.structure.StructuralProbe;
 import trufflesom.compiler.Variable.Local;
+import trufflesom.interpreter.nodes.*;
 import trufflesom.interpreter.nodes.ArgumentReadNode.LocalArgumentReadNode;
 import trufflesom.interpreter.nodes.ArgumentReadNode.NonLocalArgumentReadNode;
-import trufflesom.interpreter.nodes.ExpressionNode;
-import trufflesom.interpreter.nodes.FieldNode;
 import trufflesom.interpreter.nodes.FieldNode.FieldReadNode;
-import trufflesom.interpreter.nodes.GlobalNode;
-import trufflesom.interpreter.nodes.LocalVariableNode.LocalVariableReadNode;
-import trufflesom.interpreter.nodes.MessageSendNode;
-import trufflesom.interpreter.nodes.NonLocalVariableNode.NonLocalVariableReadNode;
-import trufflesom.interpreter.nodes.SequenceNode;
+import trufflesom.interpreter.nodes.GenericVariableNode.GenericVariableReadNode;
+import trufflesom.interpreter.nodes.GenericVariableNode.GenericVariableWriteNode;
 import trufflesom.interpreter.nodes.literals.BlockNode;
 import trufflesom.interpreter.nodes.literals.BlockNode.BlockNodeWithContext;
 import trufflesom.interpreter.nodes.literals.DoubleLiteralNode;
@@ -275,22 +271,15 @@ public class ParserAst extends Parser<MethodGenerationContext> {
     String binSelector = msg.getString();
 
     if (binSelector.equals("*")) {
-      if (receiver instanceof LocalVariableReadNode
-          && operand instanceof LocalVariableReadNode) {
-        Local rcvrLocal = ((LocalVariableReadNode) receiver).getLocal();
-        Local opLocal = ((LocalVariableReadNode) operand).getLocal();
-        if (rcvrLocal.equals(opLocal)) {
-          return LocalVariableSquareNodeGen.create(rcvrLocal).initialize(coordWithL);
-        }
-      } else if (receiver instanceof NonLocalVariableReadNode
-          && operand instanceof NonLocalVariableReadNode) {
-        Local rcvrLocal = ((NonLocalVariableReadNode) receiver).getLocal();
-        Local opLocal = ((NonLocalVariableReadNode) operand).getLocal();
+      if (receiver instanceof GenericVariableReadNode
+          && operand instanceof GenericVariableReadNode) {
+        Local rcvrLocal = ((GenericVariableReadNode) receiver).getLocal();
+        Local opLocal = ((GenericVariableReadNode) operand).getLocal();
 
-        assert ((NonLocalVariableReadNode) receiver).getContextLevel() == ((NonLocalVariableReadNode) operand).getContextLevel();
+        assert ((GenericVariableReadNode) receiver).getContextLevel() == ((GenericVariableReadNode) operand).getContextLevel();
         if (rcvrLocal.equals(opLocal)) {
           return NonLocalVariableSquareNodeGen.create(
-              ((NonLocalVariableReadNode) receiver).getContextLevel(), rcvrLocal)
+              ((GenericVariableReadNode) receiver).getContextLevel(), rcvrLocal)
                                               .initialize(coordWithL);
         }
       }

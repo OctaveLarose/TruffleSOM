@@ -8,7 +8,6 @@ import bdt.inlining.ScopeAdaptationVisitor;
 import bdt.inlining.ScopeAdaptationVisitor.ScopeElement;
 import trufflesom.compiler.Variable.Local;
 import trufflesom.interpreter.nodes.GenericVariableNode;
-import trufflesom.interpreter.nodes.NonLocalVariableNode;
 import trufflesom.interpreter.nodes.dispatch.AbstractDispatchNode;
 import trufflesom.interpreter.nodes.dispatch.UninitializedDispatchNode;
 import trufflesom.vmobjects.SSymbol;
@@ -29,7 +28,7 @@ public final class NonLocalVarReadUnaryMsgWriteNode extends GenericVariableNode 
 
   @Override
   public Object executeGeneric(final VirtualFrame frame) {
-    MaterializedFrame ctx = determineContext(frame);
+    MaterializedFrame ctx = determineContextMaybeLocal(frame);
     Object rcvr = ctx.getObject(slotIndex);
     Object result = dispatch.executeDispatch(frame, new Object[] {rcvr});
 

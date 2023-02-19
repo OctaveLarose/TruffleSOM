@@ -13,7 +13,6 @@ import bdt.inlining.ScopeAdaptationVisitor;
 import bdt.inlining.ScopeAdaptationVisitor.ScopeElement;
 import trufflesom.compiler.Variable.Local;
 import trufflesom.interpreter.nodes.GenericVariableNode;
-import trufflesom.interpreter.nodes.NonLocalVariableNode;
 
 
 public abstract class NonLocalVariableReadSquareWriteNode extends GenericVariableNode {
@@ -31,7 +30,7 @@ public abstract class NonLocalVariableReadSquareWriteNode extends GenericVariabl
   @Specialization(guards = {"isLongKind(ctx)", "ctx.isLong(readIndex)"},
       rewriteOn = {FrameSlotTypeException.class})
   public final long writeLong(final VirtualFrame frame,
-      @Bind("determineContext(frame)") final MaterializedFrame ctx)
+      @Bind("determineContextMaybeLocal(frame)") final MaterializedFrame ctx)
       throws FrameSlotTypeException {
     long current = ctx.getLong(readIndex);
     long result = Math.multiplyExact(current, current);
@@ -44,7 +43,7 @@ public abstract class NonLocalVariableReadSquareWriteNode extends GenericVariabl
   @Specialization(guards = {"isDoubleKind(ctx)", "ctx.isDouble(readIndex)"},
       rewriteOn = {FrameSlotTypeException.class})
   public final double writeDouble(final VirtualFrame frame,
-      @Bind("determineContext(frame)") final MaterializedFrame ctx)
+      @Bind("determineContextMaybeLocal(frame)") final MaterializedFrame ctx)
       throws FrameSlotTypeException {
     double current = ctx.getDouble(readIndex);
     double result = current * current;

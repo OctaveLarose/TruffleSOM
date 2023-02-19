@@ -27,7 +27,6 @@ import trufflesom.interpreter.nodes.GenericVariableNode.GenericVariableReadNode;
 import trufflesom.interpreter.nodes.GenericVariableNode.GenericVariableWriteNode;
 import trufflesom.interpreter.nodes.GenericVariableNodeFactory.GenericVariableWriteNodeGen;
 import trufflesom.interpreter.nodes.GenericVariableNodeFactory.GenericVariableReadNodeGen;
-import trufflesom.interpreter.nodes.NonLocalVariableNodeFactory.NonLocalVariableWriteNodeGen;
 import trufflesom.interpreter.supernodes.IncLocalVariableNodeGen;
 import trufflesom.interpreter.supernodes.IncNonLocalVariableNodeGen;
 import trufflesom.interpreter.supernodes.IntIncLocalVariableNodeGen;
@@ -270,7 +269,7 @@ public abstract class Variable implements bdt.inlining.Variable<ExpressionNode> 
           }
         }
 
-        return NonLocalVariableWriteNodeGen.create(contextLevel, this, valueExpr)
+        return GenericVariableWriteNodeGen.create(contextLevel, this, valueExpr)
                                            .initialize(coord);
       }
 

@@ -11,7 +11,6 @@ import bdt.inlining.ScopeAdaptationVisitor;
 import bdt.inlining.ScopeAdaptationVisitor.ScopeElement;
 import trufflesom.compiler.Variable.Local;
 import trufflesom.interpreter.nodes.GenericVariableNode;
-import trufflesom.interpreter.nodes.NonLocalVariableNode;
 
 
 public abstract class NonLocalVariableSquareNode extends GenericVariableNode {
@@ -23,7 +22,7 @@ public abstract class NonLocalVariableSquareNode extends GenericVariableNode {
   @Specialization(guards = {"ctx.isLong(slotIndex)"},
       rewriteOn = {FrameSlotTypeException.class})
   public final long doLong(final VirtualFrame frame,
-      @Bind("determineContext(frame)") final MaterializedFrame ctx)
+      @Bind("determineContextMaybeLocal(frame)") final MaterializedFrame ctx)
       throws FrameSlotTypeException {
     long current = ctx.getLong(slotIndex);
     return Math.multiplyExact(current, current);
@@ -32,7 +31,7 @@ public abstract class NonLocalVariableSquareNode extends GenericVariableNode {
   @Specialization(guards = {"ctx.isDouble(slotIndex)"},
       rewriteOn = {FrameSlotTypeException.class})
   public final double doDouble(final VirtualFrame frame,
-      @Bind("determineContext(frame)") final MaterializedFrame ctx)
+      @Bind("determineContextMaybeLocal(frame)") final MaterializedFrame ctx)
       throws FrameSlotTypeException {
     double current = ctx.getDouble(slotIndex);
     return current * current;

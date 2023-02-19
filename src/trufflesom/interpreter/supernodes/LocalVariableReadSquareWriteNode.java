@@ -10,10 +10,10 @@ import com.oracle.truffle.api.nodes.Node;
 import bdt.inlining.ScopeAdaptationVisitor;
 import bdt.inlining.ScopeAdaptationVisitor.ScopeElement;
 import trufflesom.compiler.Variable.Local;
-import trufflesom.interpreter.nodes.LocalVariableNode;
+import trufflesom.interpreter.nodes.GenericVariableNode;
 
 
-public abstract class LocalVariableReadSquareWriteNode extends LocalVariableNode {
+public abstract class LocalVariableReadSquareWriteNode extends GenericVariableNode {
 
   protected final Local readLocal;
   protected final int   readIndex;
