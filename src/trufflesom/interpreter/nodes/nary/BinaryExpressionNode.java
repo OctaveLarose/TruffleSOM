@@ -6,8 +6,8 @@ import com.oracle.truffle.api.frame.VirtualFrame;
 
 import bdt.primitives.nodes.PreevaluatedExpression;
 import trufflesom.interpreter.bc.RespecializeException;
-import trufflesom.interpreter.nodes.AbstractMessageSendNode;
 import trufflesom.interpreter.nodes.ExpressionNode;
+import trufflesom.interpreter.nodes.GenericMessageSendNode;
 import trufflesom.interpreter.nodes.MessageSendNode;
 import trufflesom.interpreter.nodes.bc.BytecodeLoopNode;
 import trufflesom.vm.VmSettings;
@@ -17,26 +17,32 @@ import trufflesom.vmobjects.SSymbol;
 @NodeChild(value = "receiver", type = ExpressionNode.class)
 @NodeChild(value = "argument", type = ExpressionNode.class)
 public abstract class BinaryExpressionNode extends ExpressionNode
-    implements PreevaluatedExpression {
+        implements PreevaluatedExpression {
 
   public abstract ExpressionNode getReceiver();
 
   public abstract ExpressionNode getArgument();
 
   public abstract Object executeEvaluated(VirtualFrame frame, Object receiver,
-      Object argument);
+                                          Object argument);
 
   @Override
   public final Object doPreEvaluated(final VirtualFrame frame,
-      final Object[] arguments) {
+                                     final Object[] arguments) {
     return executeEvaluated(frame, arguments[0], arguments[1]);
   }
 
-  protected AbstractMessageSendNode makeGenericSend(final SSymbol selector) {
+  protected GenericMessageSendNode makeGenericSend(final SSymbol selector) {
     CompilerDirectives.transferToInterpreterAndInvalidate();
-    AbstractMessageSendNode send =
-        MessageSendNode.createGenericBinary(selector, getReceiver(), getArgument(),
-            sourceCoord);
+    ExpressionNode[] children;
+    if (VmSettings.UseAstInterp) {
+      children = new ExpressionNode[] {getReceiver(), getArgument()};
+    } else {
+      children = null;
+    }
+
+    GenericMessageSendNode send =
+            MessageSendNode.createGeneric(selector, children, sourceCoord);
 
     if (VmSettings.UseAstInterp) {
       replace(send);

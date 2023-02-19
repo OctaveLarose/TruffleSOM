@@ -1179,8 +1179,7 @@ public class BytecodeLoopNode extends NoPreEvalExprNode implements ScopeReferenc
     }
 
     if (!done) {
-      AbstractMessageSendNode quick =
-          MessageSendNode.createGenericNary(signature, null, sourceCoord);
+      AbstractMessageSendNode quick = MessageSendNode.createGeneric(signature, null, sourceCoord);
       quickenBytecode(bytecodeIndex, Q_SEND, quick);
 
       result = quick.doPreEvaluated(frame, callArgs);

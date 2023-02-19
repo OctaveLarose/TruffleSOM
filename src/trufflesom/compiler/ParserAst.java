@@ -45,16 +45,6 @@ import trufflesom.interpreter.nodes.literals.GenericLiteralNode;
 import trufflesom.interpreter.nodes.literals.IntegerLiteralNode;
 import trufflesom.interpreter.nodes.literals.LiteralNode;
 import trufflesom.interpreter.nodes.specialized.IfInlinedLiteralNode;
-import trufflesom.interpreter.supernodes.GreaterThanIntNodeGen;
-import trufflesom.interpreter.supernodes.IntIncrementNodeGen;
-import trufflesom.interpreter.supernodes.LessThanIntNodeGen;
-import trufflesom.interpreter.supernodes.LocalArgGreaterThanInt;
-import trufflesom.interpreter.supernodes.LocalArgLessThanInt;
-import trufflesom.interpreter.supernodes.LocalFieldStringEqualsNode;
-import trufflesom.interpreter.supernodes.LocalVariableSquareNodeGen;
-import trufflesom.interpreter.supernodes.NonLocalFieldStringEqualsNode;
-import trufflesom.interpreter.supernodes.NonLocalVariableSquareNodeGen;
-import trufflesom.interpreter.supernodes.StringEqualsNodeGen;
 import trufflesom.primitives.Primitives;
 import trufflesom.vm.Globals;
 import trufflesom.vm.NotYetImplementedException;
@@ -270,109 +260,6 @@ public class ParserAst extends Parser<MethodGenerationContext> {
     if (isSuperSend) {
       return MessageSendNode.createSuperSend(
           mgenc.getHolder().getSuperClass(), msg, args, coordWithL);
-    }
-
-    String binSelector = msg.getString();
-
-    if (binSelector.equals("*")) {
-      if (receiver instanceof LocalVariableReadNode
-          && operand instanceof LocalVariableReadNode) {
-        Local rcvrLocal = ((LocalVariableReadNode) receiver).getLocal();
-        Local opLocal = ((LocalVariableReadNode) operand).getLocal();
-        if (rcvrLocal.equals(opLocal)) {
-          return LocalVariableSquareNodeGen.create(rcvrLocal).initialize(coordWithL);
-        }
-      } else if (receiver instanceof NonLocalVariableReadNode
-          && operand instanceof NonLocalVariableReadNode) {
-        Local rcvrLocal = ((NonLocalVariableReadNode) receiver).getLocal();
-        Local opLocal = ((NonLocalVariableReadNode) operand).getLocal();
-
-        assert ((NonLocalVariableReadNode) receiver).getContextLevel() == ((NonLocalVariableReadNode) operand).getContextLevel();
-        if (rcvrLocal.equals(opLocal)) {
-          return NonLocalVariableSquareNodeGen.create(
-              ((NonLocalVariableReadNode) receiver).getContextLevel(), rcvrLocal)
-                                              .initialize(coordWithL);
-        }
-      }
-    } else if (binSelector.equals("=")) {
-      if (operand instanceof GenericLiteralNode) {
-        Object literal = operand.executeGeneric(null);
-        if (literal instanceof String) {
-          if (receiver instanceof FieldReadNode) {
-            FieldReadNode fieldRead = (FieldReadNode) receiver;
-            ExpressionNode self = fieldRead.getSelf();
-            if (self instanceof LocalArgumentReadNode) {
-              return new LocalFieldStringEqualsNode(fieldRead.getFieldIndex(),
-                  ((LocalArgumentReadNode) self).getArg(), (String) literal).initialize(
-                      coordWithL);
-            } else if (self instanceof NonLocalArgumentReadNode) {
-              NonLocalArgumentReadNode arg = (NonLocalArgumentReadNode) self;
-              return new NonLocalFieldStringEqualsNode(fieldRead.getFieldIndex(),
-                  arg.getArg(), arg.getContextLevel(), (String) literal).initialize(
-                      coordWithL);
-            } else {
-              throw new NotYetImplementedException();
-            }
-
-          }
-
-          return StringEqualsNodeGen.create((String) literal, receiver)
-                                    .initialize(coordWithL);
-        }
-      }
-
-      if (receiver instanceof GenericLiteralNode) {
-        Object literal = receiver.executeGeneric(null);
-        if (literal instanceof String) {
-          if (operand instanceof FieldReadNode) {
-            FieldReadNode fieldRead = (FieldReadNode) operand;
-            ExpressionNode self = fieldRead.getSelf();
-            if (self instanceof LocalArgumentReadNode) {
-              return new LocalFieldStringEqualsNode(fieldRead.getFieldIndex(),
-                  ((LocalArgumentReadNode) self).getArg(), (String) literal).initialize(
-                      coordWithL);
-            } else if (self instanceof NonLocalArgumentReadNode) {
-              NonLocalArgumentReadNode arg = (NonLocalArgumentReadNode) self;
-              return new NonLocalFieldStringEqualsNode(fieldRead.getFieldIndex(),
-                  arg.getArg(), arg.getContextLevel(), (String) literal).initialize(
-                      coordWithL);
-            } else {
-              throw new NotYetImplementedException();
-            }
-          }
-
-          return StringEqualsNodeGen.create((String) literal, operand)
-                                    .initialize(coordWithL);
-        }
-      }
-    } else if (operand instanceof IntegerLiteralNode) {
-      IntegerLiteralNode lit = (IntegerLiteralNode) operand;
-      if (binSelector.equals("+")) {
-        return IntIncrementNodeGen.create(lit.executeLong(null), false, receiver)
-                                  .initialize(coordWithL);
-      }
-      if (binSelector.equals("-")) {
-        return IntIncrementNodeGen.create(-lit.executeLong(null), true, receiver)
-                                  .initialize(coordWithL);
-      }
-      if (binSelector.equals(">")) {
-        if (receiver instanceof LocalArgumentReadNode) {
-          return new LocalArgGreaterThanInt(((LocalArgumentReadNode) receiver).getArg(),
-              lit.executeLong(null)).initialize(coordWithL);
-        }
-
-        return GreaterThanIntNodeGen.create(lit.executeLong(null), receiver)
-                                    .initialize(coordWithL);
-      }
-      if (binSelector.equals("<")) {
-        if (receiver instanceof LocalArgumentReadNode) {
-          return new LocalArgLessThanInt(((LocalArgumentReadNode) receiver).getArg(),
-              lit.executeLong(null)).initialize(coordWithL);
-        }
-
-        return LessThanIntNodeGen.create(lit.executeLong(null), receiver)
-                                 .initialize(coordWithL);
-      }
     }
 
     ExpressionNode inlined =

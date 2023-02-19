@@ -57,12 +57,6 @@ import trufflesom.interpreter.nodes.ReturnNonLocalNode;
 import trufflesom.interpreter.nodes.ReturnNonLocalNode.CatchNonLocalReturnNode;
 import trufflesom.interpreter.nodes.UninitializedMessageSendNode;
 import trufflesom.interpreter.nodes.literals.BlockNode;
-import trufflesom.interpreter.supernodes.IntIncrementNode;
-import trufflesom.interpreter.supernodes.LocalVarReadUnaryMsgWriteNode;
-import trufflesom.interpreter.supernodes.LocalVariableSquareNode;
-import trufflesom.interpreter.supernodes.NonLocalVarReadUnaryMsgWriteNode;
-import trufflesom.interpreter.supernodes.NonLocalVariableSquareNode;
-import trufflesom.interpreter.supernodes.UninitIncFieldNode;
 import trufflesom.primitives.Primitives;
 import trufflesom.primitives.arithmetic.AdditionPrim;
 import trufflesom.vm.NotYetImplementedException;
@@ -411,58 +405,6 @@ public class MethodGenerationContext
   public ExpressionNode getLocalWriteNode(final Variable variable,
       final ExpressionNode valExpr, final long coord) {
     int ctxLevel = getContextLevel(variable);
-
-    if (valExpr instanceof IntIncrementNode
-        && ((IntIncrementNode) valExpr).doesAccessVariable(variable)) {
-      return ((IntIncrementNode) valExpr).createIncNode((Local) variable, ctxLevel);
-    }
-
-    if (ctxLevel == 0) {
-      if (valExpr instanceof LocalVariableSquareNode) {
-        return variable.getReadSquareWriteNode(ctxLevel, coord,
-            ((LocalVariableSquareNode) valExpr).getLocal());
-      }
-      if (valExpr instanceof NonLocalVariableSquareNode) {
-        throw new NotYetImplementedException(
-            "a missing read/square/write combination, used in a benchmark?");
-      }
-
-      if (valExpr instanceof UninitializedMessageSendNode) {
-        UninitializedMessageSendNode val = (UninitializedMessageSendNode) valExpr;
-        ExpressionNode[] args = val.getArguments();
-        if (args.length == 1 && args[0] instanceof LocalVariableReadNode) {
-          LocalVariableReadNode var = (LocalVariableReadNode) args[0];
-          if (var.getLocal() == variable) {
-            return new LocalVarReadUnaryMsgWriteNode((Local) variable,
-                val.getInvocationIdentifier());
-          }
-        }
-      }
-    } else {
-      if (valExpr instanceof NonLocalVariableSquareNode) {
-        return variable.getReadSquareWriteNode(ctxLevel, coord,
-            ((NonLocalVariableSquareNode) valExpr).getLocal());
-      }
-
-      if (valExpr instanceof LocalVariableSquareNode) {
-        return variable.getReadSquareWriteNode(ctxLevel, coord,
-                ((LocalVariableSquareNode) valExpr).getLocal());
-//        throw new NotYetImplementedException(
-//            "a missing read/square/write combination, used in a benchmark?");
-      }
-
-      if (valExpr instanceof UninitializedMessageSendNode) {
-        UninitializedMessageSendNode val = (UninitializedMessageSendNode) valExpr;
-        ExpressionNode[] args = val.getArguments();
-        if (args.length == 1 && args[0] instanceof NonLocalVariableReadNode) {
-          NonLocalVariableReadNode var = (NonLocalVariableReadNode) args[0];
-          if (var.getLocal() == variable) {
-            return new NonLocalVarReadUnaryMsgWriteNode(ctxLevel, (Local) variable,
-                val.getInvocationIdentifier());
-          }
-        }
-      }
-    }
     return variable.getWriteNode(ctxLevel, valExpr, coord);
   }
 
@@ -511,25 +453,6 @@ public class MethodGenerationContext
 
     int fieldIndex = holderGenc.getFieldIndex(fieldName);
     ExpressionNode self = getSelfRead(coord);
-    if (exp instanceof IntIncrementNode
-        && ((IntIncrementNode) exp).doesAccessField(fieldIndex)) {
-      return ((IntIncrementNode) exp).createFieldIncNode(self, fieldIndex, coord);
-    }
-
-    if (exp instanceof AdditionPrim) {
-      AdditionPrim add = (AdditionPrim) exp;
-      ExpressionNode rcvr = add.getReceiver();
-      ExpressionNode arg = add.getArgument();
-
-      if (rcvr instanceof FieldReadNode
-          && fieldIndex == ((FieldReadNode) rcvr).getFieldIndex()) {
-        return new UninitIncFieldNode(self, arg, true, fieldIndex, coord);
-      }
-      if (arg instanceof FieldReadNode
-          && fieldIndex == ((FieldReadNode) arg).getFieldIndex()) {
-        return new UninitIncFieldNode(self, rcvr, false, fieldIndex, coord);
-      }
-    }
 
     return FieldWriteNodeGen.create(fieldIndex, self, exp).initialize(coord);
   }

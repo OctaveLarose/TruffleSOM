@@ -5,8 +5,8 @@ import com.oracle.truffle.api.dsl.NodeChild;
 import com.oracle.truffle.api.frame.VirtualFrame;
 
 import trufflesom.interpreter.bc.RespecializeException;
-import trufflesom.interpreter.nodes.AbstractMessageSendNode;
 import trufflesom.interpreter.nodes.ExpressionNode;
+import trufflesom.interpreter.nodes.GenericMessageSendNode;
 import trufflesom.interpreter.nodes.MessageSendNode;
 import trufflesom.interpreter.nodes.bc.BytecodeLoopNode;
 import trufflesom.vm.VmSettings;
@@ -19,7 +19,7 @@ import trufflesom.vmobjects.SSymbol;
 public abstract class TernaryExpressionNode extends EagerlySpecializableNode {
 
   public abstract Object executeEvaluated(
-      VirtualFrame frame, Object receiver, Object arg1, Object arg2);
+          VirtualFrame frame, Object receiver, Object arg1, Object arg2);
 
   public abstract ExpressionNode getReceiver();
 
@@ -29,15 +29,21 @@ public abstract class TernaryExpressionNode extends EagerlySpecializableNode {
 
   @Override
   public final Object doPreEvaluated(final VirtualFrame frame,
-      final Object[] arguments) {
+                                     final Object[] arguments) {
     return executeEvaluated(frame, arguments[0], arguments[1], arguments[2]);
   }
 
-  protected AbstractMessageSendNode makeGenericSend(final SSymbol selector) {
+  protected GenericMessageSendNode makeGenericSend(final SSymbol selector) {
     CompilerDirectives.transferToInterpreterAndInvalidate();
-    AbstractMessageSendNode send =
-        MessageSendNode.createGenericTernary(selector, getReceiver(), getArg1(), getArg2(),
-            sourceCoord);
+    ExpressionNode[] children;
+    if (VmSettings.UseAstInterp) {
+      children = new ExpressionNode[] {getReceiver(), getArg1(), getArg2()};
+    } else {
+      children = null;
+    }
+
+    GenericMessageSendNode send =
+            MessageSendNode.createGeneric(selector, children, sourceCoord);
 
     if (VmSettings.UseAstInterp) {
       replace(send);
