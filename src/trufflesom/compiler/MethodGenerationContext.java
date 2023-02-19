@@ -47,15 +47,12 @@ import trufflesom.compiler.Variable.Internal;
 import trufflesom.compiler.Variable.Local;
 import trufflesom.interpreter.LexicalScope;
 import trufflesom.interpreter.Method;
-import trufflesom.interpreter.nodes.ExpressionNode;
-import trufflesom.interpreter.nodes.FieldNode;
+import trufflesom.interpreter.nodes.*;
+import trufflesom.interpreter.nodes.GenericVariableNode.GenericVariableReadNode;
+import trufflesom.interpreter.nodes.GenericVariableNode.GenericVariableWriteNode;
 import trufflesom.interpreter.nodes.FieldNode.FieldReadNode;
 import trufflesom.interpreter.nodes.FieldNodeFactory.FieldWriteNodeGen;
-import trufflesom.interpreter.nodes.LocalVariableNode.LocalVariableReadNode;
-import trufflesom.interpreter.nodes.NonLocalVariableNode.NonLocalVariableReadNode;
-import trufflesom.interpreter.nodes.ReturnNonLocalNode;
 import trufflesom.interpreter.nodes.ReturnNonLocalNode.CatchNonLocalReturnNode;
-import trufflesom.interpreter.nodes.UninitializedMessageSendNode;
 import trufflesom.interpreter.nodes.literals.BlockNode;
 import trufflesom.interpreter.supernodes.IntIncrementNode;
 import trufflesom.interpreter.supernodes.LocalVarReadUnaryMsgWriteNode;
@@ -430,8 +427,8 @@ public class MethodGenerationContext
       if (valExpr instanceof UninitializedMessageSendNode) {
         UninitializedMessageSendNode val = (UninitializedMessageSendNode) valExpr;
         ExpressionNode[] args = val.getArguments();
-        if (args.length == 1 && args[0] instanceof LocalVariableReadNode) {
-          LocalVariableReadNode var = (LocalVariableReadNode) args[0];
+        if (args.length == 1 && args[0] instanceof GenericVariableReadNode) {
+          GenericVariableReadNode var = (GenericVariableReadNode) args[0];
           if (var.getLocal() == variable) {
             return new LocalVarReadUnaryMsgWriteNode((Local) variable,
                 val.getInvocationIdentifier());
@@ -454,8 +451,8 @@ public class MethodGenerationContext
       if (valExpr instanceof UninitializedMessageSendNode) {
         UninitializedMessageSendNode val = (UninitializedMessageSendNode) valExpr;
         ExpressionNode[] args = val.getArguments();
-        if (args.length == 1 && args[0] instanceof NonLocalVariableReadNode) {
-          NonLocalVariableReadNode var = (NonLocalVariableReadNode) args[0];
+        if (args.length == 1 && args[0] instanceof GenericVariableReadNode) {
+          GenericVariableReadNode var = (GenericVariableReadNode) args[0];
           if (var.getLocal() == variable) {
             return new NonLocalVarReadUnaryMsgWriteNode(ctxLevel, (Local) variable,
                 val.getInvocationIdentifier());

@@ -15,13 +15,13 @@ import bdt.inlining.ScopeAdaptationVisitor;
 import bdt.inlining.ScopeAdaptationVisitor.ScopeElement;
 import trufflesom.compiler.Variable.Local;
 import trufflesom.interpreter.nodes.ExpressionNode;
-import trufflesom.interpreter.nodes.NonLocalVariableNode;
+import trufflesom.interpreter.nodes.GenericVariableNode;
 import trufflesom.primitives.arithmetic.AdditionPrim;
 import trufflesom.primitives.arithmetic.AdditionPrimFactory;
 
 
 @NodeChild(value = "value", type = ExpressionNode.class)
-public abstract class IncNonLocalVariableNode extends NonLocalVariableNode {
+public abstract class IncNonLocalVariableNode extends GenericVariableNode {
 
   protected IncNonLocalVariableNode(final int contextLevel, final Local local) {
     super(contextLevel, local);
@@ -31,7 +31,7 @@ public abstract class IncNonLocalVariableNode extends NonLocalVariableNode {
 
   @Specialization(guards = "ctx.isLong(slotIndex)", rewriteOn = {FrameSlotTypeException.class})
   public final long doLong(final VirtualFrame frame, final long value,
-      @Bind("determineContext(frame)") final MaterializedFrame ctx)
+      @Bind("determineContextMaybeLocal(frame)") final MaterializedFrame ctx)
       throws FrameSlotTypeException {
     long current = ctx.getLong(slotIndex);
     long result = Math.addExact(current, value);
@@ -42,7 +42,7 @@ public abstract class IncNonLocalVariableNode extends NonLocalVariableNode {
   @Specialization(guards = "ctx.isDouble(slotIndex)",
       rewriteOn = {FrameSlotTypeException.class})
   public final double doDouble(final VirtualFrame frame, final double value,
-      @Bind("determineContext(frame)") final MaterializedFrame ctx)
+      @Bind("determineContextMaybeLocal(frame)") final MaterializedFrame ctx)
       throws FrameSlotTypeException {
     double current = ctx.getDouble(slotIndex);
     double result = current + value;
@@ -53,7 +53,7 @@ public abstract class IncNonLocalVariableNode extends NonLocalVariableNode {
   @Specialization(guards = "ctx.isObject(slotIndex)",
       rewriteOn = {FrameSlotTypeException.class})
   public final Object doString(final VirtualFrame frame, final String value,
-      @Bind("determineContext(frame)") final MaterializedFrame ctx)
+      @Bind("determineContextMaybeLocal(frame)") final MaterializedFrame ctx)
       throws FrameSlotTypeException {
     String current = (String) ctx.getObject(slotIndex);
     String result = concat(current, value);
@@ -68,7 +68,7 @@ public abstract class IncNonLocalVariableNode extends NonLocalVariableNode {
 
   @Fallback
   public final Object fallback(final VirtualFrame frame, final Object value) {
-    MaterializedFrame ctx = determineContext(frame);
+    MaterializedFrame ctx = determineContextMaybeLocal(frame);
     CompilerDirectives.transferToInterpreterAndInvalidate();
 
     AdditionPrim add =

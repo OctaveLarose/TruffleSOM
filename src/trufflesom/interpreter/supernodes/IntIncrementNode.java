@@ -9,13 +9,8 @@ import com.oracle.truffle.api.frame.VirtualFrame;
 import trufflesom.compiler.Variable;
 import trufflesom.compiler.Variable.Local;
 import trufflesom.interpreter.bc.RespecializeException;
-import trufflesom.interpreter.nodes.AbstractMessageSendNode;
-import trufflesom.interpreter.nodes.ExpressionNode;
-import trufflesom.interpreter.nodes.FieldNode;
+import trufflesom.interpreter.nodes.*;
 import trufflesom.interpreter.nodes.FieldNode.FieldReadNode;
-import trufflesom.interpreter.nodes.LocalVariableNode;
-import trufflesom.interpreter.nodes.MessageSendNode;
-import trufflesom.interpreter.nodes.NonLocalVariableNode;
 import trufflesom.interpreter.nodes.bc.BytecodeLoopNode;
 import trufflesom.interpreter.nodes.literals.IntegerLiteralNode;
 import trufflesom.vm.SymbolTable;
@@ -73,10 +68,8 @@ public abstract class IntIncrementNode extends ExpressionNode {
   public boolean doesAccessVariable(final Variable var) {
     ExpressionNode rcvr = getRcvr();
     Local local;
-    if (rcvr instanceof LocalVariableNode) {
-      local = ((LocalVariableNode) rcvr).getLocal();
-    } else if (rcvr instanceof NonLocalVariableNode) {
-      local = ((NonLocalVariableNode) rcvr).getLocal();
+    if (rcvr instanceof GenericVariableNode) {
+      local = ((GenericVariableNode) rcvr).getLocal();
     } else {
       return false;
     }

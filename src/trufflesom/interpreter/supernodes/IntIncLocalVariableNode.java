@@ -8,10 +8,10 @@ import com.oracle.truffle.api.nodes.Node;
 import bdt.inlining.ScopeAdaptationVisitor;
 import bdt.inlining.ScopeAdaptationVisitor.ScopeElement;
 import trufflesom.compiler.Variable.Local;
-import trufflesom.interpreter.nodes.LocalVariableNode;
+import trufflesom.interpreter.nodes.GenericVariableNode;
 
 
-public abstract class IntIncLocalVariableNode extends LocalVariableNode {
+public abstract class IntIncLocalVariableNode extends GenericVariableNode {
 
   private final long incValue;
 

@@ -47,6 +47,8 @@ public abstract class GenericVariableNode extends NoPreEvalExprNode implements I
         return local;
     }
 
+    public int getContextLevel() { return contextLevel; }
+
     // This is a copy of ContextualNode.determineContext, extended to account for the case where the context is 0 (a local variable)
     public MaterializedFrame determineContextMaybeLocal(VirtualFrame frame) {
         if (this.contextLevel == 0) {
