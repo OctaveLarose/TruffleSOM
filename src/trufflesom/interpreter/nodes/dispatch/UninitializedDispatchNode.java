@@ -22,39 +22,8 @@ public final class UninitializedDispatchNode extends AbstractDispatchNode {
   }
 
   private AbstractDispatchNode specialize(final Object[] arguments) {
-    // Determine position in dispatch node chain, i.e., size of inline cache
-    Node i = this;
-    int chainDepth = 0;
-    while (i.getParent() instanceof AbstractDispatchNode) {
-      i = i.getParent();
-      chainDepth++;
-    }
-    AbstractDispatchNode first = (AbstractDispatchNode) i;
-
-    Object rcvr = arguments[0];
-    assert rcvr != null;
-
-    if (rcvr instanceof SObject) {
-      SObject r = (SObject) rcvr;
-      if (r.updateLayoutToMatchClass() && first != this) { // if first is this, short cut and
-                                                           // directly continue...
-        return first;
-      }
-    }
-
-    if (chainDepth < INLINE_CACHE_SIZE) {
-      UninitializedDispatchNode newChainEnd = new UninitializedDispatchNode(selector);
-      AbstractDispatchNode node = createDispatch(rcvr, selector, newChainEnd);
-
-      replace(node);
-      newChainEnd.notifyAsInserted();
-      return node;
-    }
-
-    // the chain is longer than the maximum defined by INLINE_CACHE_SIZE and
-    // thus, this callsite is considered to be megaprophic, and we generalize it.
     GenericDispatchNode genericReplacement = new GenericDispatchNode(selector);
-    first.replace(genericReplacement);
+    this.replace(genericReplacement);
     return genericReplacement;
   }
 
