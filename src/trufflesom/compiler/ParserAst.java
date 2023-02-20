@@ -278,9 +278,14 @@ public class ParserAst extends Parser<MethodGenerationContext> {
 
         assert ((GenericVariableReadNode) receiver).getContextLevel() == ((GenericVariableReadNode) operand).getContextLevel();
         if (rcvrLocal.equals(opLocal)) {
-          return NonLocalVariableSquareNodeGen.create(
-              ((GenericVariableReadNode) receiver).getContextLevel(), rcvrLocal)
-                                              .initialize(coordWithL);
+          if (((GenericVariableReadNode) receiver).getContextLevel() == 0) {
+            return LocalVariableSquareNodeGen.create(rcvrLocal)
+                    .initialize(coordWithL);
+          } else {
+            return NonLocalVariableSquareNodeGen.create(
+                            ((GenericVariableReadNode) receiver).getContextLevel(), rcvrLocal)
+                    .initialize(coordWithL);
+          }
         }
       }
     } else if (binSelector.equals("=")) {
