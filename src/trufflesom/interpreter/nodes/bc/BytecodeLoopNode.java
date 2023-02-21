@@ -78,6 +78,7 @@ import static trufflesom.interpreter.bc.Bytecodes.SEND;
 import static trufflesom.interpreter.bc.Bytecodes.SUPER_SEND;
 import static trufflesom.interpreter.bc.Bytecodes.getBytecodeLength;
 import static trufflesom.interpreter.bc.Bytecodes.getBytecodeName;
+import trufflesom.vm.Universe;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -303,10 +304,48 @@ public class BytecodeLoopNode extends NoPreEvalExprNode implements ScopeReferenc
   }
 
   @InliningCutoff
-  private void missingBytecode(final byte bytecode) {
+  private Object handleEscapedBlock(final VirtualFrame frame, final EscapedBlockException e) {
     CompilerDirectives.transferToInterpreter();
+    VirtualFrame outer = determineOuterContext(frame);
+    SObject sendOfBlockValueMsg = (SObject) outer.getArguments()[0];
+    return SAbstractObject.sendEscapedBlock(sendOfBlockValueMsg, e.getBlock());
+  }
+
+  @InliningCutoff
+  private Object quickenAndEvaluate(final VirtualFrame frame, final int bytecodeIndex,
+      final RespecializeException r, final Object rcvr) {
+    CompilerDirectives.transferToInterpreterAndInvalidate();
+    quickenBytecode(bytecodeIndex, Q_SEND, r.send);
+    return r.send.doPreEvaluated(frame, new Object[] {rcvr});
+  }
+
+  @InliningCutoff
+  private Object quickenAndEvaluate(final VirtualFrame frame, final int bytecodeIndex,
+      final RespecializeException r, final Object rcvr, final Object arg) {
+    CompilerDirectives.transferToInterpreterAndInvalidate();
+    quickenBytecode(bytecodeIndex, Q_SEND, r.send);
+    return r.send.doPreEvaluated(frame, new Object[] {rcvr, arg});
+  }
+
+  @InliningCutoff
+  private Object quickenAndEvaluate(final VirtualFrame frame, final int bytecodeIndex,
+      final RespecializeException r, final Object rcvr, final Object arg1, final Object arg2) {
+    CompilerDirectives.transferToInterpreterAndInvalidate();
+    quickenBytecode(bytecodeIndex, Q_SEND, r.send);
+    return r.send.doPreEvaluated(frame, new Object[] {rcvr, arg1, arg2});
+  }
+
+  @InliningCutoff
+  private void missingBytecode(final byte bytecode) {
+    CompilerDirectives.transferToInterpreterAndInvalidate();
     throw new NotYetImplementedException("The bytecode " + bytecode + " ("
         + Bytecodes.getBytecodeName(bytecode) + ") is not yet implemented.");
+  }
+
+  @InliningCutoff
+  private void printBytecode(final byte bytecode) {
+    CompilerDirectives.transferToInterpreter();
+    Universe.println(Bytecodes.getBytecodeName(bytecode));
   }
 
   @Override
@@ -672,13 +711,8 @@ public class BytecodeLoopNode extends NoPreEvalExprNode implements ScopeReferenc
             stackPointer = -1;
           } catch (EscapedBlockException e) {
             CompilerDirectives.transferToInterpreter();
-            VirtualFrame outer = determineOuterContext(frame);
-            SObject sendOfBlockValueMsg = (SObject) outer.getArguments()[0];
-            Object result =
-                SAbstractObject.sendEscapedBlock(sendOfBlockValueMsg, e.getBlock());
-
             stackPointer += 1;
-            stack[stackPointer] = result;
+            stack[stackPointer] = handleEscapedBlock(frame, e);
             bytecodeIndex += Bytecodes.LEN_TWO_ARGS;
           }
           break;
@@ -710,14 +744,8 @@ public class BytecodeLoopNode extends NoPreEvalExprNode implements ScopeReferenc
             stackPointer = -1;
           } catch (EscapedBlockException e) {
             CompilerDirectives.transferToInterpreter();
-            VirtualFrame outer = determineOuterContext(frame);
-            SObject sendOfBlockValueMsg = (SObject) outer.getArguments()[0];
-
-            Object result =
-                SAbstractObject.sendEscapedBlock(sendOfBlockValueMsg, e.getBlock());
-
             stackPointer += 1;
-            stack[stackPointer] = result;
+            stack[stackPointer] = handleEscapedBlock(frame, e);
             bytecodeIndex += Bytecodes.LEN_TWO_ARGS;
           }
           break;
@@ -1014,10 +1042,7 @@ public class BytecodeLoopNode extends NoPreEvalExprNode implements ScopeReferenc
             stackPointer = -1;
           } catch (EscapedBlockException e) {
             CompilerDirectives.transferToInterpreter();
-            VirtualFrame outer = determineOuterContext(frame);
-            SObject sendOfBlockValueMsg = (SObject) outer.getArguments()[0];
-            stack[stackPointer] =
-                SAbstractObject.sendEscapedBlock(sendOfBlockValueMsg, e.getBlock());
+            stack[stackPointer] = handleEscapedBlock(frame, e);
             bytecodeIndex += Bytecodes.LEN_TWO_ARGS;
           }
 
@@ -1036,15 +1061,11 @@ public class BytecodeLoopNode extends NoPreEvalExprNode implements ScopeReferenc
             stackPointer = -1;
           } catch (EscapedBlockException e) {
             CompilerDirectives.transferToInterpreter();
-            VirtualFrame outer = determineOuterContext(frame);
-            SObject sendOfBlockValueMsg = (SObject) outer.getArguments()[0];
-            stack[stackPointer] =
-                SAbstractObject.sendEscapedBlock(sendOfBlockValueMsg, e.getBlock());
+            stack[stackPointer] = handleEscapedBlock(frame, e);
             bytecodeIndex += Bytecodes.LEN_TWO_ARGS;
           } catch (RespecializeException r) {
             CompilerDirectives.transferToInterpreterAndInvalidate();
-            quickenBytecode(bytecodeIndex, Q_SEND, r.send);
-            stack[stackPointer] = r.send.doPreEvaluated(frame, new Object[] {rcvr});
+            stack[stackPointer] = quickenAndEvaluate(frame, bytecodeIndex, r, rcvr);
             bytecodeIndex += Bytecodes.LEN_TWO_ARGS;
           }
           break;
@@ -1065,15 +1086,11 @@ public class BytecodeLoopNode extends NoPreEvalExprNode implements ScopeReferenc
             stackPointer = -1;
           } catch (EscapedBlockException e) {
             CompilerDirectives.transferToInterpreter();
-            VirtualFrame outer = determineOuterContext(frame);
-            SObject sendOfBlockValueMsg = (SObject) outer.getArguments()[0];
-            stack[stackPointer] =
-                SAbstractObject.sendEscapedBlock(sendOfBlockValueMsg, e.getBlock());
+            stack[stackPointer] = handleEscapedBlock(frame, e);
             bytecodeIndex += Bytecodes.LEN_TWO_ARGS;
           } catch (RespecializeException r) {
             CompilerDirectives.transferToInterpreterAndInvalidate();
-            quickenBytecode(bytecodeIndex, Q_SEND, r.send);
-            stack[stackPointer] = r.send.doPreEvaluated(frame, new Object[] {rcvr, arg});
+            stack[stackPointer] = quickenAndEvaluate(frame, bytecodeIndex, r, rcvr, arg);
             bytecodeIndex += Bytecodes.LEN_TWO_ARGS;
           }
           break;
@@ -1095,16 +1112,12 @@ public class BytecodeLoopNode extends NoPreEvalExprNode implements ScopeReferenc
             stackPointer = -1;
           } catch (EscapedBlockException e) {
             CompilerDirectives.transferToInterpreter();
-            VirtualFrame outer = determineOuterContext(frame);
-            SObject sendOfBlockValueMsg = (SObject) outer.getArguments()[0];
-            stack[stackPointer] =
-                SAbstractObject.sendEscapedBlock(sendOfBlockValueMsg, e.getBlock());
+            stack[stackPointer] = handleEscapedBlock(frame, e);
             bytecodeIndex += Bytecodes.LEN_TWO_ARGS;
           } catch (RespecializeException r) {
             CompilerDirectives.transferToInterpreterAndInvalidate();
-            quickenBytecode(bytecodeIndex, Q_SEND, r.send);
             stack[stackPointer] =
-                r.send.doPreEvaluated(frame, new Object[] {rcvr, arg1, arg2});
+                quickenAndEvaluate(frame, bytecodeIndex, r, rcvr, arg1, arg2);
             bytecodeIndex += Bytecodes.LEN_TWO_ARGS;
           }
           break;
