@@ -63,7 +63,6 @@ import static trufflesom.interpreter.bc.Bytecodes.PUSH_LOCAL_1;
 import static trufflesom.interpreter.bc.Bytecodes.PUSH_LOCAL_2;
 import static trufflesom.interpreter.bc.Bytecodes.PUSH_NIL;
 import static trufflesom.interpreter.bc.Bytecodes.PUSH_SELF;
-import static trufflesom.interpreter.bc.Bytecodes.Q_PUSH_GLOBAL;
 import static trufflesom.interpreter.bc.Bytecodes.Q_SEND;
 import static trufflesom.interpreter.bc.Bytecodes.Q_SEND_1;
 import static trufflesom.interpreter.bc.Bytecodes.Q_SEND_2;
@@ -264,20 +263,6 @@ public class BytecodeLoopNode extends NoPreEvalExprNode implements ScopeReferenc
   @InliningCutoff
   private Object throwIllegaleState() {
     throw new IllegalStateException("Not all required fields initialized in bytecode loop.");
-  }
-
-  @InliningCutoff
-  private Object quickenAndExecuteGlobal(final VirtualFrame frame, final int bytecodeIndex) {
-    CompilerDirectives.transferToInterpreterAndInvalidate();
-
-    byte literalIdx = bytecodesField[bytecodeIndex + 1];
-    SSymbol globalName = (SSymbol) literalsAndConstantsField[literalIdx];
-
-    GlobalNode quick =
-        GlobalNode.create(globalName, null).initialize(sourceCoord);
-    quickenBytecode(bytecodeIndex, Q_PUSH_GLOBAL, quick);
-
-    return quick.executeGeneric(frame);
   }
 
   @InliningCutoff
@@ -578,7 +563,12 @@ public class BytecodeLoopNode extends NoPreEvalExprNode implements ScopeReferenc
 
         case PUSH_GLOBAL: {
           stackPointer += 1;
-          stack[stackPointer] = quickenAndExecuteGlobal(frame, bytecodeIndex);
+
+          CompilerDirectives.transferToInterpreterAndInvalidate();
+          byte literalIdx = bytecodesField[bytecodeIndex + 1];
+          SSymbol globalName = (SSymbol) literalsAndConstantsField[literalIdx];
+          GlobalNode quick = GlobalNode.create(globalName, null).initialize(sourceCoord);
+          stack[stackPointer] = quick.executeGeneric(frame);
           bytecodeIndex += Bytecodes.LEN_TWO_ARGS;
           break;
         }
@@ -1016,13 +1006,6 @@ public class BytecodeLoopNode extends NoPreEvalExprNode implements ScopeReferenc
           if (CompilerDirectives.inInterpreter()) {
             backBranchesTaken += 1;
           }
-          break;
-        }
-
-        case Q_PUSH_GLOBAL: {
-          stackPointer += 1;
-          stack[stackPointer] = ((GlobalNode) quickened[bytecodeIndex]).executeGeneric(frame);
-          bytecodeIndex += Bytecodes.LEN_TWO_ARGS;
           break;
         }
 
@@ -1771,11 +1754,6 @@ public class BytecodeLoopNode extends NoPreEvalExprNode implements ScopeReferenc
         case JUMP2_ON_TRUE_POP:
         case JUMP2_ON_FALSE_POP:
         case JUMP2_BACKWARDS: {
-          break;
-        }
-
-        case Q_PUSH_GLOBAL: {
-          bytecodes[i] = PUSH_GLOBAL;
           break;
         }
 
