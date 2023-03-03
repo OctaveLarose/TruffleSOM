@@ -133,7 +133,7 @@ public final class Primitives extends PrimitiveLoader<ExpressionNode, SSymbol> {
 
   static {
     specializer = initSpecializers();
-    inlinableNodes = new InlinableNodes<>(SymbolTable.SymbolProvider, null, getInlinableFactories());
+    inlinableNodes = new InlinableNodes<>(SymbolTable.SymbolProvider, null, null);
     Current = new Primitives();
   }
 
