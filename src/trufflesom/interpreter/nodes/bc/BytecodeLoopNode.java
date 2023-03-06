@@ -690,7 +690,7 @@ public class BytecodeLoopNode extends NoPreEvalExprNode implements ScopeReferenc
 
         case SEND: {
           try {
-            CompilerDirectives.transferToInterpreterAndInvalidate();
+//            CompilerDirectives.transferToInterpreterAndInvalidate();
             byte literalIdx = bytecodes[bytecodeIndex + 1];
             SSymbol signature = (SSymbol) literalsAndConstants[literalIdx];
             int numberOfArguments = signature.getNumberOfSignatureArguments();
@@ -700,8 +700,11 @@ public class BytecodeLoopNode extends NoPreEvalExprNode implements ScopeReferenc
                 numberOfArguments);
             stackPointer -= numberOfArguments;
 
-            Object result = specializeSendBytecode(frame, bytecodeIndex, signature,
-                numberOfArguments, callArgs);
+            AbstractMessageSendNode quick =
+                    MessageSendNode.createGenericNary(signature, null, sourceCoord);
+            quickenedField[bytecodeIndex] = insert(quick);
+
+            Object result = quick.doPreEvaluated(frame, callArgs);
 
             stackPointer += 1;
             stack[stackPointer] = result;
