@@ -690,7 +690,7 @@ public class BytecodeLoopNode extends NoPreEvalExprNode implements ScopeReferenc
 
         case SEND: {
           try {
-//            CompilerDirectives.transferToInterpreterAndInvalidate();
+            CompilerDirectives.transferToInterpreterAndInvalidate();
             byte literalIdx = bytecodes[bytecodeIndex + 1];
             SSymbol signature = (SSymbol) literalsAndConstants[literalIdx];
             int numberOfArguments = signature.getNumberOfSignatureArguments();
