@@ -735,7 +735,7 @@ public class BytecodeLoopNode extends NoPreEvalExprNode implements ScopeReferenc
 
             PreevaluatedExpression quick = MessageSendNode.createSuperSend(
                 (SClass) getHolder().getSuperClass(), signature, null, sourceCoord);
-            quickenBytecode(bytecodeIndex, Q_SEND, (Node) quick);
+            quickenedField[bytecodeIndex] = insert((Node) quick);
 
             Object result = quick.doPreEvaluated(frame, callArgs);
 
@@ -1028,7 +1028,7 @@ public class BytecodeLoopNode extends NoPreEvalExprNode implements ScopeReferenc
           bytecodeIndex += Bytecodes.LEN_TWO_ARGS;
           break;
         }
-        
+
         default:
           missingBytecode(bytecode);
       }
