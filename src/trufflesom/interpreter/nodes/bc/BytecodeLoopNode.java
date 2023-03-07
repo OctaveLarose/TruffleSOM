@@ -565,10 +565,14 @@ public class BytecodeLoopNode extends NoPreEvalExprNode implements ScopeReferenc
           stackPointer += 1;
 
           CompilerDirectives.transferToInterpreterAndInvalidate();
+
           byte literalIdx = bytecodesField[bytecodeIndex + 1];
           SSymbol globalName = (SSymbol) literalsAndConstantsField[literalIdx];
+
           GlobalNode quick = GlobalNode.create(globalName, null).initialize(sourceCoord);
+          quickened[bytecodeIndex] = insert(quick); // something interesting: we add it to the quickened array, but that's only so it has a parent and therefore can specialize itself
           stack[stackPointer] = quick.executeGeneric(frame);
+
           bytecodeIndex += Bytecodes.LEN_TWO_ARGS;
           break;
         }
