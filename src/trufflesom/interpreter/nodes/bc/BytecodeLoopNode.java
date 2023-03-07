@@ -690,21 +690,27 @@ public class BytecodeLoopNode extends NoPreEvalExprNode implements ScopeReferenc
 
         case SEND: {
           try {
-            CompilerDirectives.transferToInterpreterAndInvalidate();
             byte literalIdx = bytecodes[bytecodeIndex + 1];
             SSymbol signature = (SSymbol) literalsAndConstants[literalIdx];
             int numberOfArguments = signature.getNumberOfSignatureArguments();
 
             Object[] callArgs = new Object[numberOfArguments];
             System.arraycopy(stack, stackPointer - numberOfArguments + 1, callArgs, 0,
-                numberOfArguments);
+                    numberOfArguments);
             stackPointer -= numberOfArguments;
 
-            AbstractMessageSendNode quick =
-                    MessageSendNode.createGenericNary(signature, null, sourceCoord);
-            quickenedField[bytecodeIndex] = insert(quick);
+            Object result;
+            if (quickenedField[bytecodeIndex] != null) {
+              AbstractMessageSendNode node = (AbstractMessageSendNode) quickened[bytecodeIndex];
+              result = node.doPreEvaluated(frame, callArgs);
+            } else {
+              CompilerDirectives.transferToInterpreterAndInvalidate();
 
-            Object result = quick.doPreEvaluated(frame, callArgs);
+              AbstractMessageSendNode quick =
+                      MessageSendNode.createGenericNary(signature, null, sourceCoord);
+              quickenedField[bytecodeIndex] = insert(quick);
+              result = quick.doPreEvaluated(frame, callArgs);
+            }
 
             stackPointer += 1;
             stack[stackPointer] = result;
@@ -722,7 +728,6 @@ public class BytecodeLoopNode extends NoPreEvalExprNode implements ScopeReferenc
         }
 
         case SUPER_SEND: {
-          CompilerDirectives.transferToInterpreterAndInvalidate();
           try {
             byte literalIdx = bytecodes[bytecodeIndex + 1];
             SSymbol signature = (SSymbol) literalsAndConstants[literalIdx];
@@ -730,14 +735,21 @@ public class BytecodeLoopNode extends NoPreEvalExprNode implements ScopeReferenc
 
             Object[] callArgs = new Object[numberOfArguments];
             System.arraycopy(stack, stackPointer - numberOfArguments + 1, callArgs, 0,
-                numberOfArguments);
+                    numberOfArguments);
             stackPointer -= numberOfArguments;
 
-            PreevaluatedExpression quick = MessageSendNode.createSuperSend(
-                (SClass) getHolder().getSuperClass(), signature, null, sourceCoord);
-            quickenedField[bytecodeIndex] = insert((Node) quick);
+            Object result;
+            if (quickenedField[bytecodeIndex] != null) {
+              AbstractMessageSendNode node = (AbstractMessageSendNode) quickened[bytecodeIndex];
+              result = node.doPreEvaluated(frame, callArgs);
+            } else {
+              CompilerDirectives.transferToInterpreterAndInvalidate();
 
-            Object result = quick.doPreEvaluated(frame, callArgs);
+              PreevaluatedExpression quick = MessageSendNode.createSuperSend(
+                      (SClass) getHolder().getSuperClass(), signature, null, sourceCoord);
+              quickenedField[bytecodeIndex] = insert((Node) quick);
+              result = quick.doPreEvaluated(frame, callArgs);
+            }
 
             stackPointer += 1;
             stack[stackPointer] = result;
