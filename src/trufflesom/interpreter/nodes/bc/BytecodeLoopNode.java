@@ -77,6 +77,10 @@ import static trufflesom.interpreter.bc.Bytecodes.SEND;
 import static trufflesom.interpreter.bc.Bytecodes.SUPER_SEND;
 import static trufflesom.interpreter.bc.Bytecodes.getBytecodeLength;
 import static trufflesom.interpreter.bc.Bytecodes.getBytecodeName;
+import static trufflesom.vm.Globals.getGlobalsAssociation;
+
+import trufflesom.vm.Globals;
+import trufflesom.vm.Universe;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -564,14 +568,23 @@ public class BytecodeLoopNode extends NoPreEvalExprNode implements ScopeReferenc
         case PUSH_GLOBAL: {
           stackPointer += 1;
 
-          CompilerDirectives.transferToInterpreterAndInvalidate();
-
           byte literalIdx = bytecodesField[bytecodeIndex + 1];
           SSymbol globalName = (SSymbol) literalsAndConstantsField[literalIdx];
 
-          GlobalNode quick = GlobalNode.create(globalName, null).initialize(sourceCoord);
-          quickened[bytecodeIndex] = insert(quick); // something interesting: we add it to the quickened array, but that's only so it has a parent and therefore can specialize itself
-          stack[stackPointer] = quick.executeGeneric(frame);
+          Globals.Association assoc = getGlobalsAssociation(globalName);
+          if (assoc != null) {
+            stack[stackPointer] = assoc.getValue();
+          } else {
+            CompilerDirectives.transferToInterpreterAndInvalidate();
+            CompilerAsserts.neverPartOfCompilation();
+
+            Object self = frame.getArguments()[0];
+            while (self instanceof SBlock) {
+              self = ((SBlock) self).getOuterSelf();
+            }
+
+            stack[stackPointer] = SAbstractObject.sendUnknownGlobal(self, globalName);
+          }
 
           bytecodeIndex += Bytecodes.LEN_TWO_ARGS;
           break;
