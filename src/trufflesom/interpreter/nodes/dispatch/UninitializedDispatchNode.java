@@ -4,20 +4,19 @@ import static com.oracle.truffle.api.CompilerDirectives.transferToInterpreterAnd
 
 import com.oracle.truffle.api.CallTarget;
 import com.oracle.truffle.api.frame.VirtualFrame;
-import com.oracle.truffle.api.nodes.Node;
 
 import bdt.primitives.nodes.PreevaluatedExpression;
 import trufflesom.interpreter.Types;
 import trufflesom.vmobjects.SClass;
 import trufflesom.vmobjects.SInvokable;
-import trufflesom.vmobjects.SObject;
 import trufflesom.vmobjects.SSymbol;
 
 
 public final class UninitializedDispatchNode extends AbstractDispatchNode {
   private final SSymbol selector;
 
-  public UninitializedDispatchNode(final SSymbol selector) {
+  // private so nothing uses it. there's no inline caching, everything must be a GenericDispatchNode
+  private UninitializedDispatchNode(final SSymbol selector) {
     this.selector = selector;
   }
 

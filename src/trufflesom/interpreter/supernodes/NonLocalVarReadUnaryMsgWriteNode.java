@@ -9,6 +9,7 @@ import bdt.inlining.ScopeAdaptationVisitor.ScopeElement;
 import trufflesom.compiler.Variable.Local;
 import trufflesom.interpreter.nodes.NonLocalVariableNode;
 import trufflesom.interpreter.nodes.dispatch.AbstractDispatchNode;
+import trufflesom.interpreter.nodes.dispatch.GenericDispatchNode;
 import trufflesom.interpreter.nodes.dispatch.UninitializedDispatchNode;
 import trufflesom.vmobjects.SSymbol;
 
@@ -22,7 +23,7 @@ public final class NonLocalVarReadUnaryMsgWriteNode extends NonLocalVariableNode
       final SSymbol selector) {
     super(contextLevel, local);
     assert selector.getNumberOfSignatureArguments() == 1;
-    this.dispatch = new UninitializedDispatchNode(selector);
+    this.dispatch = new GenericDispatchNode(selector);
     this.selector = selector;
   }
 

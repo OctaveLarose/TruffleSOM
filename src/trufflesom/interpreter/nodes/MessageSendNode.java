@@ -7,6 +7,7 @@ import com.oracle.truffle.api.nodes.DirectCallNode;
 import bdt.primitives.Specializer;
 import bdt.primitives.nodes.PreevaluatedExpression;
 import trufflesom.interpreter.nodes.ArgumentReadNode.LocalArgumentReadNode;
+import trufflesom.interpreter.nodes.dispatch.GenericDispatchNode;
 import trufflesom.interpreter.nodes.dispatch.UninitializedDispatchNode;
 import trufflesom.interpreter.supernodes.BinaryArgSendNode;
 import trufflesom.interpreter.supernodes.QuatArgSendNode;
@@ -41,7 +42,7 @@ public final class MessageSendNode {
 
   public static AbstractMessageSendNode createGenericUnary(final SSymbol selector,
       final ExpressionNode rcvrNode, final long coord) {
-    UninitializedDispatchNode dispatch = new UninitializedDispatchNode(selector);
+    GenericDispatchNode dispatch = new GenericDispatchNode(selector);
     if (rcvrNode != null && rcvrNode instanceof LocalArgumentReadNode) {
       int argIdx = ((LocalArgumentReadNode) rcvrNode).argumentIndex;
       return new UnaryArgSendNode(argIdx, selector, dispatch).initialize(coord);
@@ -53,7 +54,7 @@ public final class MessageSendNode {
 
   public static AbstractMessageSendNode createGenericBinary(final SSymbol selector,
       final ExpressionNode rcvrNode, final ExpressionNode arg1, final long coord) {
-    UninitializedDispatchNode dispatch = new UninitializedDispatchNode(selector);
+    GenericDispatchNode dispatch = new GenericDispatchNode(selector);
     if (rcvrNode != null && rcvrNode instanceof LocalArgumentReadNode) {
       int argIdx = ((LocalArgumentReadNode) rcvrNode).argumentIndex;
       return new BinaryArgSendNode(argIdx, arg1, selector, dispatch).initialize(coord);
@@ -66,7 +67,7 @@ public final class MessageSendNode {
   public static AbstractMessageSendNode createGenericTernary(final SSymbol selector,
       final ExpressionNode rcvrNode, final ExpressionNode arg1, final ExpressionNode arg2,
       final long coord) {
-    UninitializedDispatchNode dispatch = new UninitializedDispatchNode(selector);
+    GenericDispatchNode dispatch = new GenericDispatchNode(selector);
     if (rcvrNode != null && rcvrNode instanceof LocalArgumentReadNode) {
       int argIdx = ((LocalArgumentReadNode) rcvrNode).argumentIndex;
       return new TernaryArgSendNode(argIdx, arg1, arg2, selector, dispatch).initialize(coord);
@@ -79,7 +80,7 @@ public final class MessageSendNode {
   public static AbstractMessageSendNode createGenericQuat(final SSymbol selector,
       final ExpressionNode rcvrNode, final ExpressionNode arg1, final ExpressionNode arg2,
       final ExpressionNode arg3, final long coord) {
-    UninitializedDispatchNode dispatch = new UninitializedDispatchNode(selector);
+    GenericDispatchNode dispatch = new GenericDispatchNode(selector);
     if (rcvrNode != null && rcvrNode instanceof LocalArgumentReadNode) {
       int argIdx = ((LocalArgumentReadNode) rcvrNode).argumentIndex;
       return new QuatArgSendNode(argIdx, arg1, arg2, arg3, selector, dispatch).initialize(
@@ -94,7 +95,7 @@ public final class MessageSendNode {
   public static AbstractMessageSendNode createGenericNary(final SSymbol selector,
       final ExpressionNode[] argumentNodes, final long coord) {
     assert argumentNodes == null || argumentNodes.length > 4;
-    UninitializedDispatchNode dispatch = new UninitializedDispatchNode(selector);
+    GenericDispatchNode dispatch = new GenericDispatchNode(selector);
     return new GenericMessageSendNode(
         selector, argumentNodes, dispatch).initialize(coord);
   }

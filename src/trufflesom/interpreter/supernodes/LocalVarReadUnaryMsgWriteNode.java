@@ -8,6 +8,7 @@ import bdt.inlining.ScopeAdaptationVisitor.ScopeElement;
 import trufflesom.compiler.Variable.Local;
 import trufflesom.interpreter.nodes.LocalVariableNode;
 import trufflesom.interpreter.nodes.dispatch.AbstractDispatchNode;
+import trufflesom.interpreter.nodes.dispatch.GenericDispatchNode;
 import trufflesom.interpreter.nodes.dispatch.UninitializedDispatchNode;
 import trufflesom.vmobjects.SSymbol;
 
@@ -20,7 +21,7 @@ public final class LocalVarReadUnaryMsgWriteNode extends LocalVariableNode {
   public LocalVarReadUnaryMsgWriteNode(final Local local, final SSymbol selector) {
     super(local);
     assert selector.getNumberOfSignatureArguments() == 1;
-    this.dispatch = new UninitializedDispatchNode(selector);
+    this.dispatch = new GenericDispatchNode(selector);
     this.selector = selector;
   }
 
