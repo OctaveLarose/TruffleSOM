@@ -121,13 +121,12 @@ public abstract class GlobalNode extends ExpressionNode
 
     @Override
     public Object executeGeneric(final VirtualFrame frame) {
-      CompilerDirectives.transferToInterpreterAndInvalidate();
-
       // Get the global from the universe
       Association assoc = getGlobalsAssociation(globalName);
       if (assoc != null) {
         return assoc.getValue();
       } else {
+        CompilerDirectives.transferToInterpreterAndInvalidate();
         return executeUnknownGlobal(frame);
       }
     }
