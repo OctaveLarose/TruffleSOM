@@ -285,19 +285,19 @@ public class ParserBc extends Parser<BytecodeMethodGenContext> {
 
     String kwStr = kw.toString();
 
-    if (!isSuperSend) {
-      if (("ifTrue:".equals(kwStr) && mgenc.inlineIfTrueOrIfFalse(this, true)) ||
-          ("ifFalse:".equals(kwStr) && mgenc.inlineIfTrueOrIfFalse(this, false)) ||
-          ("ifTrue:ifFalse:".equals(kwStr) && mgenc.inlineIfTrueIfFalse(this, true)) ||
-          ("ifFalse:ifTrue:".equals(kwStr) && mgenc.inlineIfTrueIfFalse(this, false)) ||
-          ("whileTrue:".equals(kwStr) && mgenc.inlineWhileTrueOrFalse(this, true)) ||
-          ("whileFalse:".equals(kwStr) && mgenc.inlineWhileTrueOrFalse(this, false)) ||
-          ("or:".equals(kwStr) && mgenc.inlineAndOr(this, true)) ||
-          ("and:".equals(kwStr) && mgenc.inlineAndOr(this, false))) {
-        // all done
-        return;
-      }
-    }
+//    if (!isSuperSend) {
+//      if (("ifTrue:".equals(kwStr) && mgenc.inlineIfTrueOrIfFalse(this, true)) ||
+//          ("ifFalse:".equals(kwStr) && mgenc.inlineIfTrueOrIfFalse(this, false)) ||
+//          ("ifTrue:ifFalse:".equals(kwStr) && mgenc.inlineIfTrueIfFalse(this, true)) ||
+//          ("ifFalse:ifTrue:".equals(kwStr) && mgenc.inlineIfTrueIfFalse(this, false)) ||
+//          ("whileTrue:".equals(kwStr) && mgenc.inlineWhileTrueOrFalse(this, true)) ||
+//          ("whileFalse:".equals(kwStr) && mgenc.inlineWhileTrueOrFalse(this, false)) ||
+//          ("or:".equals(kwStr) && mgenc.inlineAndOr(this, true)) ||
+//          ("and:".equals(kwStr) && mgenc.inlineAndOr(this, false))) {
+//        // all done
+//        return;
+//      }
+//    }
 
     SSymbol msg = symbolFor(kwStr);
 
