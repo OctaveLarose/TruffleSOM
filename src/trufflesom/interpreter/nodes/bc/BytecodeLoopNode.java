@@ -115,11 +115,7 @@ import trufflesom.interpreter.Types;
 import trufflesom.interpreter.bc.Bytecodes;
 import trufflesom.interpreter.bc.RespecializeException;
 import trufflesom.interpreter.bc.RestartLoopException;
-import trufflesom.interpreter.nodes.AbstractMessageSendNode;
-import trufflesom.interpreter.nodes.ExpressionNode;
-import trufflesom.interpreter.nodes.GlobalNode;
-import trufflesom.interpreter.nodes.MessageSendNode;
-import trufflesom.interpreter.nodes.NoPreEvalExprNode;
+import trufflesom.interpreter.nodes.GenericMessageSendNode;
 import trufflesom.interpreter.nodes.literals.IntegerLiteralNode;
 import trufflesom.interpreter.nodes.literals.LiteralNode;
 import trufflesom.interpreter.nodes.nary.BinaryExpressionNode;
@@ -690,22 +686,30 @@ public class BytecodeLoopNode extends NoPreEvalExprNode implements ScopeReferenc
 
         case SEND: {
           try {
-            CompilerDirectives.transferToInterpreterAndInvalidate();
             byte literalIdx = bytecodes[bytecodeIndex + 1];
             SSymbol signature = (SSymbol) literalsAndConstants[literalIdx];
             int numberOfArguments = signature.getNumberOfSignatureArguments();
 
             Object[] callArgs = new Object[numberOfArguments];
             System.arraycopy(stack, stackPointer - numberOfArguments + 1, callArgs, 0,
-                numberOfArguments);
+                    numberOfArguments);
             stackPointer -= numberOfArguments;
 
-            Object result = specializeSendBytecode(frame, bytecodeIndex, signature,
-                numberOfArguments, callArgs);
+            Object result;
+            if (quickened[bytecodeIndex] != null) {
+              result = ((GenericMessageSendNode) quickened[bytecodeIndex]).doPreEvaluated(frame, callArgs);
+            } else {
+              CompilerDirectives.transferToInterpreterAndInvalidate();
+              GenericMessageSendNode quick = (GenericMessageSendNode) MessageSendNode.createGenericNary(signature, null, sourceCoord);
+
+              quickened[bytecodeIndex] = insert(quick);
+              result = quick.doPreEvaluated(frame, callArgs);
+            }
 
             stackPointer += 1;
             stack[stackPointer] = result;
             bytecodeIndex += Bytecodes.LEN_TWO_ARGS;
+
           } catch (RestartLoopException e) {
             bytecodeIndex = 0;
             stackPointer = -1;
