@@ -57,9 +57,9 @@ public class Bytecodes {
   public static final byte PUSH_CONSTANT_1 = 17;
   public static final byte PUSH_CONSTANT_2 = 18;
 
-  public static final byte PUSH_0   = 19;
-  public static final byte PUSH_1   = 20;
-  public static final byte PUSH_NIL = 21;
+  public static final byte PUSH_0   = 19; // removed
+  public static final byte PUSH_1   = 20; // removed
+  public static final byte PUSH_NIL = 21; // removed
 
   public static final byte PUSH_GLOBAL = 22;
 

@@ -309,7 +309,7 @@ public final class BytecodeGenerator {
 
   public static void emitPUSHCONSTANT(final BytecodeMethodGenContext mgenc, final Object lit,
       final ParserBc parser) throws ParseError {
-    if (lit instanceof Long) {
+   /* if (lit instanceof Long) {
       if (0 == (Long) lit) {
         emit1(mgenc, PUSH_0, 1);
         return;
@@ -324,7 +324,7 @@ public final class BytecodeGenerator {
     if (lit == Nil.nilObject) {
       emit1(mgenc, PUSH_NIL, 1);
       return;
-    }
+    }*/
 
     byte idx = mgenc.addLiteralIfAbsent(lit, parser);
     switch (idx) {

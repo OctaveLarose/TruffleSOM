@@ -555,26 +555,26 @@ public class BytecodeLoopNode extends NoPreEvalExprNode implements ScopeReferenc
           break;
         }
 
-        case PUSH_0: {
-          stackPointer += 1;
-          stack[stackPointer] = 0L;
-          bytecodeIndex += Bytecodes.LEN_NO_ARG;
-          break;
-        }
-
-        case PUSH_1: {
-          stackPointer += 1;
-          stack[stackPointer] = 1L;
-          bytecodeIndex += Bytecodes.LEN_NO_ARG;
-          break;
-        }
-
-        case PUSH_NIL: {
-          stackPointer += 1;
-          stack[stackPointer] = Nil.nilObject;
-          bytecodeIndex += Bytecodes.LEN_NO_ARG;
-          break;
-        }
+//        case PUSH_0: {
+//          stackPointer += 1;
+//          stack[stackPointer] = 0L;
+//          bytecodeIndex += Bytecodes.LEN_NO_ARG;
+//          break;
+//        }
+//
+//        case PUSH_1: {
+//          stackPointer += 1;
+//          stack[stackPointer] = 1L;
+//          bytecodeIndex += Bytecodes.LEN_NO_ARG;
+//          break;
+//        }
+//
+//        case PUSH_NIL: {
+//          stackPointer += 1;
+//          stack[stackPointer] = Nil.nilObject;
+//          bytecodeIndex += Bytecodes.LEN_NO_ARG;
+//          break;
+//        }
 
         case PUSH_GLOBAL: {
           stackPointer += 1;
@@ -1449,12 +1449,12 @@ public class BytecodeLoopNode extends NoPreEvalExprNode implements ScopeReferenc
           break;
         }
 
-        case PUSH_0:
-        case PUSH_1:
-        case PUSH_NIL: {
-          emit1(mgenc, bytecode, 1);
-          break;
-        }
+//        case PUSH_0:
+//        case PUSH_1:
+//        case PUSH_NIL: {
+//          emit1(mgenc, bytecode, 1);
+//          break;
+//        }
 
         case PUSH_GLOBAL: {
           byte literalIdx = bytecodes[i + 1];
