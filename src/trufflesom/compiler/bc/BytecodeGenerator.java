@@ -135,9 +135,9 @@ public final class BytecodeGenerator {
   }
 
   public static void emitRETURNLOCAL(final BytecodeMethodGenContext mgenc) {
-    if (!mgenc.optimizeReturnField()) {
+//    if (!mgenc.optimizeReturnField()) {
       emit1(mgenc, RETURN_LOCAL, 0);
-    }
+//    }
   }
 
   public static void emitRETURNSELF(final BytecodeMethodGenContext mgenc) {
@@ -150,17 +150,17 @@ public final class BytecodeGenerator {
   }
 
   public static void emitRETURNFIELD(final BytecodeMethodGenContext mgenc, final byte idx) {
-    if (idx == 0) {
-      emit1(mgenc, RETURN_FIELD_0, 0);
-      return;
-    } else if (idx == 1) {
-      emit1(mgenc, RETURN_FIELD_1, 0);
-      return;
-    } else if (idx == 2) {
-      emit1(mgenc, RETURN_FIELD_2, 0);
-      return;
-    }
-    throw new IllegalArgumentException("RETURN_FIELD bytecode does not support idx=" + idx);
+//    if (idx == 0) {
+//      emit1(mgenc, RETURN_FIELD_0, 0);
+//      return;
+//    } else if (idx == 1) {
+//      emit1(mgenc, RETURN_FIELD_1, 0);
+//      return;
+//    } else if (idx == 2) {
+//      emit1(mgenc, RETURN_FIELD_2, 0);
+//      return;
+//    }
+    throw new IllegalArgumentException("RETURN_FIELD should have been removed entirely; idx=" + idx);
   }
 
   public static void emitDUP(final BytecodeMethodGenContext mgenc) {
