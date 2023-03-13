@@ -142,8 +142,11 @@ public final class BytecodeGenerator {
   }
 
   public static void emitRETURNSELF(final BytecodeMethodGenContext mgenc) {
-    mgenc.optimizeDupPopPopSequence();
-    emit1(mgenc, RETURN_SELF, 0);
+//    mgenc.optimizeDupPopPopSequence();
+    emitPOP(mgenc);
+    emitPUSHARGUMENT(mgenc, (byte) 0, (byte) 0);
+    emitRETURNLOCAL(mgenc);
+//    emit1(mgenc, RETURN_SELF, 0);
   }
 
   public static void emitRETURNNONLOCAL(final BytecodeMethodGenContext mgenc) {

@@ -81,7 +81,7 @@ public class Bytecodes {
 
   public static final byte RETURN_LOCAL     = 34;
   public static final byte RETURN_NON_LOCAL = 35;
-  public static final byte RETURN_SELF      = 36;
+  public static final byte RETURN_SELF      = 36; // removed
 
   public static final byte RETURN_FIELD_0 = 37; // removed
   public static final byte RETURN_FIELD_1 = 38; // removed
