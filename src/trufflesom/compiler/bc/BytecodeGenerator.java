@@ -104,9 +104,10 @@ public final class BytecodeGenerator {
 
   public static void emitINCFIELDPUSH(final BytecodeMethodGenContext mgenc,
       final byte fieldIdx, final byte ctx) {
-    assert fieldIdx >= 0;
-    assert ctx >= 0;
-    emit3(mgenc, INC_FIELD_PUSH, fieldIdx, ctx, 1);
+    throw new RuntimeException("superinstructions removed: should never be reached\");");
+//    assert fieldIdx >= 0;
+//    assert ctx >= 0;
+//    emit3(mgenc, INC_FIELD_PUSH, fieldIdx, ctx, 1);
   }
 
   public static void emitPOP(final BytecodeMethodGenContext mgenc) {
@@ -270,9 +271,9 @@ public final class BytecodeGenerator {
       final SSymbol fieldName) {
     byte fieldIdx = mgenc.getFieldIndex(fieldName);
     byte ctx = mgenc.getMaxContextLevel();
-    if (!mgenc.optimizeIncField(fieldIdx, ctx)) {
+//    if (!mgenc.optimizeIncField(fieldIdx, ctx)) {
       emitPOPFIELD(mgenc, fieldIdx, ctx);
-    }
+//    }
   }
 
   public static void emitPOPFIELD(final BytecodeMethodGenContext mgenc, final byte fieldIdx,

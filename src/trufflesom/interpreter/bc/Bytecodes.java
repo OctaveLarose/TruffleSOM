@@ -83,15 +83,15 @@ public class Bytecodes {
   public static final byte RETURN_NON_LOCAL = 35;
   public static final byte RETURN_SELF      = 36;
 
-  public static final byte RETURN_FIELD_0 = 37;
-  public static final byte RETURN_FIELD_1 = 38;
-  public static final byte RETURN_FIELD_2 = 39;
+  public static final byte RETURN_FIELD_0 = 37; // removed
+  public static final byte RETURN_FIELD_1 = 38; // removed
+  public static final byte RETURN_FIELD_2 = 39; // removed
 
   public static final byte INC = 40;
   public static final byte DEC = 41;
 
-  public static final byte INC_FIELD      = 42;
-  public static final byte INC_FIELD_PUSH = 43;
+  public static final byte INC_FIELD      = 42;  // removed
+  public static final byte INC_FIELD_PUSH = 43;  // removed
 
   public static final byte JUMP                  = 44;
   public static final byte JUMP_ON_TRUE_TOP_NIL  = 45;

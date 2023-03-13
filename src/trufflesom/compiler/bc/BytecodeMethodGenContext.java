@@ -275,15 +275,16 @@ public class BytecodeMethodGenContext extends MethodGenerationContext {
       last4Bytecodes[1] = last4Bytecodes[2];
       last4Bytecodes[2] = DUP;
     } else if (last4Bytecodes[3] == INC_FIELD) {
+      throw new RuntimeException("superinstructions removed: should be unreachable");
       // we optimized the sequence to an INC_FIELD, which doesn't modify the stack
       // but since we need the value to return it from the block, we need to push it.
-      last4Bytecodes[3] = INC_FIELD_PUSH;
-
-      int bcOffset = bytecode.size() - 3;
-      assert Bytecodes.getBytecodeLength(INC_FIELD_PUSH) == 3;
-      assert Bytecodes.getBytecodeLength(INC_FIELD) == 3;
-      assert bytecode.get(bcOffset) == INC_FIELD;
-      bytecode.set(bcOffset, INC_FIELD_PUSH);
+//      last4Bytecodes[3] = INC_FIELD_PUSH;
+//
+//      int bcOffset = bytecode.size() - 3;
+//      assert Bytecodes.getBytecodeLength(INC_FIELD_PUSH) == 3;
+//      assert Bytecodes.getBytecodeLength(INC_FIELD) == 3;
+//      assert bytecode.get(bcOffset) == INC_FIELD;
+//      bytecode.set(bcOffset, INC_FIELD_PUSH);
     }
   }
 
@@ -590,9 +591,9 @@ public class BytecodeMethodGenContext extends MethodGenerationContext {
       return false;
     }
 
-    if (lastBytecodeIs(0, INC_FIELD_PUSH) != INVALID) {
-      return optimizeIncFieldPush();
-    }
+//    if (lastBytecodeIs(0, INC_FIELD_PUSH) != INVALID) {
+//      return optimizeIncFieldPush();
+//    }
 
     final byte popCandidate = lastBytecodeIsOneOf(0, POP_X_BYTECODES);
     if (popCandidate == INVALID) {
@@ -702,15 +703,16 @@ public class BytecodeMethodGenContext extends MethodGenerationContext {
   }
 
   private boolean optimizeIncFieldPush() {
-    assert Bytecodes.getBytecodeLength(INC_FIELD_PUSH) == 3;
-
-    int bcIdx = bytecode.size() - 3;
-    assert bytecode.get(bcIdx) == INC_FIELD_PUSH;
-
-    bytecode.set(bcIdx, INC_FIELD);
-    last4Bytecodes[3] = INC_FIELD;
-
-    return true;
+    throw new RuntimeException("superinstructions removed: should never be reached");
+//    assert Bytecodes.getBytecodeLength(INC_FIELD_PUSH) == 3;
+//
+//    int bcIdx = bytecode.size() - 3;
+//    assert bytecode.get(bcIdx) == INC_FIELD_PUSH;
+//
+//    bytecode.set(bcIdx, INC_FIELD);
+//    last4Bytecodes[3] = INC_FIELD;
+//
+//    return true;
   }
 
   /**

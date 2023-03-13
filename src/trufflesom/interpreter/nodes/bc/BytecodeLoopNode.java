@@ -770,30 +770,30 @@ public class BytecodeLoopNode extends NoPreEvalExprNode implements ScopeReferenc
           return arguments[0];
         }
 
-        case RETURN_FIELD_0: {
-          Node node = quickened[bytecodeIndex];
-          if (node == null) {
-            node = createRead(bytecodeIndex, 0);
-          }
-
-          return ((AbstractReadFieldNode) node).read((SObject) arguments[0]);
-        }
-        case RETURN_FIELD_1: {
-          Node node = quickened[bytecodeIndex];
-          if (node == null) {
-            node = createRead(bytecodeIndex, 1);
-          }
-
-          return ((AbstractReadFieldNode) node).read((SObject) arguments[0]);
-        }
-        case RETURN_FIELD_2: {
-          Node node = quickened[bytecodeIndex];
-          if (node == null) {
-            node = createRead(bytecodeIndex, 2);
-          }
-
-          return ((AbstractReadFieldNode) node).read((SObject) arguments[0]);
-        }
+//        case RETURN_FIELD_0: {
+//          Node node = quickened[bytecodeIndex];
+//          if (node == null) {
+//            node = createRead(bytecodeIndex, 0);
+//          }
+//
+//          return ((AbstractReadFieldNode) node).read((SObject) arguments[0]);
+//        }
+//        case RETURN_FIELD_1: {
+//          Node node = quickened[bytecodeIndex];
+//          if (node == null) {
+//            node = createRead(bytecodeIndex, 1);
+//          }
+//
+//          return ((AbstractReadFieldNode) node).read((SObject) arguments[0]);
+//        }
+//        case RETURN_FIELD_2: {
+//          Node node = quickened[bytecodeIndex];
+//          if (node == null) {
+//            node = createRead(bytecodeIndex, 2);
+//          }
+//
+//          return ((AbstractReadFieldNode) node).read((SObject) arguments[0]);
+//        }
 
         case INC: {
           Object top = stack[stackPointer];
@@ -832,54 +832,54 @@ public class BytecodeLoopNode extends NoPreEvalExprNode implements ScopeReferenc
           break;
         }
 
-        case INC_FIELD: {
-          byte fieldIdx = bytecodes[bytecodeIndex + 1];
-          byte contextIdx = bytecodes[bytecodeIndex + 2];
-
-          VirtualFrame currentOrContext = frame;
-          if (contextIdx > 0) {
-            currentOrContext = determineContext(currentOrContext, contextIdx);
-          }
-
-          SObject obj = (SObject) currentOrContext.getArguments()[0];
-
-          Node node = quickened[bytecodeIndex];
-          if (node == null) {
-            createAndDoIncrement(bytecodeIndex, fieldIdx, obj);
-            bytecodeIndex += Bytecodes.LEN_THREE_ARGS;
-            break;
-          }
-
-          ((IncrementLongFieldNode) node).increment(obj, 1);
-          bytecodeIndex += Bytecodes.LEN_THREE_ARGS;
-          break;
-        }
-
-        case INC_FIELD_PUSH: {
-          byte fieldIdx = bytecodes[bytecodeIndex + 1];
-          byte contextIdx = bytecodes[bytecodeIndex + 2];
-
-          VirtualFrame currentOrContext = frame;
-          if (contextIdx > 0) {
-            currentOrContext = determineContext(currentOrContext, contextIdx);
-          }
-
-          SObject obj = (SObject) currentOrContext.getArguments()[0];
-
-          Node node = quickened[bytecodeIndex];
-          if (node == null) {
-            stackPointer += 1;
-            stack[stackPointer] = createAndDoIncrement(bytecodeIndex, fieldIdx, obj);
-            bytecodeIndex += Bytecodes.LEN_THREE_ARGS;
-            break;
-          }
-
-          long value = ((IncrementLongFieldNode) node).increment(obj, 1);
-          stackPointer += 1;
-          stack[stackPointer] = value;
-          bytecodeIndex += Bytecodes.LEN_THREE_ARGS;
-          break;
-        }
+//        case INC_FIELD: {
+//          byte fieldIdx = bytecodes[bytecodeIndex + 1];
+//          byte contextIdx = bytecodes[bytecodeIndex + 2];
+//
+//          VirtualFrame currentOrContext = frame;
+//          if (contextIdx > 0) {
+//            currentOrContext = determineContext(currentOrContext, contextIdx);
+//          }
+//
+//          SObject obj = (SObject) currentOrContext.getArguments()[0];
+//
+//          Node node = quickened[bytecodeIndex];
+//          if (node == null) {
+//            createAndDoIncrement(bytecodeIndex, fieldIdx, obj);
+//            bytecodeIndex += Bytecodes.LEN_THREE_ARGS;
+//            break;
+//          }
+//
+//          ((IncrementLongFieldNode) node).increment(obj, 1);
+//          bytecodeIndex += Bytecodes.LEN_THREE_ARGS;
+//          break;
+//        }
+//
+//        case INC_FIELD_PUSH: {
+//          byte fieldIdx = bytecodes[bytecodeIndex + 1];
+//          byte contextIdx = bytecodes[bytecodeIndex + 2];
+//
+//          VirtualFrame currentOrContext = frame;
+//          if (contextIdx > 0) {
+//            currentOrContext = determineContext(currentOrContext, contextIdx);
+//          }
+//
+//          SObject obj = (SObject) currentOrContext.getArguments()[0];
+//
+//          Node node = quickened[bytecodeIndex];
+//          if (node == null) {
+//            stackPointer += 1;
+//            stack[stackPointer] = createAndDoIncrement(bytecodeIndex, fieldIdx, obj);
+//            bytecodeIndex += Bytecodes.LEN_THREE_ARGS;
+//            break;
+//          }
+//
+//          long value = ((IncrementLongFieldNode) node).increment(obj, 1);
+//          stackPointer += 1;
+//          stack[stackPointer] = value;
+//          bytecodeIndex += Bytecodes.LEN_THREE_ARGS;
+//          break;
+//        }
 
         case JUMP: {
           int offset = Byte.toUnsignedInt(bytecodes[bytecodeIndex + 1]);
