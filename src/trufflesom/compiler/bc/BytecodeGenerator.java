@@ -142,8 +142,8 @@ public final class BytecodeGenerator {
   }
 
   public static void emitRETURNSELF(final BytecodeMethodGenContext mgenc) {
-//    mgenc.optimizeDupPopPopSequence();
-    emitPOP(mgenc);
+    // TODO: the emitPOP should probably be uncommented...
+//    emitPOP(mgenc);
     emitPUSHARGUMENT(mgenc, (byte) 0, (byte) 0);
     emitRETURNLOCAL(mgenc);
 //    emit1(mgenc, RETURN_SELF, 0);

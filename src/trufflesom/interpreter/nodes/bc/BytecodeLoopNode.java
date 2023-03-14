@@ -765,10 +765,10 @@ public class BytecodeLoopNode extends NoPreEvalExprNode implements ScopeReferenc
           return Nil.nilObject;
         }
 
-        case RETURN_SELF: {
-          LoopNode.reportLoopCount(this, backBranchesTaken);
-          return arguments[0];
-        }
+//        case RETURN_SELF: {
+//          LoopNode.reportLoopCount(this, backBranchesTaken);
+//          return arguments[0];
+//        }
 
 //        case RETURN_FIELD_0: {
 //          Node node = quickened[bytecodeIndex];
@@ -1536,16 +1536,16 @@ public class BytecodeLoopNode extends NoPreEvalExprNode implements ScopeReferenc
           break;
         }
 
-        case RETURN_SELF: {
-          throw new IllegalStateException(
-              "I wouldn't expect RETURN_SELF ever to be inlined, since it's only generated in the most outer methods");
-        }
-
-        case RETURN_FIELD_0:
-        case RETURN_FIELD_1:
-        case RETURN_FIELD_2:
-          throw new IllegalStateException(
-              "I wouldn't expect RETURN_FIELD_n ever to be inlined, since it's only generated in the most outer methods");
+//        case RETURN_SELF: {
+//          throw new IllegalStateException(
+//              "I wouldn't expect RETURN_SELF ever to be inlined, since it's only generated in the most outer methods");
+//        }
+//
+//        case RETURN_FIELD_0:
+//        case RETURN_FIELD_1:
+//        case RETURN_FIELD_2:
+//          throw new IllegalStateException(
+//              "I wouldn't expect RETURN_FIELD_n ever to be inlined, since it's only generated in the most outer methods");
 
         case INC:
         case DEC: {
@@ -1744,10 +1744,10 @@ public class BytecodeLoopNode extends NoPreEvalExprNode implements ScopeReferenc
           break;
         }
 
-        case RETURN_SELF:
-        case RETURN_FIELD_0:
-        case RETURN_FIELD_1:
-        case RETURN_FIELD_2:
+//        case RETURN_SELF:
+//        case RETURN_FIELD_0:
+//        case RETURN_FIELD_1:
+//        case RETURN_FIELD_2:
         case INC:
         case DEC: {
           break;
