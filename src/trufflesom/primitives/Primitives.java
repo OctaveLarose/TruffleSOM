@@ -133,8 +133,7 @@ public final class Primitives extends PrimitiveLoader<ExpressionNode, SSymbol> {
 
   static {
     specializer = initSpecializers();
-    inlinableNodes = new InlinableNodes<>(SymbolTable.SymbolProvider, getInlinableNodes(), null);
-//    SymbolTable.SymbolProvider, getInlinableNodes(), getInlinableFactories());
+    inlinableNodes = new InlinableNodes<>(SymbolTable.SymbolProvider, getInlinableNodes(), getInlinableFactories());
     Current = new Primitives();
   }
 
@@ -254,9 +253,9 @@ public final class Primitives extends PrimitiveLoader<ExpressionNode, SSymbol> {
     add(allFactories, CosPrimFactory.getInstance());
     add(allFactories, DividePrimFactory.getInstance());
     add(allFactories, DoubleDivPrimFactory.getInstance());
-    add(allFactories, GreaterThanPrimFactory.getInstance());
+//    add(allFactories, GreaterThanPrimFactory.getInstance());
     add(allFactories, GreaterThanOrEqualPrimFactory.getInstance());
-    add(allFactories, LessThanOrEqualPrimFactory.getInstance());
+//    add(allFactories, LessThanOrEqualPrimFactory.getInstance());
     add(allFactories, LessThanPrimFactory.getInstance());
     add(allFactories, LogicAndPrimFactory.getInstance());
     add(allFactories, ModuloPrimFactory.getInstance());
@@ -281,7 +280,7 @@ public final class Primitives extends PrimitiveLoader<ExpressionNode, SSymbol> {
     add(allFactories, HashPrimFactory.getInstance());
     add(allFactories, LengthPrimFactory.getInstance());
     add(allFactories, NewObjectPrimFactory.getInstance());
-    add(allFactories, UnequalsPrimFactory.getInstance());
+//    add(allFactories, UnequalsPrimFactory.getInstance());
 
     add(allFactories, AndMessageNodeFactory.getInstance());
     add(allFactories, AndBoolMessageNodeFactory.getInstance());
