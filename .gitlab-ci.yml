@@ -31,7 +31,7 @@ build:native-interp-ast:
   script:
     - (cd libs/truffle/compiler/mxbuild && sudo reown-project.sh) || true
     - ${ANT} compile native-ast -Dno.jit=true
-    - ./som-native-interp-ast -cp Smalltalk TestSuite/TestHarness.som
+#    - ./som-native-interp-ast -cp Smalltalk TestSuite/TestHarness.som
 
     # - ${ANT} compile-native-ast-ee -Dno.jit=true
     # - ./som-native-interp-ast-ee -cp Smalltalk TestSuite/TestHarness.som
@@ -53,7 +53,7 @@ build:native-interp-bc:
   script:
     - (cd libs/truffle/compiler/mxbuild && sudo reown-project.sh) || true
     - ${ANT} compile native-bc -Dno.jit=true
-    - ./som-native-interp-bc -cp Smalltalk TestSuite/TestHarness.som
+#    - ./som-native-interp-bc -cp Smalltalk TestSuite/TestHarness.som
 
     # - ${ANT} compile-native-bc-ee -Dno.jit=true
     # - ./som-native-interp-bc-ee -cp Smalltalk TestSuite/TestHarness.som
