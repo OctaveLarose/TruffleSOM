@@ -253,7 +253,7 @@ public final class Primitives extends PrimitiveLoader<ExpressionNode, SSymbol> {
     add(allFactories, CosPrimFactory.getInstance());
     add(allFactories, DividePrimFactory.getInstance());
     add(allFactories, DoubleDivPrimFactory.getInstance());
-//    add(allFactories, GreaterThanPrimFactory.getInstance());
+    add(allFactories, GreaterThanPrimFactory.getInstance());
     add(allFactories, GreaterThanOrEqualPrimFactory.getInstance());
     add(allFactories, LessThanOrEqualPrimFactory.getInstance());
     add(allFactories, LessThanPrimFactory.getInstance());
@@ -275,12 +275,12 @@ public final class Primitives extends PrimitiveLoader<ExpressionNode, SSymbol> {
 
     add(allFactories, AsStringPrimFactory.getInstance());
     add(allFactories, EqualsEqualsPrimFactory.getInstance());
-    add(allFactories, UnequalUnequalPrimFactory.getInstance());
+//    add(allFactories, UnequalUnequalPrimFactory.getInstance());
     add(allFactories, EqualsPrimFactory.getInstance());
     add(allFactories, HashPrimFactory.getInstance());
     add(allFactories, LengthPrimFactory.getInstance());
     add(allFactories, NewObjectPrimFactory.getInstance());
-    add(allFactories, UnequalsPrimFactory.getInstance());
+//    add(allFactories, UnequalsPrimFactory.getInstance());
 
     add(allFactories, AndMessageNodeFactory.getInstance());
     add(allFactories, AndBoolMessageNodeFactory.getInstance());
