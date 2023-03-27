@@ -268,10 +268,10 @@ public final class Primitives extends PrimitiveLoader<ExpressionNode, SSymbol> {
     add(allFactories, AtPrimFactory.getInstance());
     add(allFactories, AtPutPrimFactory.getInstance());
     add(allFactories, CopyPrimFactory.getInstance());
-    add(allFactories, DoIndexesPrimFactory.getInstance());
-    add(allFactories, DoPrimFactory.getInstance());
+//    add(allFactories, DoIndexesPrimFactory.getInstance());
+//    add(allFactories, DoPrimFactory.getInstance());
     add(allFactories, NewPrimFactory.getInstance());
-    add(allFactories, PutAllNodeFactory.getInstance());
+//    add(allFactories, PutAllNodeFactory.getInstance());
 
     add(allFactories, AsStringPrimFactory.getInstance());
     add(allFactories, EqualsEqualsPrimFactory.getInstance());
