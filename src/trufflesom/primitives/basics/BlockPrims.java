@@ -88,6 +88,12 @@ public abstract class BlockPrims {
       return receiver;
     }
 
+    // added to fix the lowering of control structs?
+    @Specialization
+    public static final long doLong(final long receiver) {
+      return receiver;
+    }
+
     @Override
     public WrapperNode createWrapper(final ProbeNode probe) {
       return new ValueNonePrimWrapper(this, probe);

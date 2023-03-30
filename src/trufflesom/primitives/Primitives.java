@@ -289,7 +289,7 @@ public final class Primitives extends PrimitiveLoader<ExpressionNode, SSymbol> {
     add(allFactories, IntDownToDoMessageNodeFactory.getInstance());
 //    add(allFactories, OrMessageNodeFactory.getInstance());
 //    add(allFactories, OrBoolMessageNodeFactory.getInstance());
-    add(allFactories, IfTrueIfFalseMessageNodeFactory.getInstance());
+//    add(allFactories, IfTrueIfFalseMessageNodeFactory.getInstance());
     add(allFactories, NotMessageNodeFactory.getInstance());
 
     add(allFactories, GlobalPrimFactory.getInstance());
