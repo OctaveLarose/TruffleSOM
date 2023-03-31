@@ -271,7 +271,7 @@ public final class Primitives extends PrimitiveLoader<ExpressionNode, SSymbol> {
 //    add(allFactories, DoIndexesPrimFactory.getInstance());
 //    add(allFactories, DoPrimFactory.getInstance());
     add(allFactories, NewPrimFactory.getInstance());
-    add(allFactories, PutAllNodeFactory.getInstance());
+//    add(allFactories, PutAllNodeFactory.getInstance());
 
     add(allFactories, AsStringPrimFactory.getInstance());
     add(allFactories, EqualsEqualsPrimFactory.getInstance());
@@ -282,13 +282,13 @@ public final class Primitives extends PrimitiveLoader<ExpressionNode, SSymbol> {
     add(allFactories, NewObjectPrimFactory.getInstance());
 //    add(allFactories, UnequalsPrimFactory.getInstance());
 
-//    add(allFactories, AndMessageNodeFactory.getInstance());
-//    add(allFactories, AndBoolMessageNodeFactory.getInstance());
+    add(allFactories, AndMessageNodeFactory.getInstance());
+    add(allFactories, AndBoolMessageNodeFactory.getInstance());
     add(allFactories, IntToDoMessageNodeFactory.getInstance());
     add(allFactories, IntToByDoMessageNodeFactory.getInstance());
     add(allFactories, IntDownToDoMessageNodeFactory.getInstance());
-//    add(allFactories, OrMessageNodeFactory.getInstance());
-//    add(allFactories, OrBoolMessageNodeFactory.getInstance());
+    add(allFactories, OrMessageNodeFactory.getInstance());
+    add(allFactories, OrBoolMessageNodeFactory.getInstance());
     add(allFactories, IfTrueIfFalseMessageNodeFactory.getInstance());
     add(allFactories, NotMessageNodeFactory.getInstance());
 
