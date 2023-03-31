@@ -87,7 +87,7 @@ public abstract class BlockPrims {
     public static final boolean doBoolean(final boolean receiver) {
       return receiver;
     }
-    
+
     @Specialization
     public static final long doLong(final long receiver) {
       return receiver;

@@ -257,7 +257,7 @@ public abstract class IntegerPrims {
     }
   }
 
-  @GenerateNodeFactory
+ /* @GenerateNodeFactory
   @Primitive(className = "Integer", primitive = "abs", selector = "abs",
       receiverType = {Long.class, BigInteger.class})
   @Primitive(className = "Double", primitive = "abs", receiverType = {Double.class})
@@ -266,9 +266,9 @@ public abstract class IntegerPrims {
       return receiver == Long.MIN_VALUE;
     }
 
-    /**
+    *//**
      * Math.abs(MIN_VALUE) == MIN_VALUE, which is wrong.
-     */
+     *//*
     @Specialization(guards = "!minLong(receiver)")
     public static final long doLong(final long receiver) {
       return Math.abs(receiver);
@@ -295,5 +295,5 @@ public abstract class IntegerPrims {
     public SSymbol getSelector() {
       return SymbolTable.symbolFor("abs");
     }
-  }
+  }*/
 }
