@@ -50,6 +50,12 @@ public abstract class LessThanPrim extends ArithmeticPrim {
   }
 
   @Specialization
+  @TruffleBoundary
+  public static final boolean doBigInteger(final double left, final BigInteger right) {
+    return doBigInteger(right, BigInteger.valueOf((long) left));
+  }
+
+  @Specialization
   public static final boolean doDouble(final double left, final double right) {
     return left < right;
   }
