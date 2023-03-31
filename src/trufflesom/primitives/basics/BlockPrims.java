@@ -26,6 +26,7 @@ import trufflesom.vm.VmSettings;
 import trufflesom.vmobjects.SAbstractObject;
 import trufflesom.vmobjects.SBlock;
 import trufflesom.vmobjects.SInvokable;
+import trufflesom.vmobjects.SSymbol;
 
 
 public abstract class BlockPrims {
@@ -90,6 +91,12 @@ public abstract class BlockPrims {
 
     @Specialization
     public static final long doLong(final long receiver) {
+      return receiver;
+    }
+
+
+    @Specialization
+    public static final SSymbol doSymbol(final SSymbol receiver) {
       return receiver;
     }
 
