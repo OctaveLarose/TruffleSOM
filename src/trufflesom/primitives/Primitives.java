@@ -284,9 +284,9 @@ public final class Primitives extends PrimitiveLoader<ExpressionNode, SSymbol> {
 
 //    add(allFactories, AndMessageNodeFactory.getInstance());
 //    add(allFactories, AndBoolMessageNodeFactory.getInstance());
-    add(allFactories, IntToDoMessageNodeFactory.getInstance());
-    add(allFactories, IntToByDoMessageNodeFactory.getInstance());
-    add(allFactories, IntDownToDoMessageNodeFactory.getInstance());
+//    add(allFactories, IntToDoMessageNodeFactory.getInstance());
+//    add(allFactories, IntToByDoMessageNodeFactory.getInstance());
+//    add(allFactories, IntDownToDoMessageNodeFactory.getInstance());
 //    add(allFactories, OrMessageNodeFactory.getInstance());
 //    add(allFactories, OrBoolMessageNodeFactory.getInstance());
 //    add(allFactories, IfTrueIfFalseMessageNodeFactory.getInstance());
@@ -326,8 +326,8 @@ public final class Primitives extends PrimitiveLoader<ExpressionNode, SSymbol> {
   public static List<NodeFactory<? extends Node>> getInlinableFactories() {
     List<NodeFactory<? extends Node>> factories = new ArrayList<>();
 
-    factories.add(IntToDoInlinedLiteralsNodeFactory.getInstance());
-    factories.add(IntDownToDoInlinedLiteralsNodeFactory.getInstance());
+//    factories.add(IntToDoInlinedLiteralsNodeFactory.getInstance());
+//    factories.add(IntDownToDoInlinedLiteralsNodeFactory.getInstance());
 
     return factories;
   }
