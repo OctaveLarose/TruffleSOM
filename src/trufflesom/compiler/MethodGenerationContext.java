@@ -446,9 +446,7 @@ public class MethodGenerationContext
 
       if (valExpr instanceof LocalVariableSquareNode) {
         return variable.getReadSquareWriteNode(ctxLevel, coord,
-                ((LocalVariableSquareNode) valExpr).getLocal());
-//        throw new NotYetImplementedException(
-//            "a missing read/square/write combination, used in a benchmark?");
+            ((LocalVariableSquareNode) valExpr).getLocal());
       }
 
       if (valExpr instanceof UninitializedMessageSendNode) {
