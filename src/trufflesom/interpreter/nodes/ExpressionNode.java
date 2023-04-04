@@ -58,6 +58,10 @@ public abstract class ExpressionNode extends SOMNode
     return false;
   }
 
+  public boolean isTrivialInSequenceInBlock() {
+    return false;
+  }
+
   public boolean isTrivialInBlock() {
     return isTrivial();
   }

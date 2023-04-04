@@ -113,6 +113,11 @@ public abstract class FieldNode extends ExpressionNode {
     }
 
     @Override
+    public boolean isTrivialInSequenceInBlock() {
+      return isTrivialInBlock();
+    }
+
+    @Override
     public PreevaluatedExpression copyTrivialNode() {
       FieldReadNode node = (FieldReadNode) copy();
       node.self = null;
