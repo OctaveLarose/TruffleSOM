@@ -115,7 +115,7 @@ import trufflesom.interpreter.Types;
 import trufflesom.interpreter.bc.Bytecodes;
 import trufflesom.interpreter.bc.RespecializeException;
 import trufflesom.interpreter.bc.RestartLoopException;
-import trufflesom.interpreter.nodes.GenericMessageSendNode;
+import trufflesom.interpreter.nodes.*;
 import trufflesom.interpreter.nodes.literals.IntegerLiteralNode;
 import trufflesom.interpreter.nodes.literals.LiteralNode;
 import trufflesom.interpreter.nodes.nary.BinaryExpressionNode;
