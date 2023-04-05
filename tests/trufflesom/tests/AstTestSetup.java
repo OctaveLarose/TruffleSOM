@@ -13,6 +13,7 @@ import trufflesom.compiler.MethodGenerationContext;
 import trufflesom.compiler.ParserAst;
 import trufflesom.interpreter.SomLanguage;
 import trufflesom.interpreter.nodes.ExpressionNode;
+import trufflesom.vmobjects.SInvokable.SMethod;
 
 
 @Ignore("provides just setup")
@@ -35,5 +36,9 @@ public abstract class AstTestSetup extends TruffleTestSetup {
     } catch (ProgramDefinitionError e) {
       throw new RuntimeException(e);
     }
+  }
+
+  protected SMethod assembleLastMethod(final ExpressionNode body) {
+    return (SMethod) mgenc.assemble(body, 0);
   }
 }

@@ -88,6 +88,7 @@ public class MethodGenerationContext
   protected boolean throwsNonLocalReturn;
 
   protected boolean accessesVariablesOfOuterScope;
+  protected boolean accessesLocalsOfOuterScope;
 
   protected final LinkedHashMap<SSymbol, Argument> arguments;
   protected final LinkedHashMap<SSymbol, Local>    locals;
@@ -394,6 +395,9 @@ public class MethodGenerationContext
       Variable outerVar = outerGenc.getVariable(varName);
       if (outerVar != null) {
         accessesVariablesOfOuterScope = true;
+        if (outerVar instanceof Local) {
+          accessesLocalsOfOuterScope = true;
+        }
       }
       return outerVar;
     }
@@ -469,6 +473,7 @@ public class MethodGenerationContext
       Local outerLocal = outerGenc.getLocal(varName);
       if (outerLocal != null) {
         accessesVariablesOfOuterScope = true;
+        accessesLocalsOfOuterScope = true;
       }
       return outerLocal;
     }
