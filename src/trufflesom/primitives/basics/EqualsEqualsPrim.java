@@ -7,6 +7,8 @@ import com.oracle.truffle.api.dsl.Specialization;
 import bdt.primitives.Primitive;
 import trufflesom.interpreter.nodes.nary.BinaryExpressionNode;
 
+import java.math.BigInteger;
+
 
 @GenerateNodeFactory
 @Primitive(className = "Integer", primitive = "==")
@@ -18,6 +20,11 @@ public abstract class EqualsEqualsPrim extends BinaryExpressionNode {
   @Specialization
   public static final boolean doLong(final long left, final long right) {
     return left == right;
+  }
+
+  @Specialization
+  public static final boolean doBigInt(final BigInteger left, final BigInteger right) {
+    return left.equals(right);
   }
 
   @Specialization
