@@ -10,3 +10,6 @@
 	path = libs/mx
 	url = https://github.com/graalvm/mx.git
 	ignore = untracked
+[submodule "are-we-fast-yet"]
+	path = are-we-fast-yet
+	url = https://github.com/smarr/are-we-fast-yet
