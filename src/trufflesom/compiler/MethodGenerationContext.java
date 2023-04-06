@@ -445,8 +445,10 @@ public class MethodGenerationContext
       }
 
       if (valExpr instanceof LocalVariableSquareNode) {
-        throw new NotYetImplementedException(
-            "a missing read/square/write combination, used in a benchmark?");
+        return variable.getReadSquareWriteNode(ctxLevel, coord,
+                ((LocalVariableSquareNode) valExpr).getLocal());
+//        throw new NotYetImplementedException(
+//            "a missing read/square/write combination, used in a benchmark?");
       }
 
       if (valExpr instanceof UninitializedMessageSendNode) {
