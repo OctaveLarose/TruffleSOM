@@ -17,7 +17,7 @@ before_script:
 
 test:
   stage: build-and-test
-  tags: [yuria]
+  tags: [yuria3]
   script:
     - (cd libs/truffle/compiler/mxbuild && sudo reown-project.sh) || true
     - ${ANT} tests native-obj-storage-test native-tests
@@ -27,7 +27,7 @@ test:
 
 build:native-interp-ast:
   stage: build-and-test
-  tags: [yuria]
+  tags: [yuria2]
   script:
     - (cd libs/truffle/compiler/mxbuild && sudo reown-project.sh) || true
     - ${ANT} compile native-ast -Dno.jit=true
@@ -49,7 +49,7 @@ build:native-interp-ast:
 
 build:native-interp-bc:
   stage: build-and-test
-  tags: [yuria]
+  tags: [yuria3]
   script:
     - (cd libs/truffle/compiler/mxbuild && sudo reown-project.sh) || true
     - ${ANT} compile native-bc -Dno.jit=true
@@ -68,77 +68,77 @@ build:native-interp-bc:
 #         put som-native-interp-bc-ee.lz4 incoming/${CI_PIPELINE_ID}/
 
 
-benchmark-y1:
+#benchmark-y1:
+#  stage: benchmark
+#  needs: ["build:native-interp-ast", "build:native-interp-bc"]
+#  tags: [yuria]
+#  script:
+#    - ${ANT} compile
+#    - sftp tmp-artifacts:incoming/${CI_PIPELINE_ID}/som-native-interp-ast.lz4
+#    - sftp tmp-artifacts:incoming/${CI_PIPELINE_ID}/som-native-interp-bc.lz4
+#    # - sftp tmp-artifacts:incoming/${CI_PIPELINE_ID}/som-native-interp-ast-ee.lz4
+#    # - sftp tmp-artifacts:incoming/${CI_PIPELINE_ID}/som-native-interp-bc-ee.lz4
+#
+#    - lz4 -d som-native-interp-ast.lz4 som-native-interp-ast
+#    - lz4 -d som-native-interp-bc.lz4  som-native-interp-bc
+#    # - lz4 -d som-native-interp-ast-ee.lz4 som-native-interp-ast-ee
+#    # - lz4 -d som-native-interp-bc-ee.lz4  som-native-interp-bc-ee
+#
+#    # Profile
+#    - rebench -c --experiment="CI ID $CI_PIPELINE_ID" --branch="$CI_COMMIT_REF_NAME" -c rebench.conf profiling m:yuria
+#    # Run Benchmarks
+#    - rebench -c --experiment="CI ID $CI_PIPELINE_ID" --branch="$CI_COMMIT_REF_NAME" -c rebench.conf m:yuria
+#  after_script:
+#    - sudo reown-project.sh
+
+benchmark-y2:
   stage: benchmark
   needs: ["build:native-interp-ast", "build:native-interp-bc"]
-  tags: [yuria]
+  tags: [yuria2]
   script:
     - ${ANT} compile
     - sftp tmp-artifacts:incoming/${CI_PIPELINE_ID}/som-native-interp-ast.lz4
     - sftp tmp-artifacts:incoming/${CI_PIPELINE_ID}/som-native-interp-bc.lz4
     # - sftp tmp-artifacts:incoming/${CI_PIPELINE_ID}/som-native-interp-ast-ee.lz4
     # - sftp tmp-artifacts:incoming/${CI_PIPELINE_ID}/som-native-interp-bc-ee.lz4
-    
+
     - lz4 -d som-native-interp-ast.lz4 som-native-interp-ast
     - lz4 -d som-native-interp-bc.lz4  som-native-interp-bc
     # - lz4 -d som-native-interp-ast-ee.lz4 som-native-interp-ast-ee
     # - lz4 -d som-native-interp-bc-ee.lz4  som-native-interp-bc-ee
 
     # Profile
-    - rebench -c --experiment="CI ID $CI_PIPELINE_ID" --branch="$CI_COMMIT_REF_NAME" -c rebench.conf profiling m:yuria
+    - rebench -c --experiment="CI ID $CI_PIPELINE_ID" --branch="$CI_COMMIT_REF_NAME" -c rebench.conf profiling m:yuria2
     # Run Benchmarks
-    - rebench -c --experiment="CI ID $CI_PIPELINE_ID" --branch="$CI_COMMIT_REF_NAME" -c rebench.conf m:yuria
+    - rebench -c --experiment="CI ID $CI_PIPELINE_ID" --branch="$CI_COMMIT_REF_NAME" -c rebench.conf m:yuria2
   after_script:
     - sudo reown-project.sh
 
-#benchmark-y2:
-#  stage: benchmark
-#  needs: ["build:native-interp-ast", "build:native-interp-bc"]
-#  tags: [yuria2]
-#  script:
-#    - ${ANT} compile
-#    - sftp tmp-artifacts:incoming/${CI_PIPELINE_ID}/som-native-interp-ast.lz4
-#    - sftp tmp-artifacts:incoming/${CI_PIPELINE_ID}/som-native-interp-bc.lz4
-#    # - sftp tmp-artifacts:incoming/${CI_PIPELINE_ID}/som-native-interp-ast-ee.lz4
-#    # - sftp tmp-artifacts:incoming/${CI_PIPELINE_ID}/som-native-interp-bc-ee.lz4
-#
-#    - lz4 -d som-native-interp-ast.lz4 som-native-interp-ast
-#    - lz4 -d som-native-interp-bc.lz4  som-native-interp-bc
-#    # - lz4 -d som-native-interp-ast-ee.lz4 som-native-interp-ast-ee
-#    # - lz4 -d som-native-interp-bc-ee.lz4  som-native-interp-bc-ee
-#
-#    # Profile
-#    - rebench -c --experiment="CI ID $CI_PIPELINE_ID" --branch="$CI_COMMIT_REF_NAME" -c rebench.conf profiling m:yuria2
-#    # Run Benchmarks
-#    - rebench -c --experiment="CI ID $CI_PIPELINE_ID" --branch="$CI_COMMIT_REF_NAME" -c rebench.conf m:yuria2
-#  after_script:
-#    - sudo reown-project.sh
-#
-#benchmark-y3:
-#  stage: benchmark
-#  needs: ["build:native-interp-ast", "build:native-interp-bc"]
-#  tags: [yuria3]
-#  script:
-#    - ${ANT} compile
-#    - sftp tmp-artifacts:incoming/${CI_PIPELINE_ID}/som-native-interp-ast.lz4
-#    - sftp tmp-artifacts:incoming/${CI_PIPELINE_ID}/som-native-interp-bc.lz4
-#    # - sftp tmp-artifacts:incoming/${CI_PIPELINE_ID}/som-native-interp-ast-ee.lz4
-#    # - sftp tmp-artifacts:incoming/${CI_PIPELINE_ID}/som-native-interp-bc-ee.lz4
-#
-#    - lz4 -d som-native-interp-ast.lz4 som-native-interp-ast
-#    - lz4 -d som-native-interp-bc.lz4  som-native-interp-bc
-#    # - lz4 -d som-native-interp-ast-ee.lz4 som-native-interp-ast-ee
-#    # - lz4 -d som-native-interp-bc-ee.lz4  som-native-interp-bc-ee
-#
-#    # Profile
-#    - rebench -c --experiment="CI ID $CI_PIPELINE_ID" --branch="$CI_COMMIT_REF_NAME" -c rebench.conf profiling m:yuria3
-#    # Run Benchmarks
-#    - rebench -c --experiment="CI ID $CI_PIPELINE_ID" --branch="$CI_COMMIT_REF_NAME" -c rebench.conf m:yuria3
-#  after_script:
-#    - sudo reown-project.sh
+benchmark-y3:
+  stage: benchmark
+  needs: ["build:native-interp-ast", "build:native-interp-bc"]
+  tags: [yuria3]
+  script:
+    - ${ANT} compile
+    - sftp tmp-artifacts:incoming/${CI_PIPELINE_ID}/som-native-interp-ast.lz4
+    - sftp tmp-artifacts:incoming/${CI_PIPELINE_ID}/som-native-interp-bc.lz4
+    # - sftp tmp-artifacts:incoming/${CI_PIPELINE_ID}/som-native-interp-ast-ee.lz4
+    # - sftp tmp-artifacts:incoming/${CI_PIPELINE_ID}/som-native-interp-bc-ee.lz4
+
+    - lz4 -d som-native-interp-ast.lz4 som-native-interp-ast
+    - lz4 -d som-native-interp-bc.lz4  som-native-interp-bc
+    # - lz4 -d som-native-interp-ast-ee.lz4 som-native-interp-ast-ee
+    # - lz4 -d som-native-interp-bc-ee.lz4  som-native-interp-bc-ee
+
+    # Profile
+    - rebench -c --experiment="CI ID $CI_PIPELINE_ID" --branch="$CI_COMMIT_REF_NAME" -c rebench.conf profiling m:yuria3
+    # Run Benchmarks
+    - rebench -c --experiment="CI ID $CI_PIPELINE_ID" --branch="$CI_COMMIT_REF_NAME" -c rebench.conf m:yuria3
+  after_script:
+    - sudo reown-project.sh
 
 report-completion:
   stage: benchmark-completion
-  tags: [yuria]
+  tags: [yuria3]
   script:
     - rebench --experiment="CI ID $CI_PIPELINE_ID" --report-completion rebench.conf
