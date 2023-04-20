@@ -17,7 +17,7 @@ before_script:
 
 test:
   stage: build-and-test
-  tags: [yuria]
+  tags: [yuria ]
   script:
     - (cd libs/truffle/compiler/mxbuild && sudo reown-project.sh) || true
     - ${ANT} tests native-obj-storage-test native-tests
@@ -27,7 +27,7 @@ test:
 
 build:native-interp-ast:
   stage: build-and-test
-  tags: [yuria]
+  tags: [yuria ]
   script:
     - (cd libs/truffle/compiler/mxbuild && sudo reown-project.sh) || true
     - ${ANT} compile native-ast -Dno.jit=true
@@ -49,7 +49,7 @@ build:native-interp-ast:
 
 build:native-interp-bc:
   stage: build-and-test
-  tags: [yuria]
+  tags: [yuria ]
   script:
     - (cd libs/truffle/compiler/mxbuild && sudo reown-project.sh) || true
     - ${ANT} compile native-bc -Dno.jit=true
@@ -78,7 +78,7 @@ benchmark-y1:
     - sftp tmp-artifacts:incoming/${CI_PIPELINE_ID}/som-native-interp-bc.lz4
     # - sftp tmp-artifacts:incoming/${CI_PIPELINE_ID}/som-native-interp-ast-ee.lz4
     # - sftp tmp-artifacts:incoming/${CI_PIPELINE_ID}/som-native-interp-bc-ee.lz4
-    
+
     - lz4 -d som-native-interp-ast.lz4 som-native-interp-ast
     - lz4 -d som-native-interp-bc.lz4  som-native-interp-bc
     # - lz4 -d som-native-interp-ast-ee.lz4 som-native-interp-ast-ee
