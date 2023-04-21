@@ -64,7 +64,20 @@ public abstract class GlobalNode extends ExpressionNode
 
   public static GlobalNode create(final SSymbol globalName,
       final MethodGenerationContext mgenc) {
-    // Get the global from the universe
+//    if (globalName == symNil) {
+//      return new NilGlobalNode(globalName);
+//    } else if (globalName == symTrue) {
+//      return new TrueGlobalNode(globalName);
+//    } else if (globalName == symFalse) {
+//      return new FalseGlobalNode(globalName);
+//    }
+//
+//    // Get the global from the universe
+//    Association assoc = getGlobalsAssociation(globalName);
+//    if (assoc != null) {
+//      return new CachedGlobalReadNode(globalName, assoc);
+//    }
+
     if (mgenc != null) {
       mgenc.markAccessingOuterScopes();
     }
