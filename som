@@ -355,7 +355,7 @@ if args.java_args:
 if 'Havlak' in args.args:
   # double the standard stack size
   # we don't do it always, because...
-  JAVA_ARGS += ['-Xss3072k']
+  JAVA_ARGS += ['-Xss6144k']
 
 all_args = JAVA_ARGS + ['-classpath', classpath] + ['-Dtruffle.class.path.append=' + classpath] + flags + SOM_ARGS + unknown_args + args.args
 
