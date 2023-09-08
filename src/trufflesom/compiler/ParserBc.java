@@ -73,8 +73,7 @@ public class ParserBc extends Parser<BytecodeMethodGenContext> {
     // terminating the last expression, so the last expression's value must
     // be popped off the stack and a ^self be generated
     if (!mgenc.isFinished()) {
-      // with the new RETURN_SELF, we don't actually need the extra stack space
-      // emitPOP(mgenc);
+      emitPOP(mgenc);
       emitRETURNSELF(mgenc);
       mgenc.markFinished();
     }
